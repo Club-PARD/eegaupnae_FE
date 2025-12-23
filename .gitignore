@@ -1,0 +1,17 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Build
+build/
+
+# Swift Package Manager
+.build/
+Packages/
+
+# Environment variables
+.env
