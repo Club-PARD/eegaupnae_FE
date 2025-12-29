@@ -11,7 +11,7 @@ import SwiftUI
 struct Shoppingmate_FrontendApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CameraOCRView()
         }
     }
 }
