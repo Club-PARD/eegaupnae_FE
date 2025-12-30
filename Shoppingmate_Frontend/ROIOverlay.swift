@@ -8,32 +8,28 @@
 import SwiftUI
 
 struct ROIOverlay: View {
-
-    let onUpdate: (CGRect) -> Void
+    let onUpdate: (CGRect) -> Void //ROIRect를 그려서 CameraManager로 전달 (UI만 그리는 용도)
 
     var body: some View {
-        GeometryReader { geo in
-            let width = geo.size.width * 0.8
-            let height = geo.size.height * 0.2
+        GeometryReader { geo in // 레이아웃 크기/위치 정보 인식
+            let rect = makeRect(in: geo.size) //ROIOverlay가 화면에서 차지하는 영역 크기
 
-            let rect = CGRect(
-                x: (geo.size.width - width) / 2,
-                y: (geo.size.height - height) / 2,
-                width: width,
-                height: height
-            )
-
-            // 가이드 박스
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.yellow, lineWidth: 3)
-                .frame(width: width, height: height)
-                .position(x: geo.size.width / 2,
-                          y: geo.size.height / 2)
-                .onAppear {
-                    onUpdate(rect)
-                }
-//                .onChange(of: geo.size) { _ in onUpdate(rect) } // ✅ 크기 바뀌면 갱신
+            RoundedRectangle(cornerRadius: 12) //노란박스
+                .stroke(.yellow, lineWidth: 3)
+                .frame(width: rect.width, height: rect.height)
+                .position(x: rect.midX, y: rect.midY)
+                .onAppear { onUpdate(rect) } //ROIOverlay가 화면에 나타날 때 rect를 전달
         }
         .ignoresSafeArea()
+        .allowsHitTesting(false)
+    }
+
+    private func makeRect(in size: CGSize) -> CGRect {
+        let w = size.width * 0.8
+        let h = size.height * 0.2
+        return CGRect(x: (size.width - w) / 2, //중앙배치
+                      y: (size.height - h) / 2,
+                      width: w,
+                      height: h)
     }
 }
