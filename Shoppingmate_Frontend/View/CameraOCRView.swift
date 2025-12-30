@@ -14,13 +14,14 @@ struct CameraOCRView: View {
     var body: some View {
         ZStack {
 
-            // 카메라 프리뷰
+            // UIKit PreviewLayer 생성
+            // CameraManager로 전달(좌표 변환용)
             CameraPreview(session: camera.session) { layer in
                 camera.previewLayer = layer
             }
             .ignoresSafeArea()
 
-            // ROI 오버레이
+            // ROI 계산 -> CameraManager에 전달
             ROIOverlay { rect in
                 camera.updateROIRect(rect)
             }
