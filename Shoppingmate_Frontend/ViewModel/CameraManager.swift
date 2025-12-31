@@ -85,9 +85,9 @@ final class CameraManager: NSObject, ObservableObject {
         let locationDTO = capturedLocation?.toDTO()
 
         Task {
-            try await uploadService.upload(
-                imageData: imageData,
-                recognizedText: recognizedText,
+            try await uploadService.uploadLocation(
+//                imageData: imageData,
+//                recognizedText: recognizedText,
                 location: locationDTO
             )
         }
@@ -111,6 +111,22 @@ final class CameraManager: NSObject, ObservableObject {
         print("📦 LocationDTO")
         print(" - latitude:", dto.latitude)
         print(" - longitude:", dto.longitude)
+    }
+    
+    func sendLocationToServer() {
+        guard let locationDTO = capturedLocation?.toDTO() else {
+            print("❌ locationDTO is nil")
+            return
+        }
+
+        Task {
+            do {
+                try await uploadService.uploadLocation(location: locationDTO)
+                print("✅ location upload success")
+            } catch {
+                print("🚨 location upload failed:", error)
+            }
+        }
     }
     
     // MARK: - 사진 촬영
@@ -148,6 +164,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             self.capturedLocation = self.locationService.currentLocation
             self.debugPrintLocation()
             self.debugPrintLocationDTO()
+            self.sendLocationToServer()
             let layer = self.previewLayer
             let roi = self.roiLayerRect
 
