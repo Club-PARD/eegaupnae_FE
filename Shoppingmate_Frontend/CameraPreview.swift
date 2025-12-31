@@ -9,8 +9,8 @@ import SwiftUI
 import AVFoundation
 
 // UIKit의 AVCaptureVideoPreviewLayer를 SwiftUI에서 그대로 쓰기 위한 어댑터 (카메라랑 화면 구현 연결)
-//레이어는 그림 담당, UIView는 이벤트, 레이아웃, 생명주기 담당(상위)
-final class PreviewView: UIView { //이 UIView는 기본 CALayer(그림그리는엔진) 대신 AVCapture...를 써라)
+///레이어는 그리기 담당, UIView는 이벤트, 레이아웃, 생명주기 담당(상위)
+final class PreviewView: UIView { //이 UIView는 기본 레이어 대신 AVCapture...를 써라)
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self //카메라 프레임을 바로 그려주는 레이어
     }
@@ -31,14 +31,17 @@ struct CameraPreview: UIViewRepresentable { //UIKit 사용 프로토콜
 
         // previewLayer에 세션을 직접 연결
         view.previewLayer.session = session
-        view.previewLayer.videoGravity = .resizeAspectFill //화면 꽉 채움 (resizeAspect = 사진 안잘리는 대신 여백 있음)
+        view.previewLayer.videoGravity = .resizeAspectFill //화면 꽉 채움, 잘림 있음 (resizeAspect = 사진 안잘리는 대신 여백 있음)
         
-        //프리뷰 세로 회전 고정
+//        //프리뷰 세로로 회전 고정
         if let conn = view.previewLayer.connection {
-                if conn.isVideoRotationAngleSupported(0) {
-                    conn.videoRotationAngle = 0
-                }
+            if conn.isVideoOrientationSupported {
+                conn.videoOrientation = .portrait
+            } else if conn.isVideoRotationAngleSupported(90) {
+                conn.videoRotationAngle = 90
             }
+        }
+
 
         // CameraManager에 previewLayer 전달
         DispatchQueue.main.async {

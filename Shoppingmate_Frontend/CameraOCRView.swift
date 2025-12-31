@@ -21,15 +21,12 @@ struct CameraOCRView: View {
                     camera.previewLayer = layer
                 }
                 .ignoresSafeArea()
-                
-                // ROI 오버레이
+
                 .overlay(alignment: .center) {
-                    ROIOverlay { rect in
-                        camera.updateROIRect(rect)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity) // 프리뷰 전체 크기 받기
-                    .ignoresSafeArea()                                 // 카메라 프리뷰랑 좌표 맞추기
-                    .allowsHitTesting(false)
+                    ROIOverlay()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity) // 프리뷰 전체 크기 받기
+                        .ignoresSafeArea()                                // 카메라 프리뷰랑 좌표 맞추기
+                        .allowsHitTesting(false)
                 }
                 
                 // 하단 버튼
@@ -40,6 +37,24 @@ struct CameraOCRView: View {
                         ProgressView("OCR 중...")
                             .padding()
                     }
+                    
+//                   //✅ 찍은 사진 썸네일(스샷처럼)
+//                    if !camera.capturedROIImages.isEmpty {
+//                        ScrollView(.horizontal, showsIndicators: false) {
+//                            HStack(spacing: 8) {
+//                                ForEach(camera.capturedROIImages.indices, id: \.self) { i in
+//                                    Image(uiImage: camera.capturedROIImages[i])
+//                                        .resizable()
+//                                        .scaledToFill()
+//                                        .frame(width: 46, height: 46)
+//                                        .clipped()
+//                                        .cornerRadius(6)
+//                                }
+//                            }
+//                            .padding(.horizontal, 16)
+//                        }
+//                        .frame(height: 56)
+//                    }
                     
                     Button {
                         camera.capturePhoto()
@@ -60,6 +75,10 @@ struct CameraOCRView: View {
                     HStack {
                         Spacer()
                         Button {
+//                            //✅ 누적된 사진이 1장이라도 있으면 이동
+//                            if !camera.capturedROIImages.isEmpty {
+//                                goResult = true
+//                            }
                             if camera.croppedROIImage != nil {
                                 goResult = true
                             }
@@ -71,7 +90,7 @@ struct CameraOCRView: View {
                                 .clipShape(Circle())
                         }
                         .padding()
-                        .disabled(camera.croppedROIImage == nil) // ROI 이미지 없으면 비활성
+                        .disabled(camera.croppedROIImage == nil) // ROI 이미지 없으면 비활성 
                     }
                 }
                 
@@ -86,12 +105,19 @@ struct CameraOCRView: View {
                             .padding()
                     }
                 }
+                
             } //ZStack
             .navigationDestination(isPresented: $goResult) {
                 if let img = camera.croppedROIImage { //잘린 이미지 MyView로 전달
                     MyView(image: img)
                 }
             }
+            
+//            //✅ 체크 누르면 "누적된 이미지들"을 한 번에 보여주는 화면으로 이동
+//            .navigationDestination(isPresented: $goResult) {
+//                CapturedPhotosView(images: camera.capturedROIImages)
+//            }
+            
             .onAppear { camera.startSession() }
             .onDisappear { camera.stopSession() }
         }

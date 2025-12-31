@@ -26,12 +26,9 @@ struct MyView: View {
                 
                 Text("px: \(image.cgImage?.width ?? 0) × \(image.cgImage?.height ?? 0)") //실제 픽셀 해상도 확인용
                 
-                
                 Spacer()
-                
             }
             .navigationTitle("ROI 결과") //제목
-            
         }
     }
 }
