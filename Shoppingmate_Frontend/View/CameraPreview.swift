@@ -13,7 +13,7 @@ final class PreviewView: UIView {
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }
-
+    
     var previewLayer: AVCaptureVideoPreviewLayer {
         return layer as! AVCaptureVideoPreviewLayer
     }

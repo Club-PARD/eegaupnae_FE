@@ -9,6 +9,7 @@ import CoreLocation
 
 // DTO: Data Transfer Object
 struct LocationDTO: Codable {
+    let uuid: String
     let latitude: Double
     let longitude: Double
 }
@@ -18,6 +19,7 @@ struct LocationDTO: Codable {
 extension CLLocation {
     func toDTO() -> LocationDTO {// CLLocation -> LocationDTO로 변환하는 함수
         LocationDTO(
+            uuid: UUID().uuidString,
             latitude: self.coordinate.latitude,// 현재 위치 객체의 위도 값을 꺼내서 DTO에 넣는다
             longitude: self.coordinate.longitude
         )
