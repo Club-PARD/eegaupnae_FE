@@ -7,11 +7,10 @@
 import AVFoundation
 import Vision
 import UIKit
-import SwiftUI
 import Combine//@Published (ObservableObject용)
 import CoreLocation
 
-@MainActor//이 클래스의 기본 실행 컨텍스트는 메인 스레드(UI 상태(@Published) 안전)
+//@MainActor//이 클래스의 기본 실행 컨텍스트는 메인 스레드(UI 상태(@Published) 안전)
 //NSObject: AVCapturePhotoCaptureDelegate를 쓰기 위해 필요
 final class CameraManager: NSObject, ObservableObject {
     
@@ -181,7 +180,6 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
                     previewLayer: layer,
                     roiLayerRect: roi
                 )
-
                 // UI 상태 업데이트는 메인 액터에서
                 await MainActor.run {
                     self.recognizedText = text

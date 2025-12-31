@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SelectView: View {
+    
+    private var viewModel = SelectViewModel()
     var body: some View {
         ZStack {
             Color(red:249/255, green: 250/255, blue: 251/255)
@@ -59,7 +61,9 @@ struct SelectView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 50)
-                        .padding(.vertical, 0)
+                    }
+                    .onTapGesture {
+                        viewModel.selectNormalUser()
                     }
                     //제휴 파트너 버튼
                     ZStack {
