@@ -16,6 +16,8 @@ Packages/
 # Environment variables
 .env
 
-# Xcode user-specific files
-xcuserdata/
+# Xcode user state
 *.xcuserstate
+xcuserdata/
+
+BaseURL.swift
