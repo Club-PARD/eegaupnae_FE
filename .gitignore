@@ -15,3 +15,7 @@ Packages/
 
 # Environment variables
 .env
+
+# Xcode user state
+*.xcuserstate
+xcuserdata/
