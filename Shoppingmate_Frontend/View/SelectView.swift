@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Combine
 
 struct SelectView: View {
-    private var viewModel = SelectViewModel()
+    @StateObject private var viewModel = SelectViewModel()
     var body: some View {
         ZStack {
             Color(red:249/255, green: 250/255, blue: 251/255)

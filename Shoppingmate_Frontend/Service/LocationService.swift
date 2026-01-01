@@ -72,23 +72,28 @@ extension LocationService: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
-        // locations: 지금까지 들어온 위치 배열(마지막이 가장 최신)
-        // last를 꺼내서 currentLocation에 저장
         currentLocation = locations.last
 
-        // 위치가 "한 번만" 필요하면 여기서 바로 stop 해도 됨
-        // 계속 추적이 필요하면 이 줄은 지우고 필요 시점에 stop() 호출
+        if let loc = currentLocation {
+            print("📍 위도:", loc.coordinate.latitude)
+            print("📍 경도:", loc.coordinate.longitude)
+        }
+
         manager.stopUpdatingLocation()
     }
-
     // locationManagerDidChangeAuthorization: 권한 상태가 바뀔 때 호출
-    // (허용/거부/미결정 → 허용 같은 변화)
+    // (허용/거부/미결정 → 허용 감지)
     func locationManagerDidChangeAuthorization(
         _ manager: CLLocationManager
     ) {
         // 최신 권한 상태를 @Published에 반영해서
         // SwiftUI가 "권한 바뀜"을 감지하도록 함
         authorizationStatus = manager.authorizationStatus
+        
+        if authorizationStatus == .authorizedWhenInUse ||
+               authorizationStatus == .authorizedAlways {
+                manager.startUpdatingLocation()
+            }
     }
 
     // (선택) 에러 발생 시 호출되는 콜백도 구현 가능
