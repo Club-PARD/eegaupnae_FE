@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SelectView: View {
+    private var viewModel = SelectViewModel()
     var body: some View {
         ZStack {
             Color(red:249/255, green: 250/255, blue: 251/255)
@@ -27,7 +28,6 @@ struct SelectView: View {
                     .padding()
                     Spacer()
                 }
-                Spacer()
                 VStack {
                     //일반 사용자 버튼
                     ZStack {
@@ -49,7 +49,7 @@ struct SelectView: View {
                                 Text("일반 사용자")
                                     .font(.system(size: 17))
                                     .fontWeight(.bold)
-                                    .padding(.bottom, 3)
+                                    .padding(.bottom, 1)
                                 Text("마트에서 똑똑하게 쇼핑하고 싶어요.")
                                     .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
                                     .font(.system(size: 14))
@@ -59,8 +59,12 @@ struct SelectView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 50)
-                        .padding(.vertical, 0)
                     }
+                    .onTapGesture {
+                        viewModel.selectNormalUser()
+                        
+                    }
+                    .padding(.bottom, 10)
                     //제휴 파트너 버튼
                     ZStack {
                         RoundedRectangle(cornerRadius: 13)
@@ -81,7 +85,7 @@ struct SelectView: View {
                                 Text("제휴 파트너")
                                     .font(.system(size: 17))
                                     .fontWeight(.bold)
-                                    .padding(.bottom, 3)
+                                    .padding(.bottom, 1)
                                 Text("우리 마트를 홍보하고 싶어요.")
                                     .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
                                     .font(.system(size: 14))
@@ -90,9 +94,10 @@ struct SelectView: View {
                             .padding(10)
                             Spacer()
                         }
-                        .padding(50)
+                        .padding(.horizontal, 50)
                     }//제휴파트너 버튼
                 }//버튼 VStack
+                .padding(.top, 150)
                 Spacer()
             }
         }
