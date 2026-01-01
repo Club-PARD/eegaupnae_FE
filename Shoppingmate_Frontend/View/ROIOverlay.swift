@@ -7,33 +7,21 @@
 
 import SwiftUI
 
+//노란 박스 그리기
 struct ROIOverlay: View {
-
-    let onUpdate: (CGRect) -> Void
-
     var body: some View {
-        GeometryReader { geo in
-            let width = geo.size.width * 0.8
-            let height = geo.size.height * 0.2
+        GeometryReader { geo in // 레이아웃 화면 크기 인식
+            let size = geo.size
+            let w = size.width * 0.8
+            let h = size.height * 0.2
+            let rect = CGRect(x: (size.width - w)/2, y: (size.height - h)/2, width: w, height: h) //노란 박스 그릴 UI 좌표
 
-            let rect = CGRect(
-                x: (geo.size.width - width) / 2,
-                y: (geo.size.height - height) / 2,
-                width: width,
-                height: height
-            )
-
-            // 가이드 박스
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.yellow, lineWidth: 3)
-                .frame(width: width, height: height)
-                .position(x: geo.size.width / 2,
-                          y: geo.size.height / 2)
-                .onAppear {
-                    onUpdate(rect)
-                }
-//                .onChange(of: geo.size) { _ in onUpdate(rect) } // ✅ 크기 바뀌면 갱신
+            RoundedRectangle(cornerRadius: 12) //노란 박스
+                .stroke(.yellow, lineWidth: 3)
+                .frame(width: rect.width, height: rect.height)
+                .position(x: rect.midX, y: rect.midY) //중심 좌표 기준으로 위치 배치
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea() //프리뷰랑 화면 좌표계 맞추기
+        .allowsHitTesting(false)
     }
 }
