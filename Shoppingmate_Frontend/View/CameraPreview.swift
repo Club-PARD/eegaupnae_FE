@@ -14,7 +14,7 @@ final class PreviewView: UIView { //이 UIView는 기본 레이어 대신 AVCapt
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self //카메라 프레임을 바로 그려주는 레이어
     }
-
+    
     var previewLayer: AVCaptureVideoPreviewLayer {
         return layer as! AVCaptureVideoPreviewLayer //무조건 AVCapture로 레이어 반환
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 
-struct MyView: View {
+struct PhotoReviewView: View {
     let image: UIImage
 
     var body: some View {

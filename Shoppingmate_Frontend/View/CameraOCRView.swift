@@ -109,7 +109,7 @@ struct CameraOCRView: View {
             } //ZStack
             .navigationDestination(isPresented: $goResult) {
                 if let img = camera.croppedROIImage { //잘린 이미지 MyView로 전달
-                    MyView(image: img)
+                    PhotoReviewView(image: img)
                 }
             }
             
