@@ -102,6 +102,9 @@ struct SelectView: View {
                         }
                         .padding(.horizontal, 50)
                     }//제휴파트너 버튼
+                    .onTapGesture {
+                        viewModel.selectPartner()
+                    }
                 }//버튼 VStack
                 .padding(.top, 150)
                 Spacer()
