@@ -18,6 +18,7 @@ struct SelectView: View {
                 HStack {
                     VStack(alignment:.leading) {
                         Text("어떤 분이신가요?")
+                            .foregroundColor(Color.black)
                             .font(.system(size: 22))
                             .fontWeight(.bold)
                             .padding(.bottom, 3)
@@ -48,6 +49,7 @@ struct SelectView: View {
                                 .frame(width: 50, height: 50)
                             VStack(alignment:.leading) {
                                 Text("일반 사용자")
+                                    .foregroundColor(Color.black)
                                     .font(.system(size: 17))
                                     .fontWeight(.bold)
                                     .padding(.bottom, 1)
@@ -84,6 +86,7 @@ struct SelectView: View {
                                 .frame(width: 50, height: 50)
                             VStack(alignment:.leading) {
                                 Text("제휴 파트너")
+                                    .foregroundColor(Color.black)
                                     .font(.system(size: 17))
                                     .fontWeight(.bold)
                                     .padding(.bottom, 1)
