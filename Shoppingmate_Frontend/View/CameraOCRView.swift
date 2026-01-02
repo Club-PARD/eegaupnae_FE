@@ -1,10 +1,10 @@
+////
+////  CameraOCRView.swift
+////  Shoppingmate_Frontend
+////
+////  Created by Jinsoo Park on 12/26/25.
+////
 //
-//  CameraOCRView.swift
-//  Shoppingmate_Frontend
-//
-//  Created by Jinsoo Park on 12/26/25.
-//
-
 import SwiftUI
 
 struct CameraOCRView: View {

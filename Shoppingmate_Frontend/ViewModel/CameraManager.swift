@@ -1,9 +1,9 @@
-//
-//  CameraManager.swift
-//  Shoppingmate_Frontend
-//
-//  Created by Jinsoo Park on 12/26/25.
-//
+////
+////  CameraManager.swift
+////  Shoppingmate_Frontend
+////
+////  Created by Jinsoo Park on 12/26/25.
+
 import AVFoundation
 import Vision
 import UIKit

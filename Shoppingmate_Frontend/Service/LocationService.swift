@@ -59,9 +59,9 @@ final class LocationService: NSObject, ObservableObject {
 
     // stop(): 위치 업데이트를 중지(배터리 절약)
     // "한 번만 좌표 필요"할 때 꼭 stop 해주는 게 좋아
-    func stop() {
-        locationManager.stopUpdatingLocation()
-    }
+//    func stop() {
+//        locationManager.stopUpdatingLocation()
+//    }
 }
 
 // extension으로 delegate 구현을 분리하면 코드가 깔끔해짐
@@ -72,34 +72,39 @@ extension LocationService: CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
-        // locations: 지금까지 들어온 위치 배열(마지막이 가장 최신)
-        // last를 꺼내서 currentLocation에 저장
-        currentLocation = locations.last
+        guard let loc = locations.last else { return }
 
-        // 위치가 "한 번만" 필요하면 여기서 바로 stop 해도 됨
-        // 계속 추적이 필요하면 이 줄은 지우고 필요 시점에 stop() 호출
+                currentLocation = loc
+                print("📍 위도:", loc.coordinate.latitude)
+                print("📍 경도:", loc.coordinate.longitude)
+
         manager.stopUpdatingLocation()
     }
-
     // locationManagerDidChangeAuthorization: 권한 상태가 바뀔 때 호출
-    // (허용/거부/미결정 → 허용 같은 변화)
+    // (허용/거부/미결정 → 허용 감지)
     func locationManagerDidChangeAuthorization(
         _ manager: CLLocationManager
     ) {
         // 최신 권한 상태를 @Published에 반영해서
         // SwiftUI가 "권한 바뀜"을 감지하도록 함
         authorizationStatus = manager.authorizationStatus
+        print("🔑 권한 상태 변경:", authorizationStatus)
+        
+//        if authorizationStatus == .authorizedWhenInUse ||
+//               authorizationStatus == .authorizedAlways {
+//                manager.startUpdatingLocation()
+//            }
     }
 
     // (선택) 에러 발생 시 호출되는 콜백도 구현 가능
     // 위치 서비스를 못 쓰는 상황(권한 거부, 시스템 오류 등)에서 유용
-    func locationManager(
-        _ manager: CLLocationManager,
-        didFailWithError error: Error
-    ) {
-        // 에러 로그 출력(디버깅용)
-        print("Location error:", error.localizedDescription)
-    }
+//    func locationManager(
+//        _ manager: CLLocationManager,
+//        didFailWithError error: Error
+//    ) {
+//        // 에러 로그 출력(디버깅용)
+//        print("Location error:", error.localizedDescription)
+//    }
 }
 
 //#Preview {
