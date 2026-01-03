@@ -66,20 +66,28 @@ final class LocationService: NSObject, ObservableObject {
 
 // extension으로 delegate 구현을 분리하면 코드가 깔끔해짐
 extension LocationService: CLLocationManagerDelegate {
-
+    
     // didUpdateLocations: 위치가 업데이트될 때마다 시스템이 호출해주는 콜백(핵심)
     func locationManager(
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]
     ) {
         guard let loc = locations.last else { return }
-
-                currentLocation = loc
-                print("📍 위도:", loc.coordinate.latitude)
-                print("📍 경도:", loc.coordinate.longitude)
-
+        
+        currentLocation = loc
+        print("📍 위도:", loc.coordinate.latitude)
+        print("📍 경도:", loc.coordinate.longitude)
+        
         manager.stopUpdatingLocation()
     }
+    
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: Error
+    ) {
+        print("❌ 위치 요청 실패:", error.localizedDescription)
+    }
+    
     // locationManagerDidChangeAuthorization: 권한 상태가 바뀔 때 호출
     // (허용/거부/미결정 → 허용 감지)
     func locationManagerDidChangeAuthorization(
@@ -90,11 +98,34 @@ extension LocationService: CLLocationManagerDelegate {
         authorizationStatus = manager.authorizationStatus
         print("🔑 권한 상태 변경:", authorizationStatus)
         
-//        if authorizationStatus == .authorizedWhenInUse ||
-//               authorizationStatus == .authorizedAlways {
-//                manager.startUpdatingLocation()
-//            }
+        if authorizationStatus == .authorizedWhenInUse ||
+            authorizationStatus == .authorizedAlways {
+            manager.requestLocation()
+        }
     }
+    
+    func requestOneTimeLocation() {
+        if authorizationStatus == .authorizedWhenInUse ||
+           authorizationStatus == .authorizedAlways {
+            print("📍 위치 요청")
+            
+        } else if authorizationStatus == .notDetermined {
+            print("📍 권한 요청")
+            locationManager.requestWhenInUseAuthorization()
+        } else {
+            print("❌ 위치 권한 거부됨")
+        }
+    }
+    
+    func startLocationIfAuthorized() {
+        if authorizationStatus == .authorizedWhenInUse ||
+            authorizationStatus == .authorizedAlways {
+            locationManager.startUpdatingLocation()
+        } else if authorizationStatus == .notDetermined {
+            requestPermission()
+        }
+    }
+}
 
     // (선택) 에러 발생 시 호출되는 콜백도 구현 가능
     // 위치 서비스를 못 쓰는 상황(권한 거부, 시스템 오류 등)에서 유용
@@ -105,7 +136,6 @@ extension LocationService: CLLocationManagerDelegate {
 //        // 에러 로그 출력(디버깅용)
 //        print("Location error:", error.localizedDescription)
 //    }
-}
 
 //#Preview {
 //    LocationService()

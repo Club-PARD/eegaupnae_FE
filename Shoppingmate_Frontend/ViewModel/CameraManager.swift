@@ -168,7 +168,7 @@ final class CameraManager: NSObject, ObservableObject {
             
             Task { @MainActor in //촬영
                 self.isProcessing = true //촬영 + OCR 처리
-                self.locationService.start()
+                //self.locationService.start()
                 
                 // 촬영 순간에 previewLayer.bounds 기준으로 ROI를 강제 계산
                 if let layer = self.previewLayer {

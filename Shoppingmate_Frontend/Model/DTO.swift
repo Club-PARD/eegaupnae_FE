@@ -25,3 +25,7 @@ extension CLLocation {
         )
     }
 }
+
+struct UUIDDTO: Codable {
+    let uuid: String
+}

@@ -8,8 +8,16 @@
 import SwiftUI
 import Combine
 
+enum UserType {
+    case normal
+    case partner
+}
+
 struct SelectView: View {
     @StateObject private var viewModel = SelectViewModel()
+    @EnvironmentObject var appState: AppState
+    
+//    let onSelect: (UserType) -> Void
 
     var body: some View {
         ZStack {
@@ -18,12 +26,15 @@ struct SelectView: View {
             VStack {
                 HStack {
                     VStack(alignment:.leading) {
-                        Text("어떤 분이신가요?")
-                            .foregroundColor(Color.black)
-                            .font(.system(size: 22))
-                            .fontWeight(.bold)
-                            .padding(.bottom, 3)
-                        Text("서비스 이용 목적을 선택해주세요.")
+                        Text("서비스 이용 목적을 픽픽하세요!")
+                          .font(
+                            Font.custom("Arial", size: 22)
+                              .weight(.bold)
+                          )
+                          .foregroundColor(Color(red: 0.26, green: 0.22, blue: 0.79))
+                          .frame(width: 362, alignment: .topLeading)
+                          .padding(.bottom, 3)
+                        Text("서비스를 이용해 주셔서 감사합니다!")
                             .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
                             .font(.system(size: 15))
                             .fontWeight(.regular)
@@ -67,6 +78,7 @@ struct SelectView: View {
                     }
                     .onTapGesture {
                         viewModel.selectNormalUser()
+                        appState.userType = .normal
                         
                     }
                     .padding(.bottom, 10)
@@ -104,6 +116,7 @@ struct SelectView: View {
                     }//제휴파트너 버튼
                     .onTapGesture {
                         viewModel.selectPartner()
+                        appState.userType = .partner
                     }
                 }//버튼 VStack
                 .padding(.top, 150)
@@ -113,6 +126,7 @@ struct SelectView: View {
     }
 }
 
-#Preview {
-    SelectView()
-}
+//
+//#Preview {
+//    SelectView()
+//}

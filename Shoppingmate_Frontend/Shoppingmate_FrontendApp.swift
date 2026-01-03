@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct Shoppingmate_FrontendApp: App {
+    
+    @StateObject private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
-            SelectView()
+            OnboardingView()
+                .environmentObject(appState)
         }
     }
 }
