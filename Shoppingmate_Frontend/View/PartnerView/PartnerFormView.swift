@@ -13,7 +13,7 @@ struct PartnerFormView: View {
     @State private var name = ""
     @State private var address = ""
     @State private var brn = "" //사업자등록번호
-    @State private var selectedFileURL: URL?
+    @State private var file: URL?
     
     var body: some View {
         ZStack {
@@ -99,9 +99,14 @@ struct PartnerFormView: View {
                     )
                         
                     //파일업로드 버튼
-                    FileUploadView(selectedFileURL: $selectedFileURL)
+                    FileUploadView(selectedFileURL: $file)
                     //신청하기 버튼
-                    SubmitButtonView()
+                    SubmitButtonView(
+                        name: $name,
+                        address: $address,
+                        brn: $brn,
+                        file: $file
+                    )
                 }//입력 목록 VStack
                 Spacer()
             }//HStack
