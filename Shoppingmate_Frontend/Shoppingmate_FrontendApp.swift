@@ -14,8 +14,9 @@ struct Shoppingmate_FrontendApp: App {
 
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
-                .environmentObject(appState)
+//            OnboardingView()
+//                .environmentObject(appState)
+            PartnerView()
         }
     }
 }
