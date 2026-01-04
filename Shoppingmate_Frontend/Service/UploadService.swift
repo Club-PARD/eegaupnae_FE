@@ -18,6 +18,7 @@ final class UploadService {
         // URL 생성
         let baseURL = BaseURL.base.rawValue
         guard let url = URL(string: "\(baseURL)/users/location") else {
+            print("❌ URL 생성 실패")
             throw URLError(.badURL)
         }
         
@@ -30,14 +31,26 @@ final class UploadService {
         request.httpBody = jsonData
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        logRequest(request)
+        
         // 네트워크 요청
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         // 응답 검증
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ HTTPResponse 캐스팅 실패")
             throw URLError(.badServerResponse)
         }
+        print("📥 StatusCode:", httpResponse.statusCode)
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let errorBody = String(data: data, encoding: .utf8) {
+                print("❌ Server Error Body:", errorBody)
+            }
+            throw URLError(.badServerResponse)
+        }
+
+        print("✅ uploadLocation 성공")
     }
     
     //UUID POST
@@ -47,6 +60,7 @@ final class UploadService {
         // URL 생성
         let baseURL = BaseURL.base.rawValue
         guard let url = URL(string: "\(baseURL)/users/login") else {
+            print("❌ URL 생성 실패")
             throw URLError(.badURL)
         }
         
@@ -59,14 +73,80 @@ final class UploadService {
         request.httpBody = jsonData
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        logRequest(request)
+        
         // 네트워크 요청
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         // 응답 검증
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ HTTPResponse 캐스팅 실패")
             throw URLError(.badServerResponse)
         }
+        print("📥 StatusCode:", httpResponse.statusCode)
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let errorBody = String(data: data, encoding: .utf8) {
+                print("❌ Server Error Body:", errorBody)
+            }
+            throw URLError(.badServerResponse)
+        }
+
+        print("✅ uploadUUID 성공")
+    }
+
+    //UUID GET
+    func fetchUserInfo(uuid: String) async throws {
+        // URL 생성
+        let baseURL = BaseURL.base.rawValue
+        guard let url = URL(string: "\(baseURL)/users/{uuid}") else {
+            print("❌ URL 생성 실패")
+            throw URLError(.badURL)
+        }
+        
+        // URLRequest 설정
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        logRequest(request)
+        
+        // 네트워크 요청
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // 응답 검증
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ HTTPResponse 캐스팅 실패")
+            throw URLError(.badServerResponse)
+        }
+        print("📥 StatusCode:", httpResponse.statusCode)
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let errorBody = String(data: data, encoding: .utf8) {
+                print("❌ Server Error Body:", errorBody)
+            }
+            throw URLError(.badServerResponse)
+        }
+
+        if let body = String(data: data, encoding: .utf8) {
+            print("📦 Response Body:", body)
+        }
+
+        print("✅ fetchUserInfo 성공")
+    }
+}
+
+//디버깅용 로그함수
+private func logRequest(_ request: URLRequest) {
+    print("❗️ [REQUEST]")//이 아래부터 요청 로그라는 것 구별
+    print("URL:", request.url?.absoluteString ?? "nil")//request.url: 이 요청이 가는 URL 객체(읽기 쉬운 형태로 변환)
+    print("Method:", request.httpMethod ?? "nil")
+
+    //body가 있으면 출력하고, 없으면 없음 출력
+    if let body = request.httpBody,
+       let bodyString = String(data: body, encoding: .utf8) {
+        print("Body:", bodyString)
+    } else {
+        print("Body: 없음")
     }
 }
 
