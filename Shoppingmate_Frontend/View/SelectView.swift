@@ -15,7 +15,7 @@ enum UserType {
 
 struct SelectView: View {
     @StateObject private var viewModel = SelectViewModel()
-    @EnvironmentObject var appState: AppState
+    //@EnvironmentObject var appState: AppState
     
 //    let onSelect: (UserType) -> Void
 
@@ -78,7 +78,7 @@ struct SelectView: View {
                     }
                     .onTapGesture {
                         viewModel.selectNormalUser()
-                        appState.userType = .normal
+                        //appState.userType = .normal
                         
                     }
                     .padding(.bottom, 10)
@@ -116,7 +116,7 @@ struct SelectView: View {
                     }//제휴파트너 버튼
                     .onTapGesture {
                         viewModel.selectPartner()
-                        appState.userType = .partner
+                        //appState.userType = .partner
                     }
                 }//버튼 VStack
                 .padding(.top, 150)

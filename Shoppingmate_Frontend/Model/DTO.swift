@@ -30,9 +30,9 @@ struct UUIDDTO: Codable {
     let uuid: String
 }
 
-struct PartnerRequestDTO: Codable {
-    let name: String
-    let address: String
-    let brn: String
-    let file: String?
-}
+//struct PartnerRequestDTO: Codable {
+//    let name: String
+//    let address: String
+//    let brn: String
+//    let file: String?
+//}
