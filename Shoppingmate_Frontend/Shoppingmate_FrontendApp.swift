@@ -14,8 +14,7 @@ struct Shoppingmate_FrontendApp: App {
 
     var body: some Scene {
         WindowGroup {
-            //OnboardingView()
-            CameraOCRView()
+            OnboardingView()
         }
     }
 }

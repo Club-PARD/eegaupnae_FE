@@ -12,7 +12,7 @@ import Combine
 final class SelectViewModel: ObservableObject {
     let locationService = LocationService()
     
-    @Published var selectedUserType: UserType? = nil
+    //@Published var selectedUserType: UserType? = nil
     
     enum UserDefaultKey {
         static let isNormalUser = "isNormalUser"
@@ -61,7 +61,7 @@ final class SelectViewModel: ObservableObject {
 //            break
 //        }
         
-        selectedUserType = .normal
+        //selectedUserType = .normal
         
         // 서버 로그인 (추후 연결)
         //loginGuest(uuid: uuid)
@@ -71,7 +71,7 @@ final class SelectViewModel: ObservableObject {
         print("🟢 제휴 파트너 선택됨")
         UserDefaults.standard.set(false, forKey: UserDefaultKey.isNormalUser)
         
-        selectedUserType = .partner
+        //selectedUserType = .partner
     }
 
     /// 디버그용 (선택)
