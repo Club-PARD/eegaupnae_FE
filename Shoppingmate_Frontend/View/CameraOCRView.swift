@@ -38,35 +38,49 @@ struct CameraOCRView: View {
                             .padding()
                     }
                     
-//                   //✅ 찍은 사진 썸네일(스샷처럼)
-//                    if !camera.capturedROIImages.isEmpty {
-//                        ScrollView(.horizontal, showsIndicators: false) {
-//                            HStack(spacing: 8) {
-//                                ForEach(camera.capturedROIImages.indices, id: \.self) { i in
-//                                    Image(uiImage: camera.capturedROIImages[i])
-//                                        .resizable()
-//                                        .scaledToFill()
-//                                        .frame(width: 46, height: 46)
-//                                        .clipped()
-//                                        .cornerRadius(6)
-//                                }
-//                            }
-//                            .padding(.horizontal, 16)
-//                        }
-//                        .frame(height: 56)
-//                    }
+                   //찍은 사진 썸네일(스샷처럼)
+                    if !camera.capturedROIImages.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(camera.capturedROIImages.indices, id: \.self) { i in
+                                    Image(uiImage: camera.capturedROIImages[i])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 46, height: 46)
+                                        .clipped()
+                                        .cornerRadius(6)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        .frame(height: 56)
+                    }
                     
                     Button {
+//                        guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
                         camera.capturePhoto()
                     } label: {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 72, height: 72)
-                            .overlay(
-                                Circle().stroke(.black, lineWidth: 2)
-                            )
+                        ZStack{
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 80, height: 80)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color(red: 0.82, green: 0.84, blue: 0.86), lineWidth: 2)
+                                )
+                                .shadow(color: .black.opacity(0.1), radius: 6, y: 4)
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 64, height: 64)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.black.opacity(0.1), lineWidth: 1)
+                                )
+                        }
                     }
-                    .padding(.bottom, 30)
+//                    .disabled(camera.isProcessing) //연타 시 꼬임 방지
+//                    .opacity(camera.isProcessing ? 0.6 : 1.0) //(선택) 비활성 시 시각 피드백
+                    .padding(.bottom, 40)
                 }
                 
                 //사진 이동 체크 버튼
@@ -75,11 +89,10 @@ struct CameraOCRView: View {
                     HStack {
                         Spacer()
                         Button {
-//                            //✅ 누적된 사진이 1장이라도 있으면 이동
-//                            if !camera.capturedROIImages.isEmpty {
-//                                goResult = true
-//                            }
-                            if camera.croppedROIImage != nil {
+//                            guard !camera.isProcessing else { return } //연타 시 꼬임 방지
+//                            guard !camera.capturedROIImages.isEmpty else { return }
+//                            goResult = true
+                            if !camera.capturedROIImages.isEmpty {
                                 goResult = true
                             }
                         } label: {
@@ -90,36 +103,47 @@ struct CameraOCRView: View {
                                 .clipShape(Circle())
                         }
                         .padding()
-                        .disabled(camera.croppedROIImage == nil) // ROI 이미지 없으면 비활성 
+//                        .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
+//                        .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
+                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
                     }
                 }
                 
                 // 결과 표시
-                if !camera.recognizedText.isEmpty {
-                    VStack {
-                        Spacer()
-                        Text(camera.recognizedText)
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(12)
-                            .padding()
-                    }
-                }
+//                if !camera.recognizedText.isEmpty {
+//                    VStack {
+//                        Spacer()
+//                        Text(camera.recognizedText)
+//                            .padding()
+//                            .background(.ultraThinMaterial)
+//                            .cornerRadius(12)
+//                            .padding()
+//                    }
+//                }
                 
             } //ZStack
             .navigationDestination(isPresented: $goResult) {
-                if let img = camera.croppedROIImage { //잘린 이미지 MyView로 전달
-                    PhotoReviewView(image: img)
-                }
+                RecognitionResultView(
+                    products: makeProducts(from: camera.capturedROIImages)
+                )
             }
-            
-//            //✅ 체크 누르면 "누적된 이미지들"을 한 번에 보여주는 화면으로 이동
-//            .navigationDestination(isPresented: $goResult) {
-//                CapturedPhotosView(images: camera.capturedROIImages)
-//            }
-            
             .onAppear { camera.startSession() }
             .onDisappear { camera.stopSession() }
         }
     }
+    
+    private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {
+        images.map { image in
+            RecognizedProduct(
+                image: image,
+                badge: "Best 가성비",
+                brand: "피죤",
+                name: "피죤 실내건조 섬유유연제 라벤더향",
+                amount: "2.5L",
+                price: "12,800원",
+                perUse: "1회당 40원"
+            )
+        }
+    }
 }
+

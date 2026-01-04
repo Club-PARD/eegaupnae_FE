@@ -16,14 +16,15 @@ final class CameraManager: NSObject, ObservableObject {
     private let locationService = LocationService()
     private let uploadService = UploadService()
     private var capturedLocation: CLLocation?
+    private var isConfigured = false //카메라 최초 세팅 완료 여부
     
     // SwiftUI에서 관찰할 상태
     @Published var recognizedText: String = "" //OCR 결과 출력
     @Published var isProcessing = false //OCR 로딩 중
-    @Published var croppedROIImage: UIImage? = nil // ROI로 잘린 이미지 저장 변수
-    //    //✅
-    //    @Published var capturedROIImages: [UIImage] = []   // 여러 장 누적 저장
-    //    @Published var capturedTexts: [String] = []        // OCR 누적
+    @Published var croppedROIImage: UIImage? = nil // ROI로 잘린 이미지 저장 변수 (찍으면 업데이트)
+    
+    @Published var capturedROIImages: [UIImage] = []   // 사진 여러 장 누적 저장
+    @Published var capturedTexts: [String] = []        // OCR 누적
     
     // 카메라 세션
     let session = AVCaptureSession()
@@ -50,41 +51,83 @@ final class CameraManager: NSObject, ObservableObject {
     }
     
     // MARK: - Session 설정
+        func configureSession() { // 카메라 세션 최초 세팅 1회 후 유지
+        guard !isConfigured else { return } //세팅이 되어있을 시 return
+
+        session.beginConfiguration() // 카메라 설정 시작
+        session.sessionPreset = .photo //사진 촬영 최적화 프리셋
+            
+        // 카메라 디바이스
+        guard
+            // 후면 카메라 가져오기
+            let device = AVCaptureDevice.default(.builtInWideAngleCamera, //후면 카메라 사용 디버그
+                                                 for: .video,
+                                                 position: .back),
+            let input = try? AVCaptureDeviceInput(device: device),
+            // 카메라를 세션 입력으로 연결
+            session.canAddInput(input)
+        else {
+            print("❌ Camera input error")
+            session.commitConfiguration() //설정 완료
+            return
+        }
+        session.addInput(input)
+
+        guard session.canAddOutput(photoOutput) else { //사진 찍기 전용 출력
+            print("❌ Photo output error")
+            session.commitConfiguration()
+            return
+        }
+        session.addOutput(photoOutput) //카메라&사진 연결 파이프
+
+        session.commitConfiguration() //설정 완료
+        isConfigured = true
+    }
+    
     func startSession() {
         sessionQueue.async { //세션 제어용 전용 큐 백그라운드에서
-            if self.session.isRunning { return }//중복 실행 방지
-            
-            self.session.beginConfiguration() // 카메라 설정 시작
-            
-            self.session.sessionPreset = .photo //사진 촬영 최적화 프리셋
-            
-            // 카메라 디바이스
-            guard
-                // 후면 카메라 가져오기
-                let device = AVCaptureDevice.default(.builtInWideAngleCamera, //후면 카메라 사용 디버그
-                                                     for: .video,
-                                                     position: .back),
-                let input = try? AVCaptureDeviceInput(device: device),
-                // 카메라를 세션 입력으로 연결
-                self.session.canAddInput(input)
-            else {
-                print("❌ Camera input error")
-                return
-            }
-            
-            self.session.addInput(input) //인풋 확인 디버그
-            
-            guard self.session.canAddOutput(self.photoOutput) else { //사진 찍기 전용 출력
-                print("❌ Photo output error")
-                return
-            }
-            
-            self.session.addOutput(self.photoOutput) //카메라&사진 연결 파이프
-            
-            self.session.commitConfiguration() //설정 완료
-            self.session.startRunning() // 카메라 켜짐
+            self.configureSession()
+            guard !self.session.isRunning else { return }
+            self.session.startRunning()
         }
     }
+
+
+//    func startSession() {
+//        sessionQueue.async { //세션 제어용 전용 큐 백그라운드에서
+//            if self.session.isRunning { return }//중복 실행 방지
+//            
+//            self.session.beginConfiguration() // 카메라 설정 시작
+//            
+//            self.session.sessionPreset = .photo //사진 촬영 최적화 프리셋
+//            
+//            // 카메라 디바이스
+//            guard
+//                // 후면 카메라 가져오기
+//                let device = AVCaptureDevice.default(.builtInWideAngleCamera, //후면 카메라 사용 디버그
+//                                                     for: .video,
+//                                                     position: .back),
+//                let input = try? AVCaptureDeviceInput(device: device),
+//                // 카메라를 세션 입력으로 연결
+//                self.session.canAddInput(input)
+//            else {
+//                print("❌ Camera input error")
+//                return
+//            }
+//            
+//            self.session.addInput(input)
+//            
+//            guard self.session.canAddOutput(self.photoOutput) else { //사진 찍기 전용 출력
+//                print("❌ Photo output error")
+//                return
+//            }
+//            
+//            self.session.addOutput(self.photoOutput) //카메라&사진 연결 파이프
+//            
+//            self.session.commitConfiguration() //설정 완료
+//            self.session.startRunning() // 카메라 켜짐
+//        }
+//    }
     
     func stopSession() {
         sessionQueue.async {
@@ -255,26 +298,22 @@ final class CameraManager: NSObject, ObservableObject {
                     
                     await MainActor.run {
                         //ROI 박스랑 같은 사이즈로 리사이즈
-                        let s = layer.contentsScale   // 보통 2.0 / 3.0
+                        let scale = layer.contentsScale   // 보통 2.0 / 3.0
                         let targetSize = CGSize(
-                            width: roi.width * s,
-                            height: roi.height * s
+                            width: roi.width * scale,
+                            height: roi.height * scale
                         )
                         
-                        //                            //✅ 멀티샷: "마지막 1장" + "누적 저장" 둘 다 처리
-                        //                            if let cropped {
-                        //                                let resized = cropped.resized(to: targetSize)
-                        //                                self.croppedROIImage = resized              // 마지막 1장 미리보기
-                        //                                self.capturedROIImages.append(resized)      // 누적 저장
-                        //                            }
-                        //
-                        //                            self.recognizedText = text                    // 마지막 OCR
-                        //                            if !text.isEmpty {
-                        //                                self.capturedTexts.append(text)           // OCR 누적
-                        //                            }
+                        if let cropped {
+                            let resized = cropped.resized(to: targetSize) //리사이즈 적용
+                            self.croppedROIImage = resized                // 마지막 1장
+                            self.capturedROIImages.append(resized)        // 이미지 누적
+                        }
                         
-                        self.croppedROIImage = cropped?.resized(to: targetSize) // 리사이즈 적용
-                        self.recognizedText = text
+                        self.recognizedText = text                    // 마지막 OCR
+                        if !text.isEmpty {
+                            self.capturedTexts.append(text)           // OCR 누적
+                        }
                         self.isProcessing = false
                     }
                 }
