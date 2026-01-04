@@ -14,7 +14,7 @@ struct FileUploadView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("증빙서류 제출(Excel, PDF)")
+            Text("행사정보 제출 (Excel)")
                 .font(.system(size: 14))
                 .foregroundColor(Color(red:10/255, green: 10/255, blue: 10/255))
                 .padding(.top, 10)
@@ -41,7 +41,7 @@ struct FileUploadView: View {
                             Text("클릭하여 파일 업로드")
                                 .font(.system(size: 14))
                                 .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
-                            Text("사업자등록증 또는 관련 서류")
+                            Text("행사정보 제출")
                                 .font(.system(size: 11))
                                 .foregroundColor(Color(red:153/255, green: 161/255, blue: 175/255))
                                 .padding(1)
