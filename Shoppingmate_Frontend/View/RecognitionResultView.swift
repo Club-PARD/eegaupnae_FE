@@ -34,32 +34,32 @@ struct RecognitionResultView: View {
             .background(Color.white)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            .toolbarBackground(Color(white: 0.92), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+//            .toolbarBackground(Color(white: 0.92), for: .navigationBar)
+//            .toolbarBackground(.visible, for: .navigationBar)
         
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(.black)
+                    HStack(spacing:3){
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.black)
+                        }
+                        Text("인식 결과")
+                            .font(.custom("Arial-BoldMT", size: 17))
                     }
                 }
-
-                ToolbarItem(placement: .principal) {
-                    Text("인식 결과")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.black)
-                }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Text(productCountText)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(Color.black.opacity(0.55))
+                        .font(.custom("Arial", size: 16).weight(.bold))
+                        .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
                 }
             } //.toolbar
+            .safeAreaInset(edge: .top) { // 툴바 경계선
+                Divider()
+            }
         Spacer()
     }
 }

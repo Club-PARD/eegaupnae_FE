@@ -126,8 +126,9 @@ struct CameraOCRView: View {
                 products: makeProducts(from: camera.capturedROIImages)
             )
         }
+        .navigationBarBackButtonHidden(true)
         .onAppear { camera.startSession() }
-        .onDisappear { camera.stopSession() }
+//        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
     } // var body
     
     private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {

@@ -33,7 +33,7 @@ struct ProductCardView: View {
                 
                     if let badge = product.badge {
                         Text(badge)
-                            .font(.custom("Arial", size: 9.5).weight(.bold))
+                            .font(.custom("Arial-BoldMT", size: 9.5))
                             .foregroundColor(.white)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 3)
@@ -46,7 +46,7 @@ struct ProductCardView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(product.brand)
-                    .font(.custom("Arial", size: 11).weight(.bold))
+                    .font(.custom("Arial-BoldMT", size: 11))
                     .foregroundColor(Color(red: 0.42, green: 0.45, blue: 0.51))
                     .padding(.leading, 5)
                 
@@ -64,7 +64,7 @@ struct ProductCardView: View {
                 
                 HStack(alignment: .center, spacing: 1) {
                     Text(product.price)
-                        .font(.custom("Arial", size: 18).weight(.bold))
+                        .font(.custom("Arial-BoldMT", size: 18))
                         .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                         .padding(.leading, 5)
                         .padding(.trailing,3.47)
