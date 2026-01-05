@@ -11,8 +11,6 @@ final class UploadService {
     
     //사용자 좌표 POST
     func uploadLocation(
-        //imageData: Data,
-        //recognizedText: String,
         location: LocationDTO?
     ) async throws {
         // URL 생성
@@ -96,6 +94,7 @@ final class UploadService {
     }
 
     //UUID GET
+    //이거 아직 호출 안함. 어디서 get할건지 정하기
     func fetchUserInfo(uuid: String) async throws {
         // URL 생성
         let baseURL = baseURL.base.rawValue
@@ -133,6 +132,8 @@ final class UploadService {
 
         print("✅ fetchUserInfo 성공")
     }
+    
+    //위치정보 UPDATE
 }
 
 //디버깅용 로그함수

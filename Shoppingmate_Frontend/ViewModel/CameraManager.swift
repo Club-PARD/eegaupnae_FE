@@ -8,14 +8,11 @@ import AVFoundation
 import Vision
 import UIKit
 import Combine//@Published (ObservableObject용)
-import CoreLocation
 
 //@MainActor
 final class CameraManager: NSObject, ObservableObject {
     
-    private let locationService = LocationService()
     private let uploadService = UploadService()
-    private var capturedLocation: CLLocation?
     private var isConfigured = false //카메라 최초 세팅 완료 여부
     
     // SwiftUI에서 관찰할 상태
@@ -146,54 +143,6 @@ final class CameraManager: NSObject, ObservableObject {
         }
     }
     
-    func sendToServer(imageData: Data) {
-        let locationDTO = capturedLocation?.toDTO()
-        
-        Task {
-            try await uploadService.uploadLocation(
-                //                imageData: imageData,
-                //                recognizedText: recognizedText,
-                location: locationDTO
-            )
-        }
-    }
-    
-    func debugPrintLocation() {
-        if let location = capturedLocation {
-            print("📍 latitude:", location.coordinate.latitude)
-            print("📍 longitude:", location.coordinate.longitude)
-        } else {
-            print("❌ location is nil")
-        }
-    }
-    
-    func debugPrintLocationDTO() {
-        guard let dto = capturedLocation?.toDTO() else {
-            print("❌ LocationDTO is nil")
-            return
-        }
-        
-        print("📦 LocationDTO")
-        print(" - latitude:", dto.latitude)
-        print(" - longitude:", dto.longitude)
-    }
-    
-    func sendLocationToServer() {
-        guard let locationDTO = capturedLocation?.toDTO() else {
-            print("❌ locationDTO is nil")
-            return
-        }
-        
-        Task {
-            do {
-                try await uploadService.uploadLocation(location: locationDTO)
-                print("✅ location upload success")
-            } catch {
-                print("🚨 location upload failed:", error)
-            }
-        }
-    }
-    
     // MARK: - 사진 촬영
     func capturePhoto() {
         sessionQueue.async { //촬영 전용 큐
@@ -211,7 +160,6 @@ final class CameraManager: NSObject, ObservableObject {
             
             Task { @MainActor in //촬영
                 self.isProcessing = true //촬영 + OCR 처리
-                //self.locationService.start()
                 
                 // 촬영 순간에 previewLayer.bounds 기준으로 ROI를 강제 계산
                 if let layer = self.previewLayer {
@@ -269,11 +217,6 @@ final class CameraManager: NSObject, ObservableObject {
                     self.isProcessing = false
                     return
                 }
-                
-                self.capturedLocation = self.locationService.currentLocation
-                self.debugPrintLocation()
-                self.debugPrintLocationDTO()
-                self.sendLocationToServer()
                 
                 let layer = self.previewLayer
                 let roi = self.roiLayerRect //촬영 순간 ROI 고정

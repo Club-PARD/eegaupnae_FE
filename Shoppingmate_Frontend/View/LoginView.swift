@@ -55,7 +55,7 @@ struct LoginView: View {
                                   .foregroundColor(.white)
                             }//zstack
                             .onTapGesture {
-                                viewModel.selectNormalUser()
+                                viewModel.guestLogin()
                                 goToLocation = true
                                 //appState.userType = .normal
                             }

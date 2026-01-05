@@ -41,45 +41,42 @@ struct LocationBottomSheet: View {
             .padding(.vertical, 23)
             
             HStack {
-                HStack(alignment: .center, spacing: 0) {
-                    Button {
-                        onCurrentLocationTap()
-                    } label: {
-                        Text("다른 위치")
-                          .font(
-                            Font.custom("Arial", size: 16)
-                              .weight(.bold)
-                          )
-                          .multilineTextAlignment(.center)
-                          .foregroundColor(Color(red: 0.29, green: 0.33, blue: 0.4))
-                    }
+                //"다른 위치" 버튼
+                Button {
+                    onCurrentLocationTap()
+                } label: {
+                    Text("다른 위치")
+                      .font(
+                        Font.custom("Arial", size: 16)
+                          .weight(.bold)
+                      )
+                      .multilineTextAlignment(.center)
+                      .foregroundColor(Color(red: 0.29, green: 0.33, blue: 0.4))
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 13)
                 .frame(height: 52, alignment: .center)
                 .background(Color(red: 0.95, green: 0.96, blue: 0.96))
                 .cornerRadius(14)
-                
-                HStack(alignment: .center, spacing: 0) {
-                    Button {
-                        onConfirmTap()
-                    } label: {
-                        Text("이 위치가 맞아요")
-                          .font(
-                            Font.custom("Arial", size: 16)
-                              .weight(.bold)
-                          )
-                          .multilineTextAlignment(.center)
-                          .foregroundColor(.white)
-                    }
+
+                //"이 위치가 맞아요" 버튼
+                Button {
+                    onConfirmTap()
+                } label: {
+                    Text("이 위치가 맞아요")
+                      .font(
+                        Font.custom("Arial", size: 16)
+                          .weight(.bold)
+                      )
+                      .multilineTextAlignment(.center)
+                      .foregroundColor(.white)
                 }
                 .padding(.horizontal, 55)
                 .padding(.vertical, 13)
                 .frame(width: 221, height: 52, alignment: .center)
                 .background(Color(red: 0.25, green: 0.28, blue: 0.61))
                 .cornerRadius(14)
-
-            }
+            }//hstack
         }
         .frame(maxWidth: .infinity)
         .padding()
@@ -90,7 +87,6 @@ struct LocationBottomSheet: View {
         .padding(.bottom, 8)
     }
 }
-
 #Preview {
     LocationBottomSheet(
         address: "하나로마트 양덕점",
