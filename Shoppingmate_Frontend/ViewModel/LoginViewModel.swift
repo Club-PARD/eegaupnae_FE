@@ -1,5 +1,5 @@
 //
-//  SelectViewModel.swift
+//  LoginViewModel.swift
 //  Shoppingmate_Frontend
 //
 //  Created by 손채원 on 12/31/25.
@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 import Combine
 
-final class SelectViewModel: ObservableObject {
+final class LoginViewModel: ObservableObject {
     let locationService = LocationService()
     
     //@Published var selectedUserType: UserType? = nil
@@ -42,26 +42,6 @@ final class SelectViewModel: ObservableObject {
         // UUID 생성
         let uuid = getOrCreateUUID()
         print("🆔 UUID:", uuid)
-
-//        let status = locationService.authorizationStatus
-//
-//        switch status {
-//        case .notDetermined:
-//            print("🟡 권한 요청")
-//            locationService.requestPermission()
-//
-//        case .authorizedWhenInUse, .authorizedAlways:
-//            print("🟢 위치 업데이트 시작")
-//            //locationService.start()
-//
-//        case .denied, .restricted:
-//            print("❌ 위치 권한 거부됨")
-//
-//        @unknown default:
-//            break
-//        }
-        
-        //selectedUserType = .normal
         
         // 서버 로그인 (추후 연결)
         //loginGuest(uuid: uuid)

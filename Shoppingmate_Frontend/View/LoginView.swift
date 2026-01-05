@@ -1,5 +1,5 @@
 //
-//  SelectView.swift
+//  LoginView.swift
 //  Shoppingmate_Frontend
 //
 //  Created by 손채원 on 12/30/25.
@@ -13,9 +13,9 @@ enum UserType {
     case partner
 }
 
-struct SelectView: View {
-    @StateObject private var viewModel = SelectViewModel()
-    @State private var goToCamera = false
+struct LoginView: View {
+    @StateObject private var viewModel = LoginViewModel()
+    @State private var goToLocation = false
 
     var body: some View {
         NavigationStack {
@@ -56,7 +56,7 @@ struct SelectView: View {
                             }//zstack
                             .onTapGesture {
                                 viewModel.selectNormalUser()
-                                goToCamera = true
+                                goToLocation = true
                                 //appState.userType = .normal
                             }
                         }//hstack
@@ -69,8 +69,8 @@ struct SelectView: View {
                     //Spacer()
                 }//vstack
             }//zstack
-            .navigationDestination(isPresented: $goToCamera) {
-                CameraOCRView()
+            .navigationDestination(isPresented: $goToLocation) {
+                LocationSelectView()
             }
         }//navigationstack
     }
@@ -78,5 +78,5 @@ struct SelectView: View {
 
 //
 //#Preview {
-//    SelectView()
+//    LoginView()
 //}

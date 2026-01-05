@@ -14,7 +14,7 @@ struct Shoppingmate_FrontendApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SelectView()
+            LocationSelectView()
         }
     }
 }
