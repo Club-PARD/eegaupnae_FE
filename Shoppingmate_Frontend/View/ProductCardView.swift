@@ -10,9 +10,8 @@ import SwiftUI
 struct ProductCardView: View {
     let product: RecognizedProduct
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-//            Spacer().frame(height: 64)
+    var body: some View { //레전드 조정 완료
+        VStack(alignment: .leading, spacing: 6) {
             
             ZStack(alignment: .topLeading) {
                 GeometryReader { geo in
@@ -24,41 +23,30 @@ struct ProductCardView: View {
                                 width: geo.size.width, //사진 박스 크기
                                 height: geo.size.width
                             )
-                            .clipped() // 넘치는 부분 잘라냄
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-//                            .overlay {
-//                                RoundedRectangle(cornerRadius: 12)
-//                                    .stroke(.yellow, lineWidth: 3) // ROI 테두리 느낌
-//                            }
                             .background(
                                 RoundedRectangle(cornerRadius: 8.68)
-                                    .fill(Color(red: 0.95, green: 0.96, blue: 0.96))
-                                          
+                                    .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
                             )
                     }
-                    
                 }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
-//                .frame(height: 100) // 카드 이미지 높이 고정
                 
-                    
                     if let badge = product.badge {
                         Text(badge)
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(Color.black)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .font(.custom("Arial", size: 9.5).weight(.bold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 3)
+                            .background(Color(red: 0.28, green: 0.11, blue: 0.96))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.top, 6)
+                            .padding(.leading, 6)
                     }
-            }
+            } // ZStack badge
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(product.brand)
-                    .font(
-                        Font.custom("Arial", size: 11)
-                            .weight(.bold)
-                    )
+                    .font(.custom("Arial", size: 11).weight(.bold))
                     .foregroundColor(Color(red: 0.42, green: 0.45, blue: 0.51))
                     .padding(.leading, 5)
                 
@@ -73,14 +61,10 @@ struct ProductCardView: View {
                     .font(Font.custom("Arial", size: 11))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
-                    .frame(width: 165, alignment: .topLeading)
                 
                 HStack(alignment: .center, spacing: 1) {
                     Text(product.price)
-                        .font(
-                            Font.custom("Arial", size: 18)
-                                .weight(.bold)
-                        )
+                        .font(.custom("Arial", size: 18).weight(.bold))
                         .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                         .padding(.leading, 5)
                         .padding(.trailing,3.47)
@@ -94,7 +78,7 @@ struct ProductCardView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 3))
                         )
                 }
-            }
-        }
+            } // VStack text
+        } // VStack all
     }
 }

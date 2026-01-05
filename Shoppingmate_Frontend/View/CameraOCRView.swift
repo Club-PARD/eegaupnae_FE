@@ -14,7 +14,7 @@ struct CameraOCRView: View {
 
     var body: some View {
         ZStack {
-            
+    
             // 카메라 프리뷰
             CameraPreview(session: camera.session) { layer in
                 camera.previewLayer = layer
@@ -28,11 +28,11 @@ struct CameraOCRView: View {
                     .allowsHitTesting(false)
             }
             
-            // 하단 버튼
+            // 하단 버튼 구역
             VStack {
                 Spacer()
                 
-                if camera.isProcessing {
+                if camera.isProcessing { //로딩 표시
                     ProgressView("OCR 중...")
                         .padding()
                 }
@@ -55,7 +55,7 @@ struct CameraOCRView: View {
                     .frame(height: 56)
                 }
                 
-                Button {
+                Button { //카메라 버튼
 //                        guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
                     camera.capturePhoto()
                 } label: {
@@ -80,7 +80,7 @@ struct CameraOCRView: View {
 //                    .disabled(camera.isProcessing) //연타 시 꼬임 방지
 //                    .opacity(camera.isProcessing ? 0.6 : 1.0) //(선택) 비활성 시 시각 피드백
                 .padding(.bottom, 40)
-            }
+            } // VStack 카메라 버튼
             
             //사진 이동 체크 버튼
             VStack {
@@ -128,14 +128,13 @@ struct CameraOCRView: View {
         }
         .onAppear { camera.startSession() }
         .onDisappear { camera.stopSession() }
-    
-    }
+    } // var body
     
     private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {
         images.map { image in
             RecognizedProduct(
                 image: image,
-                badge: "Best 가성비",
+                badge: "BEST 가성비",
                 brand: "피죤",
                 name: "피죤 실내건조 섬유유연제 라벤더향",
                 amount: "2.5L",
@@ -144,5 +143,5 @@ struct CameraOCRView: View {
             )
         }
     }
-}
+} // struct View
 

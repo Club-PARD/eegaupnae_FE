@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct RecognitionResultView: View {
-
-    // ✅ 부모가 닫는 방법을 결정 (sheet면 false로, navigation이면 pop 로직으로 연결)
-//    @Binding var isPresented: Bool
-
+    
+    @Environment(\.dismiss) private var dismiss // 커스텀 뒤로가기
     let products: [RecognizedProduct]
     
-    private let columns = [
-        GridItem(.flexible(), spacing: 18),
-        GridItem(.flexible(), spacing: 18)
+    private let columns = [ //2행 정렬
+        GridItem(.flexible(), spacing: 14),
+        GridItem(.flexible(), spacing: 14)
     ]
 
     private var productCountText: String {
@@ -25,27 +23,29 @@ struct RecognitionResultView: View {
     
     var body: some View {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 26.73) {
+                LazyVGrid(columns: columns, spacing: 20.29) {
                     ForEach(products) { product in
                         ProductCardView(product: product)
                     }
                 }
-                .padding(.horizontal, 17.44)
-                .padding(.top, 64)
-            }
+                .padding(.horizontal, 21)
+                .padding(.top, 76)
+            } //ScrollView
             .background(Color.white)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
             .toolbarBackground(Color(white: 0.92), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+        
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-//                    Button {
-//                        isPresented = false
-//                    } label: {
-//                        Image(systemName: "chevron.left")
-//                            .font(.system(size: 18, weight: .semibold))
-//                            .foregroundStyle(.black)
-//                    }
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.black)
+                    }
                 }
 
                 ToolbarItem(placement: .principal) {
@@ -59,7 +59,7 @@ struct RecognitionResultView: View {
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(Color.black.opacity(0.55))
                 }
-            }
+            } //.toolbar
         Spacer()
     }
 }
