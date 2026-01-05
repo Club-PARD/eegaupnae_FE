@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CameraOCRView: View {
-
     @StateObject private var camera = CameraManager()
     @State private var goResult = false //결과 화면 이동 여부
 
@@ -37,7 +36,7 @@ struct CameraOCRView: View {
                         .padding()
                 }
                 
-               //찍은 사진 썸네일(스샷처럼)
+               //찍은 사진 썸네일 표시
                 if !camera.capturedROIImages.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
@@ -54,73 +53,87 @@ struct CameraOCRView: View {
                     }
                     .frame(height: 56)
                 }
-                
-                Button { //카메라 버튼
-//                        guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
-                    camera.capturePhoto()
-                } label: {
-                    ZStack{
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 80, height: 80)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color(red: 0.82, green: 0.84, blue: 0.86), lineWidth: 2)
-                            )
-                            .shadow(color: .black.opacity(0.1), radius: 6, y: 4)
-                        Circle()
-                            .fill(Color.white)
-                            .frame(width: 64, height: 64)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.black.opacity(0.1), lineWidth: 1)
-                            )
-                    }
-                }
-//                    .disabled(camera.isProcessing) //연타 시 꼬임 방지
-//                    .opacity(camera.isProcessing ? 0.6 : 1.0) //(선택) 비활성 시 시각 피드백
-                .padding(.bottom, 40)
-            } // VStack 카메라 버튼
-            
-            //사진 이동 체크 버튼
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button {
-//                            guard !camera.isProcessing else { return } //연타 시 꼬임 방지
-//                            guard !camera.capturedROIImages.isEmpty else { return }
-//                            goResult = true
-                        if !camera.capturedROIImages.isEmpty {
-                            goResult = true
-                        }
+                ZStack{
+                    Button { //카메라 버튼
+                        // guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
+                        camera.capturePhoto()
                     } label: {
-                        Image(systemName: "checkmark")
-                            .font(.title2)
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
+                        ZStack{
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: Color(red: 0.25, green: 0.28, blue: 0.61), location: 0.0),
+                                            .init(color: Color(red: 0.66, green: 0.68, blue: 1.0), location: 1.0)
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: 80, height: 80)
+                                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 4)
+                                .shadow(color: .black.opacity(0.1), radius: 7.5, x: 0, y: 10)
+                                .overlay(
+                                    Circle()
+                                        .inset(by: 2)
+                                        .stroke(.white, lineWidth: 4)
+                                )
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 64, height: 64)
+                        }
                     }
-                    .padding()
-//                        .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
-//                        .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
-                    .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
-                }
-            }
+                        // .disabled(camera.isProcessing) //연타 시 꼬임 방지
+                        // .opacity(camera.isProcessing ? 0.6 : 1.0) //(선택) 비활성 시 시각 피드백
+                    
+                    HStack(alignment: .center) { //check button
+                        Spacer()
+                        Button { //사진 이동 체크 버튼
+                                //   guard !camera.isProcessing else { return } //연타 시 꼬임 방지
+                                //   guard !camera.capturedROIImages.isEmpty else { return }
+                                //   goResult = true
+                            if !camera.capturedROIImages.isEmpty {
+                                goResult = true
+                            }
+                        } label: {
+                            Image("Check")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 26, height: 26)
+                                .padding(11)
+                                .background(
+                                      camera.capturedROIImages.isEmpty
+                                      ? Color(red: 0.4, green: 0.4, blue: 0.4)
+                                      : Color(red: 0.25, green: 0.28, blue: 0.61)
+                                  )
+                                .clipShape(Circle())
+                        }
+                            // .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
+                            // .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
+                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+                        .padding(.trailing, 20) // 우측 여백
+                        
+                    } //HStack 체크 버튼
+                } // ZStack buttons
+                .padding(.bottom, 33) // bottom safearea 34pt
+                
+            } // VStack 하단 버튼 구역
             
-            // 결과 표시
-//                if !camera.recognizedText.isEmpty {
-//                    VStack {
-//                        Spacer()
-//                        Text(camera.recognizedText)
-//                            .padding()
-//                            .background(.ultraThinMaterial)
-//                            .cornerRadius(12)
-//                            .padding()
-//                    }
+            
+//            // 결과 표시
+//            if !camera.recognizedText.isEmpty {
+//                VStack {
+//                    Spacer()
+//                    Text(camera.recognizedText)
+//                        .padding()
+//                        .background(.ultraThinMaterial)
+//                        .cornerRadius(12)
+//                        .padding()
 //                }
+//            }
+           
             
-        } //ZStack
+        } //ZStack all
         .navigationDestination(isPresented: $goResult) {
             RecognitionResultView(
                 products: makeProducts(from: camera.capturedROIImages)
@@ -128,7 +141,7 @@ struct CameraOCRView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear { camera.startSession() }
-//        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
+        //        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
     } // var body
     
     private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {
@@ -145,4 +158,3 @@ struct CameraOCRView: View {
         }
     }
 } // struct View
-
