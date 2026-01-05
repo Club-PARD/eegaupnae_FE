@@ -16,7 +16,7 @@ final class UploadService {
         location: LocationDTO?
     ) async throws {
         // URL 생성
-        let baseURL = BaseURL.base.rawValue
+        let baseURL = baseURL.base.rawValue
         guard let url = URL(string: "\(baseURL)/users/location") else {
             print("❌ URL 생성 실패")
             throw URLError(.badURL)
@@ -58,7 +58,7 @@ final class UploadService {
         uuid: UUIDDTO?
     ) async throws {
         // URL 생성
-        let baseURL = BaseURL.base.rawValue
+        let baseURL = baseURL.base.rawValue
         guard let url = URL(string: "\(baseURL)/users/login") else {
             print("❌ URL 생성 실패")
             throw URLError(.badURL)
@@ -98,7 +98,7 @@ final class UploadService {
     //UUID GET
     func fetchUserInfo(uuid: String) async throws {
         // URL 생성
-        let baseURL = BaseURL.base.rawValue
+        let baseURL = baseURL.base.rawValue
         guard let url = URL(string: "\(baseURL)/users/{uuid}") else {
             print("❌ URL 생성 실패")
             throw URLError(.badURL)

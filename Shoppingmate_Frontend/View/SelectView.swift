@@ -43,80 +43,95 @@ struct SelectView: View {
                     }
                     VStack {
                         //일반 사용자 버튼
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 13)
-                                .fill(Color.white)
-                                .frame(width: 362, height: 95)
-                                .overlay(//테두리
-                                    RoundedRectangle(cornerRadius: 13)
-                                        .stroke(
-                                            Color.black.opacity(0.1),
-                                            lineWidth: 1
-                                        )
-                                )
-                            HStack {
-                                Image("Person")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                VStack(alignment:.leading) {
-                                    Text("일반 사용자")
-                                        .foregroundColor(Color.black)
-                                        .font(.system(size: 17))
-                                        .fontWeight(.bold)
-                                        .padding(.bottom, 1)
-                                    Text("마트에서 똑똑하게 쇼핑하고 싶어요.")
-                                        .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
-                                        .font(.system(size: 14))
-                                        .fontWeight(.regular)
-                                }
-                                .padding(10)
-                                Spacer()
+                        HStack(alignment: .center, spacing: 8) {
+                            ZStack {
+                                Text("게스트 로그인")
+                                  .font(
+                                    Font.custom("Arial", size: 16)
+                                      .weight(.bold)
+                                  )
+                                  .multilineTextAlignment(.center)
+                                  .foregroundColor(.white)
+    //                            RoundedRectangle(cornerRadius: 13)
+    //                                .fill(Color.white)
+    //                                .frame(width: 362, height: 95)
+    //                                .overlay(//테두리
+    //                                    RoundedRectangle(cornerRadius: 13)
+    //                                        .stroke(
+    //                                            Color.black.opacity(0.1),
+    //                                            lineWidth: 1
+    //                                        )
+    //                                )
+    //                            HStack {
+    //                                Image("Person")
+    //                                    .resizable()
+    //                                    .frame(width: 50, height: 50)
+    //                                VStack(alignment:.leading) {
+    //                                    Text("일반 사용자")
+    //                                        .foregroundColor(Color.black)
+    //                                        .font(.system(size: 17))
+    //                                        .fontWeight(.bold)
+    //                                        .padding(.bottom, 1)
+    //                                    Text("마트에서 똑똑하게 쇼핑하고 싶어요.")
+    //                                        .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
+    //                                        .font(.system(size: 14))
+    //                                        .fontWeight(.regular)
+    //                                }
+    //                                .padding(10)
+    //                                Spacer()
+    //                            }
+    //                            .padding(.horizontal, 50)
+                                
+                            }//zstack
+                            .onTapGesture {
+                                viewModel.selectNormalUser()
+                                goToCamera = true
+                                //appState.userType = .normal
                             }
-                            .padding(.horizontal, 50)
-                            
-                        }
-                        .onTapGesture {
-                            viewModel.selectNormalUser()
-                            goToCamera = true
-                            //appState.userType = .normal
+                        }//hstack
+                        .padding(0)
+                        .frame(width: 362, height: 55, alignment: .center)
+                        .background(Color(red: 0.25, green: 0.28, blue: 0.61))
+                        .cornerRadius(12)
+                        
                             
                         }
                         .padding(.bottom, 10)
                         //제휴 파트너 버튼
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 13)
-                                .fill(Color.white)
-                                .frame(width: 362, height: 95)
-                                .overlay(//테두리
-                                    RoundedRectangle(cornerRadius: 13)
-                                        .stroke(
-                                            Color.black.opacity(0.1),
-                                            lineWidth: 1
-                                        )
-                                )
-                            HStack {
-                                Image("Store")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                VStack(alignment:.leading) {
-                                    Text("제휴 파트너")
-                                        .foregroundColor(Color.black)
-                                        .font(.system(size: 17))
-                                        .fontWeight(.bold)
-                                        .padding(.bottom, 1)
-                                    Text("우리 마트를 홍보하고 싶어요.")
-                                        .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
-                                        .font(.system(size: 14))
-                                        .fontWeight(.regular)
-                                }
-                                .padding(10)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 50)
-                        }//제휴파트너 버튼
-                        .onTapGesture {
-                            viewModel.selectPartner()
-                            //appState.userType = .partner
+//                        ZStack {
+//                            RoundedRectangle(cornerRadius: 13)
+//                                .fill(Color.white)
+//                                .frame(width: 362, height: 95)
+//                                .overlay(//테두리
+//                                    RoundedRectangle(cornerRadius: 13)
+//                                        .stroke(
+//                                            Color.black.opacity(0.1),
+//                                            lineWidth: 1
+//                                        )
+//                                )
+//                            HStack {
+//                                Image("Store")
+//                                    .resizable()
+//                                    .frame(width: 50, height: 50)
+//                                VStack(alignment:.leading) {
+//                                    Text("제휴 파트너")
+//                                        .foregroundColor(Color.black)
+//                                        .font(.system(size: 17))
+//                                        .fontWeight(.bold)
+//                                        .padding(.bottom, 1)
+//                                    Text("우리 마트를 홍보하고 싶어요.")
+//                                        .foregroundColor(Color(red:106/255, green: 114/255, blue: 130/255))
+//                                        .font(.system(size: 14))
+//                                        .fontWeight(.regular)
+//                                }
+//                                .padding(10)
+//                                Spacer()
+//                            }
+//                            .padding(.horizontal, 50)
+//                        }//제휴파트너 버튼
+//                        .onTapGesture {
+//                            viewModel.selectPartner()
+//                            //appState.userType = .partner
                         }
                     }//버튼 VStack
                     .padding(.top, 150)
