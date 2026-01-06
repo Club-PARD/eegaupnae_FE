@@ -45,27 +45,41 @@ struct SelectView: View {
                     VStack {
                         //게스트 로그인 버튼
                         HStack(alignment: .center, spacing: 8) {
-                            ZStack {
-                                Text("게스트 로그인")
-                                  .font(
-                                    Font.custom("Arial", size: 16)
-                                      .weight(.bold)
-                                  )
-                                  .multilineTextAlignment(.center)
-                                  .foregroundColor(.white)
-                            }//zstack
-                            .onTapGesture {
+//                            ZStack {
+//                                Text("게스트 로그인")
+//                                  .font(
+//                                    Font.custom("Arial", size: 16)
+//                                      .weight(.bold)
+//                                  )
+//                                  .multilineTextAlignment(.center)
+//                                  .foregroundColor(.white)
+//                            }//zstack
+//                            .onTapGesture {
+//                                viewModel.selectNormalUser()
+//                                goToCamera = true
+//                                //appState.userType = .normal
+//                            }
+                            Button {
                                 viewModel.selectNormalUser()
                                 goToCamera = true
-                                //appState.userType = .normal
+                                // appState.userType = .normal
+                            } label: {
+                                HStack(alignment: .center, spacing: 8) {
+                                    Text("게스트 로그인")
+                                        .font(Font.custom("Arial-BoldMT", size: 16))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(width: 362, height: 55, alignment: .center)
+                                .background(Color(red: 0.25, green: 0.28, blue: 0.61))
+                                .cornerRadius(12)
                             }
-                        }//hstack
-                        .padding(0)
-                        .frame(width: 362, height: 55, alignment: .center)
-                        .background(Color(red: 0.25, green: 0.28, blue: 0.61))
-                        .cornerRadius(12)
+                            .buttonStyle(.plain)
+                        } //hstack
+                        .padding(.bottom,26)
+                        .padding(.top, 150)
+                 
                     }//버튼 VStack
-                    .padding(.top, 150)
+        
                     //Spacer()
                 }//vstack
             }//zstack
