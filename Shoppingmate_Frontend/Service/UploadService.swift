@@ -134,6 +134,45 @@ final class UploadService {
     }
     
     //위치정보 UPDATE
+    func updateLocation(
+        location: LocationDTO
+    ) async throws {
+        // URL 생성
+        let baseURL = baseURL.base.rawValue
+        guard let url = URL(string: "\(baseURL)/users/location/update") else {
+            print("❌ URL 생성 실패")
+            throw URLError(.badURL)
+        }
+        
+        // LocationDTO → JSON
+        let jsonData = try JSONEncoder().encode(location)
+        
+        // URLRequest 설정
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        logRequest(request)
+        
+        // 네트워크 요청
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // 응답 검증
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ HTTPResponse 캐스팅 실패")
+            throw URLError(.badServerResponse)
+        }
+        print("📥 StatusCode:", httpResponse.statusCode)
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let errorBody = String(data: data, encoding: .utf8) {
+                print("❌ Server Error Body:", errorBody)
+            }
+            throw URLError(.badServerResponse)
+        }
+        print("✅ updatedLocation 성공")
+    }
 }
 
 //디버깅용 로그함수

@@ -59,18 +59,13 @@ final class LocationSelectViewModel: ObservableObject {
 
     // "다른 위치" 버튼(=현재 위치로 이동 버튼)
     func moveToCurrentLocation() {
-        guard let loc = locationService.currentLocation else { return }
-
-        // 지도 중심을 현재 위치로 이동
-        withAnimation {
-            region.center = loc.coordinate
-        }
-
-        reverseGeocode(loc.coordinate)// 이동한 좌표 기준으로 주소 갱신
+        locationService.requestCurrentLocation()
+        
+        let serverViewModel = ServerViewModel()
+        serverViewModel.handleLocationUpdateAfterButton()
     }
 
     // 지도 이동 감지
-
     // 지도를 드래그해서 중심 좌표가 바뀌었을 때 호출
     func onMapMoved() {
         reverseGeocode(region.center)

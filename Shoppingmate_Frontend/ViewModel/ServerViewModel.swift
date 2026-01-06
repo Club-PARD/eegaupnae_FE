@@ -16,7 +16,9 @@ final class ServerViewModel: NSObject, ObservableObject {
     private let uploadService = UploadService()
     
     func sendToServer(imageData: Data) {
-        let locationDTO = capturedLocation?.toDTO()
+        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+        
+        let locationDTO = capturedLocation?.toDTO(userId: userId)
         
         Task {
             try await uploadService.uploadLocation(
@@ -37,7 +39,9 @@ final class ServerViewModel: NSObject, ObservableObject {
     }
     
     func debugPrintLocationDTO() {
-        guard let dto = capturedLocation?.toDTO() else {
+        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+        
+        guard let dto = capturedLocation?.toDTO(userId: userId) else {
             print("❌ LocationDTO is nil")
             return
         }
@@ -48,7 +52,9 @@ final class ServerViewModel: NSObject, ObservableObject {
     }
     
     func sendLocationToServer() {
-        guard let locationDTO = capturedLocation?.toDTO() else {
+        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+        
+        guard let locationDTO = capturedLocation?.toDTO(userId: userId) else {
             print("❌ locationDTO is nil")
             return
         }
@@ -87,6 +93,33 @@ final class ServerViewModel: NSObject, ObservableObject {
 
             // 서버 전송
             self.sendLocationToServer()
+        }
+    }
+    
+    func handleLocationUpdateAfterButton() {
+        Task {
+            // 위치 들어올 때까지 잠깐 대기
+            for _ in 0..<10 {
+                if locationService.currentLocation != nil {
+                    break
+                }
+                try await Task.sleep(nanoseconds: 100_000_000)
+            }
+
+            guard let location = locationService.currentLocation else {
+                print("❌ 위치를 가져오지 못함 (UPDATE)")
+                return
+            }
+
+            let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+            let dto = location.toDTO(userId: userId)
+
+            do {
+                try await uploadService.updateLocation(location: dto)
+                print("🔄 위치 UPDATE 성공")
+            } catch {
+                print("❌ 위치 UPDATE 실패:", error)
+            }
         }
     }
 }

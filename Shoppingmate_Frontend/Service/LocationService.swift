@@ -40,6 +40,10 @@ final class LocationService: NSObject, ObservableObject {
         // HundredMeters: 대략 100m 단위(가격표/매장 단위 기록이면 보통 충분)
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
+    
+    func requestCurrentLocation() {
+        locationManager.requestLocation() // 단발성 위치 요청
+    }
 
     // MARK: - Permission (권한 요청 관련)
 
