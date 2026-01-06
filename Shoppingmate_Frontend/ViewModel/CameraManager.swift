@@ -16,12 +16,12 @@ final class CameraManager: NSObject, ObservableObject {
     private var isConfigured = false //카메라 최초 세팅 완료 여부
     
     // SwiftUI에서 관찰할 상태
-    @Published var recognizedText: String = "" //OCR 결과 출력
+    @Published var recognizedText: String = "" //OCR 결과 출력(용)
     @Published var isProcessing = false //OCR 로딩 중
     @Published var croppedROIImage: UIImage? = nil // ROI로 잘린 이미지 저장 변수 (찍으면 업데이트)
     
     @Published var capturedROIImages: [UIImage] = []   // 사진 여러 장 누적 저장
-    @Published var capturedTexts: [String] = []        // OCR 누적
+//    @Published var capturedTexts: [String] = []        // OCR 누적
     @Published var OCRFilters: [OCRFilter] = []        // OCR 필요한 정보만 필터
     
     // 카메라 세션
@@ -82,50 +82,13 @@ final class CameraManager: NSObject, ObservableObject {
         isConfigured = true
     }
     
-    func startSession() {
+    func startSession() { // 카메라 켜짐
         sessionQueue.async { //세션 제어용 전용 큐 백그라운드에서
             self.configureSession()
             guard !self.session.isRunning else { return }
             self.session.startRunning()
         }
     }
-
-
-//    func startSession() {
-//        sessionQueue.async { //세션 제어용 전용 큐 백그라운드에서
-//            if self.session.isRunning { return }//중복 실행 방지
-//            
-//            self.session.beginConfiguration() // 카메라 설정 시작
-//            
-//            self.session.sessionPreset = .photo //사진 촬영 최적화 프리셋
-//            
-//            // 카메라 디바이스
-//            guard
-//                // 후면 카메라 가져오기
-//                let device = AVCaptureDevice.default(.builtInWideAngleCamera, //후면 카메라 사용 디버그
-//                                                     for: .video,
-//                                                     position: .back),
-//                let input = try? AVCaptureDeviceInput(device: device),
-//                // 카메라를 세션 입력으로 연결
-//                self.session.canAddInput(input)
-//            else {
-//                print("❌ Camera input error")
-//                return
-//            }
-//            
-//            self.session.addInput(input)
-//            
-//            guard self.session.canAddOutput(self.photoOutput) else { //사진 찍기 전용 출력
-//                print("❌ Photo output error")
-//                return
-//            }
-//            
-//            self.session.addOutput(self.photoOutput) //카메라&사진 연결 파이프
-//            
-//            self.session.commitConfiguration() //설정 완료
-//            self.session.startRunning() // 카메라 켜짐
-//        }
-//    }
     
     func stopSession() {
         sessionQueue.async {
@@ -270,11 +233,7 @@ final class CameraManager: NSObject, ObservableObject {
         }
     }
     
-    
-    
-    
-    
-    
+   
     
     // MARK: - OCR (Vision)
     extension CameraManager { //MainActor와 분리된 OCR 함수 (Task.detached에서 안전하게 호출 가능)

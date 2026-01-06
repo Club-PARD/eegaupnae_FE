@@ -39,19 +39,20 @@ struct CameraOCRView: View {
                //찍은 사진 썸네일 표시
                 if !camera.capturedROIImages.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
+                        HStack(spacing: 16) {
                             ForEach(camera.capturedROIImages.indices, id: \.self) { i in
                                 Image(uiImage: camera.capturedROIImages[i])
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 46, height: 46)
+                                    .frame(width: 48, height: 48)
                                     .clipped()
-                                    .cornerRadius(6)
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .padding(.leading, 30)
+                        .padding(.trailing, 16)
                     }
                     .frame(height: 56)
+                    .offset(y: -30)
                 }
                 ZStack{
                     Button { //카메라 버튼
@@ -111,8 +112,8 @@ struct CameraOCRView: View {
                             // .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
                             // .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
                         
-//                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
-                        .disabled(camera.OCRFilters.isEmpty) // OCRFilter 값 없으면 비활성
+                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+//                        .disabled(camera.OCRFilters.isEmpty) // OCRFilter 값 없으면 비활성
                         
                         .padding(.trailing, 20) // 우측 여백
                         

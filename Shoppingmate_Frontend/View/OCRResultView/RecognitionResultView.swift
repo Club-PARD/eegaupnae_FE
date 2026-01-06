@@ -22,16 +22,19 @@ struct RecognitionResultView: View {
     }
     
     var body: some View {
+        ZStack{
+            Color(red: 0.98, green: 0.98, blue: 0.98)
+                .ignoresSafeArea(edges: .all)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20.29) {
                     ForEach(products) { product in
                         NavigationLink {
-                                    DetailView(product: product)
-                                } label: {
-                                    ProductCardView(product: product)
-                                }
-                                .buttonStyle(.plain)
-//                        ProductCardView(product: product)
+                            DetailView(product: product)
+                        } label: {
+                            ProductCardView(product: product)
+                        }
+                        .buttonStyle(.plain)
+                        //                        ProductCardView(product: product)
                     }
                 }
                 .padding(.horizontal, 21)
@@ -40,25 +43,26 @@ struct RecognitionResultView: View {
             .background(Color.white)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-        
+            
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing:3){
+                    HStack(spacing:10){
                         Button {
                             dismiss()
                         } label: {
                             Image(systemName: "chevron.left")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(.black)
+                                .font(.system(size: 22, weight: .semibold))
+                                .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
                         }
-                        Text("픽 제품")
-                            .font(.custom("Arial-BoldMT", size: 16))
+                        Text("픽단가")
+                            .font(.custom("Arial-BoldMT", size: 20))
+                            .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
                     }
                 }
             } //.toolbar
             .safeAreaInset(edge: .top) { // 툴바 경계선
                 Divider()
             }
-//        Spacer()
+        }
     }
 }
