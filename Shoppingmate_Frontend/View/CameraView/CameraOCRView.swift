@@ -110,7 +110,10 @@ struct CameraOCRView: View {
                         }
                             // .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
                             // .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
-                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+                        
+//                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+                        .disabled(camera.OCRFilters.isEmpty) // OCRFilter 값 없으면 비활성
+                        
                         .padding(.trailing, 20) // 우측 여백
                         
                     } //HStack 체크 버튼
@@ -120,7 +123,7 @@ struct CameraOCRView: View {
             } // VStack 하단 버튼 구역
             
             
-//            // 결과 표시
+//            // 결과 표시 (OCR인식)
 //            if !camera.recognizedText.isEmpty {
 //                VStack {
 //                    Spacer()
@@ -131,6 +134,30 @@ struct CameraOCRView: View {
 //                        .padding()
 //                }
 //            }
+            
+//            // 결과 표시 (OCR Filter 적용)
+//            if !camera.OCRFilters.isEmpty {
+//                VStack(alignment: .leading, spacing: 8) {
+//                    Text("📦 Captured Items")
+//                        .font(.headline)
+//
+//                    ForEach(camera.OCRFilters) { item in
+//                        VStack(alignment: .leading, spacing: 4) {
+//                            Text("상품명: \(item.name)")
+//                                .font(.subheadline)
+//
+//                            Text("가격: \(String(item.price))원")
+//                                .font(.caption)
+//                                .foregroundColor(.secondary)
+//                        }
+//                        .padding(8)
+//                        .background(.ultraThinMaterial)
+//                        .cornerRadius(8)
+//                    }
+//                }
+//                .padding()
+//            }
+
            
             
         } //ZStack all

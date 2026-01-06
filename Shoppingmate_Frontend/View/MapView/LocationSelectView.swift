@@ -26,7 +26,6 @@ struct LocationSelectView: View {
     }
 
     var body: some View {
-        NavigationStack {
             ZStack {
                 // Apple Map
                 Map(coordinateRegion: $viewModel.region)
@@ -83,7 +82,6 @@ struct LocationSelectView: View {
             ) {
                 CameraOCRView()
             }
-        }
     }
 }
 

@@ -22,6 +22,7 @@ final class CameraManager: NSObject, ObservableObject {
     
     @Published var capturedROIImages: [UIImage] = []   // 사진 여러 장 누적 저장
     @Published var capturedTexts: [String] = []        // OCR 누적
+    @Published var OCRFilters: [OCRFilter] = []        // OCR 필요한 정보만 필터
     
     // 카메라 세션
     let session = AVCaptureSession()
@@ -254,9 +255,14 @@ final class CameraManager: NSObject, ObservableObject {
                         }
                         
                         self.recognizedText = text                    // 마지막 OCR
-                        if !text.isEmpty {
-                            self.capturedTexts.append(text)           // OCR 누적
+                        
+                        if let item = Self.parseItem(from: text) {
+                            self.OCRFilters.append(item)              // 파싱한 OCR 결과 누적
                         }
+                        
+//                        if !text.isEmpty {
+//                            self.capturedTexts.append(text)           // OCR 누적
+//                        }
                         self.isProcessing = false
                     }
                 }
@@ -418,6 +424,40 @@ final class CameraManager: NSObject, ObservableObject {
             return UIImage(cgImage: croppedCG)
             
         }
+        
+        
+        
+        static func parseItem(from text: String) -> OCRFilter? { //OCR 파싱 함수
+            //공백 제거
+            let lines = text
+                .components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+
+            // 가격 추출: 줄에서 숫자만 뽑아 Int로 변환
+            var bestPrice: Int? = nil
+            for line in lines.reversed() { //아랫줄부터 검사
+                let digits = line.filter { $0.isNumber } // 숫자만 뽑기 (콤마/원/₩ 자동 제거)
+                if digits.count >= 4, let v = Int(digits) {   // 4자리 이상만 가격으로 가정
+                    bestPrice = v
+                    break
+                }
+            }
+            guard let price = bestPrice else { return nil } //가격 찾기 실패하면 리턴
+
+            // 상품명 추출: 숫자가 너무 많은 줄은 제외하고 가장 긴 줄을 이름으로
+            let nameCandidates = lines.filter { line in
+                let digitCount = line.filter { $0.isNumber }.count // 줄 안에 숫자 개수 카운트
+                return digitCount <= max(2, line.count / 5) //숫자 줄 길이의 20%만, 최대 2개까지만 허용
+            }
+            
+            //후보 중 가장 긴 줄을 채택
+            let name = (nameCandidates.max(by: { $0.count < $1.count }) ?? lines.first ?? "").trimmingCharacters(in: .whitespaces)
+
+            guard !name.isEmpty else { return nil }
+            return OCRFilter(name: name, price: price, rawText: text)
+        }
+
         
     }
     

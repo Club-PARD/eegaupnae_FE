@@ -38,7 +38,7 @@ struct ProductCardView: View {
                             .padding(.horizontal, 5)
                             .padding(.vertical, 3)
                             .background(Color(red: 0.28, green: 0.11, blue: 0.96))
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
                             .padding(.top, 6)
                             .padding(.leading, 6)
                     }
