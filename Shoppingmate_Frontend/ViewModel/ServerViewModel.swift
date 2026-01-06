@@ -15,19 +15,19 @@ final class ServerViewModel: NSObject, ObservableObject {
     private var capturedLocation: CLLocation?
     private let uploadService = UploadService()
     
-    func sendToServer(imageData: Data) {
-        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
-        
-        let locationDTO = capturedLocation?.toDTO(userId: userId)
-        
-        Task {
-            try await uploadService.uploadLocation(
-                //                imageData: imageData,
-                //                recognizedText: recognizedText,
-                location: locationDTO
-            )
-        }
-    }
+//    func sendToServer(imageData: Data) {
+//        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+//        
+//        let locationDTO = capturedLocation?.toDTO(userId: userId)
+//        
+//        Task {
+//            try await uploadService.uploadLocation(
+//                //                imageData: imageData,
+//                //                recognizedText: recognizedText,
+//                location: locationDTO
+//            )
+//        }
+//    }
     
     func debugPrintLocation() {
         if let location = capturedLocation {
@@ -51,23 +51,23 @@ final class ServerViewModel: NSObject, ObservableObject {
         print(" - longitude:", dto.longitude)
     }
     
-    func sendLocationToServer() {
-        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
-        
-        guard let locationDTO = capturedLocation?.toDTO(userId: userId) else {
-            print("❌ locationDTO is nil")
-            return
-        }
-        
-        Task {
-            do {
-                try await uploadService.uploadLocation(location: locationDTO)
-                print("✅ location upload success")
-            } catch {
-                print("🚨 location upload failed:", error)
-            }
-        }
-    }
+//    func sendLocationToServer() {
+//        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+//        
+//        guard let locationDTO = capturedLocation?.toDTO(userId: userId) else {
+//            print("❌ locationDTO is nil")
+//            return
+//        }
+//        
+//        Task {
+//            do {
+//                try await uploadService.uploadLocation(location: locationDTO)
+//                print("✅ location upload success")
+//            } catch {
+//                print("🚨 location upload failed:", error)
+//            }
+//        }
+//    }
     
     func handleLocationAfterLogin() {
         Task {
@@ -92,7 +92,7 @@ final class ServerViewModel: NSObject, ObservableObject {
             self.debugPrintLocationDTO()
 
             // 서버 전송
-            self.sendLocationToServer()
+            //self.sendLocationToServer()
         }
     }
     

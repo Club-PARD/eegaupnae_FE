@@ -14,7 +14,9 @@ struct Shoppingmate_FrontendApp: App {
 
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            NavigationStack {
+                OnboardingView()
+            }
         }
     }
 }

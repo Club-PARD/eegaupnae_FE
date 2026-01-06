@@ -25,6 +25,12 @@ struct RecognitionResultView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20.29) {
                     ForEach(products) { product in
+//                        NavigationLink {
+//                                    ProductDetailView(product: product)
+//                                } label: {
+//                                    ProductCardView(product: product)
+//                                }
+//                                .buttonStyle(.plain)
                         ProductCardView(product: product)
                     }
                 }
@@ -34,8 +40,6 @@ struct RecognitionResultView: View {
             .background(Color.white)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-//            .toolbarBackground(Color(white: 0.92), for: .navigationBar)
-//            .toolbarBackground(.visible, for: .navigationBar)
         
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -47,19 +51,14 @@ struct RecognitionResultView: View {
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(.black)
                         }
-                        Text("인식 결과")
-                            .font(.custom("Arial-BoldMT", size: 17))
+                        Text("픽 제품")
+                            .font(.custom("Arial-BoldMT", size: 16))
                     }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Text(productCountText)
-                        .font(.custom("Arial", size: 16).weight(.bold))
-                        .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
                 }
             } //.toolbar
             .safeAreaInset(edge: .top) { // 툴바 경계선
                 Divider()
             }
-        Spacer()
+//        Spacer()
     }
 }

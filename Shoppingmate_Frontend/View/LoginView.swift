@@ -18,7 +18,7 @@ struct LoginView: View {
     @State private var goToLocation = false
 
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             ZStack {
                 Color(red: 0.98, green: 0.98, blue: 0.98)
                     .ignoresSafeArea(edges: .all)
@@ -42,19 +42,23 @@ struct LoginView: View {
                       )
                       .foregroundColor(.black)
                       .padding(.bottom, 160)
+                    
                     VStack {
                         //게스트 로그인 버튼
                         HStack(alignment: .center, spacing: 8) {
-                            ZStack {
-                                Text("게스트 로그인")
-                                  .font(Font.custom("Arial-BoldMT", size: 16))
-                                  .multilineTextAlignment(.center)
-                                  .foregroundColor(.white)
-                            }//zstack
-                            .onTapGesture {
+                            Button {
                                 viewModel.guestLogin()
                                 goToLocation = true
                                 //appState.userType = .normal
+                            } label: {
+                                HStack(alignment: .center, spacing: 8) {
+                                    Text("게스트 로그인")
+                                        .font(Font.custom("Arial-BoldMT", size: 16))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(width: 362, height: 55, alignment: .center)
+                                .background(Color(red: 0.25, green: 0.28, blue: 0.61))
+                                .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
                         } //hstack
@@ -69,7 +73,7 @@ struct LoginView: View {
             .navigationDestination(isPresented: $goToLocation) {
                 LocationSelectView()
             }
-        }//navigationstack
+//        }//navigationstack
     }
 }
 
