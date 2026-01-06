@@ -1,5 +1,5 @@
 //
-//  SelectViewModel.swift
+//  LoginViewModel.swift
 //  Shoppingmate_Frontend
 //
 //  Created by 손채원 on 12/31/25.
@@ -9,10 +9,8 @@ import Foundation
 import CoreLocation
 import Combine
 
-final class SelectViewModel: ObservableObject {
+final class LoginViewModel: ObservableObject {
     let locationService = LocationService()
-    
-    //@Published var selectedUserType: UserType? = nil
     
     enum UserDefaultKey {
         static let isNormalUser = "isNormalUser"
@@ -30,10 +28,10 @@ final class SelectViewModel: ObservableObject {
         return newUUID
     }
 
-    /// 일반 사용자 선택 시 호출
-    func selectNormalUser() {
-
-        print("🟢 일반 사용자 선택됨")
+    /// 게스트 로그인 누를  시 호출
+    func guestLogin() {
+        print("🟢 게스트 로그인")
+        //위치 요청
         locationService.requestOneTimeLocation()
         
         // 유저 타입 저장 (첫 페이지 재노출 방지)
@@ -42,37 +40,31 @@ final class SelectViewModel: ObservableObject {
         // UUID 생성
         let uuid = getOrCreateUUID()
         print("🆔 UUID:", uuid)
-
-//        let status = locationService.authorizationStatus
-//
-//        switch status {
-//        case .notDetermined:
-//            print("🟡 권한 요청")
-//            locationService.requestPermission()
-//
-//        case .authorizedWhenInUse, .authorizedAlways:
-//            print("🟢 위치 업데이트 시작")
-//            //locationService.start()
-//
-//        case .denied, .restricted:
-//            print("❌ 위치 권한 거부됨")
-//
-//        @unknown default:
-//            break
-//        }
         
-        //selectedUserType = .normal
+        // UUID DTO 생성
+        let uuidDTO = UUIDDTO(uuid: uuid)
+        
+        //Task에서 서버통신
+        Task {
+            do {
+                //UUID 로그인 POST
+                let uploadService = UploadService()
+                try await uploadService.uploadUUID(uuid: uuidDTO)
+                print("✅ UUID 로그인 성공")
+                
+                //위치 들어온 뒤 확인 후 처리
+                let serverViewModel = ServerViewModel()
+                serverViewModel.handleLocationAfterLogin()
+            } catch {
+                print("🚨 guestLogin 실패:", error)
+            }
+        }
+        
         
         // 서버 로그인 (추후 연결)
         //loginGuest(uuid: uuid)
     }
     
-    func selectPartner() {
-        print("🟢 제휴 파트너 선택됨")
-        UserDefaults.standard.set(false, forKey: UserDefaultKey.isNormalUser)
-        
-        //selectedUserType = .partner
-    }
 
     /// 디버그용 (선택)
     func debugPrintLocation() {

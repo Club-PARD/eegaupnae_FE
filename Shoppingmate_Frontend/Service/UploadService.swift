@@ -11,8 +11,6 @@ final class UploadService {
     
     //사용자 좌표 POST
     func uploadLocation(
-        //imageData: Data,
-        //recognizedText: String,
         location: LocationDTO?
     ) async throws {
         // URL 생성
@@ -96,6 +94,7 @@ final class UploadService {
     }
 
     //UUID GET
+    //이거 아직 호출 안함. 어디서 get할건지 정하기
     func fetchUserInfo(uuid: String) async throws {
         // URL 생성
         let baseURL = baseURL.base.rawValue
@@ -132,6 +131,47 @@ final class UploadService {
         }
 
         print("✅ fetchUserInfo 성공")
+    }
+    
+    //위치정보 UPDATE
+    func updateLocation(
+        location: LocationDTO
+    ) async throws {
+        // URL 생성
+        let baseURL = baseURL.base.rawValue
+        guard let url = URL(string: "\(baseURL)/users/location/update") else {
+            print("❌ URL 생성 실패")
+            throw URLError(.badURL)
+        }
+        
+        // LocationDTO → JSON
+        let jsonData = try JSONEncoder().encode(location)
+        
+        // URLRequest 설정
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        logRequest(request)
+        
+        // 네트워크 요청
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // 응답 검증
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ HTTPResponse 캐스팅 실패")
+            throw URLError(.badServerResponse)
+        }
+        print("📥 StatusCode:", httpResponse.statusCode)
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let errorBody = String(data: data, encoding: .utf8) {
+                print("❌ Server Error Body:", errorBody)
+            }
+            throw URLError(.badServerResponse)
+        }
+        print("✅ updatedLocation 성공")
     }
 }
 

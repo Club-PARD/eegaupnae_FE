@@ -1,5 +1,5 @@
 //
-//  SelectView.swift
+//  LoginView.swift
 //  Shoppingmate_Frontend
 //
 //  Created by 손채원 on 12/30/25.
@@ -13,9 +13,9 @@ enum UserType {
     case partner
 }
 
-struct SelectView: View {
-    @StateObject private var viewModel = SelectViewModel()
-    @State private var goToCamera = false
+struct LoginView: View {
+    @StateObject private var viewModel = LoginViewModel()
+    @State private var goToLocation = false
 
     var body: some View {
         NavigationStack {
@@ -45,33 +45,16 @@ struct SelectView: View {
                     VStack {
                         //게스트 로그인 버튼
                         HStack(alignment: .center, spacing: 8) {
-//                            ZStack {
-//                                Text("게스트 로그인")
-//                                  .font(
-//                                    Font.custom("Arial", size: 16)
-//                                      .weight(.bold)
-//                                  )
-//                                  .multilineTextAlignment(.center)
-//                                  .foregroundColor(.white)
-//                            }//zstack
-//                            .onTapGesture {
-//                                viewModel.selectNormalUser()
-//                                goToCamera = true
-//                                //appState.userType = .normal
-//                            }
-                            Button {
-                                viewModel.selectNormalUser()
-                                goToCamera = true
-                                // appState.userType = .normal
-                            } label: {
-                                HStack(alignment: .center, spacing: 8) {
-                                    Text("게스트 로그인")
-                                        .font(Font.custom("Arial-BoldMT", size: 16))
-                                        .foregroundColor(.white)
-                                }
-                                .frame(width: 362, height: 55, alignment: .center)
-                                .background(Color(red: 0.25, green: 0.28, blue: 0.61))
-                                .cornerRadius(12)
+                            ZStack {
+                                Text("게스트 로그인")
+                                  .font(Font.custom("Arial-BoldMT", size: 16))
+                                  .multilineTextAlignment(.center)
+                                  .foregroundColor(.white)
+                            }//zstack
+                            .onTapGesture {
+                                viewModel.guestLogin()
+                                goToLocation = true
+                                //appState.userType = .normal
                             }
                             .buttonStyle(.plain)
                         } //hstack
@@ -83,8 +66,8 @@ struct SelectView: View {
                     //Spacer()
                 }//vstack
             }//zstack
-            .navigationDestination(isPresented: $goToCamera) {
-                CameraOCRView()
+            .navigationDestination(isPresented: $goToLocation) {
+                LocationSelectView()
             }
         }//navigationstack
     }
@@ -92,5 +75,5 @@ struct SelectView: View {
 
 //
 //#Preview {
-//    SelectView()
+//    LoginView()
 //}
