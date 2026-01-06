@@ -40,8 +40,8 @@ final class LocationSelectViewModel: ObservableObject {
                 longitude: 126.9780
             ),
             span: MKCoordinateSpan(//얼마나 넓게 보여줄건지(줌 레벨)
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005
+                latitudeDelta: 0.0005,
+                longitudeDelta: 0.0005
             )
         )
         bindLocation()

@@ -11,6 +11,9 @@ struct OnboardingView: View {
     
     @State private var isFinished = false
     @State private var hasUUID = false
+    @State private var didUploadUUID = false
+    
+    private let uploadService = UploadService()
     
     var body: some View {
         Group {
@@ -36,9 +39,35 @@ struct OnboardingView: View {
     }
     
     private func checkUUID() {
-        let uuid = UserDefaults.standard.string(forKey: LoginViewModel.UserDefaultKey.uuid)
-        hasUUID = (uuid != nil)
-        print("🆔 기존 UUID 존재 여부:", hasUUID)
+        guard let uuid = UserDefaults.standard.string(
+            forKey: LoginViewModel.UserDefaultKey.uuid
+        ) else {
+            hasUUID = false
+            print("🆕 UUID 없음 → LoginView 이동")
+            return
+        }
+
+        hasUUID = true
+        print("🆔 기존 UUID:", uuid)
+
+        // 기존 UUID가 있을 때만 POST
+        if !didUploadUUID {
+            didUploadUUID = true
+
+            let uuidDTO = UUIDDTO(uuid: uuid)
+
+            Task {
+                do {
+                    try await uploadService.uploadUUID(uuid: uuidDTO)
+                    print("✅ 기존 UUID 서버 전송 완료")
+
+                    let serverViewModel = ServerViewModel()
+                    serverViewModel.handleLocationAfterLogin()
+                } catch {
+                    print("🚨 기존 UUID 서버 전송 실패:", error)
+                }
+            }
+        }
     }
 }
 

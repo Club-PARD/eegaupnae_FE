@@ -39,24 +39,6 @@ struct LocationBottomSheet: View {
                 }
             }
             .padding(.vertical, 23)
-
-            //"다른 위치" 버튼
-            //                Button {
-            //                    onCurrentLocationTap()
-            //                } label: {
-            //                    Text("다른 위치")
-            //                      .font(
-            //                        Font.custom("Arial", size: 16)
-            //                          .weight(.bold)
-            //                      )
-            //                      .multilineTextAlignment(.center)
-            //                      .foregroundColor(Color(red: 0.29, green: 0.33, blue: 0.4))
-            //                }
-            //                .padding(.horizontal, 24)
-            //                .padding(.vertical, 13)
-            //                .frame(height: 52, alignment: .center)
-            //                .background(Color(red: 0.95, green: 0.96, blue: 0.96))
-            //                .cornerRadius(14)
             
             //"이 위치로 주소 등록" 버튼
             Button {
@@ -67,23 +49,25 @@ struct LocationBottomSheet: View {
                         Font.custom("Arial", size: 16)
                             .weight(.bold)
                     )
-                    .multilineTextAlignment(.center)
+                //.multilineTextAlignment(.center)
                     .foregroundColor(.white)
+                //프레임
+                    .background(Color(red: 0.25, green: 0.28, blue: 0.61))
+                    .cornerRadius(14)
             }
             .padding(.horizontal, 55)
             .padding(.vertical, 13)
             .frame(width: 360, height: 52, alignment: .center)
             .background(Color(red: 0.25, green: 0.28, blue: 0.61))
             .cornerRadius(14)
-
         }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(.white)
-            .cornerRadius(20)
-            .padding(.horizontal)
-            .padding(.top, 12)
-            .padding(.bottom, 8)
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 12)
+        
+        .frame(maxWidth: .infinity)
+        .background(Color.white.ignoresSafeArea(edges: .bottom))
+        .cornerRadius(20)
     }
 }
 
