@@ -149,6 +149,19 @@ final class CameraManager: NSObject, ObservableObject {
             self.photoOutput.capturePhoto(with: settings, delegate: self)
         }
     }
+    
+    @MainActor
+    func deleteCaptured(at index: Int) { // 사진 삭제
+        guard capturedROIImages.indices.contains(index) else { return }
+
+        capturedROIImages.remove(at: index)
+
+        if OCRFilters.indices.contains(index) {
+            OCRFilters.remove(at: index)
+        }
+    }
+
+    
 } //final class
     
     
@@ -211,17 +224,25 @@ final class CameraManager: NSObject, ObservableObject {
                             height: roi.height * scale
                         )
                         
+                        self.recognizedText = text                    // 마지막 OCR (UI보여주는용)
+                        
+                        // 파싱 실패 시 아무것도 저장 안함
+                        guard let item = Self.parseItem(from: text) else {
+                                self.isProcessing = false
+                                return
+                            }
+                        
+                        // 파싱 성공 시
                         if let cropped {
                             let resized = cropped.resized(to: targetSize) //리사이즈 적용
                             self.croppedROIImage = resized                // 마지막 1장
                             self.capturedROIImages.append(resized)        // 이미지 누적
+                            self.OCRFilters.append(item)             //  파싱한 OCR 결과 누적
                         }
                         
-                        self.recognizedText = text                    // 마지막 OCR
-                        
-                        if let item = Self.parseItem(from: text) {
-                            self.OCRFilters.append(item)              // 파싱한 OCR 결과 누적
-                        }
+//                        if let item = Self.parseItem(from: text) {
+//                            self.OCRFilters.append(item)              // 파싱한 OCR 결과 누적
+//                        }
                         
 //                        if !text.isEmpty {
 //                            self.capturedTexts.append(text)           // OCR 누적
@@ -397,11 +418,13 @@ final class CameraManager: NSObject, ObservableObject {
             var bestPrice: Int? = nil
             for line in lines.reversed() { //아랫줄부터 검사
                 let digits = line.filter { $0.isNumber } // 숫자만 뽑기 (콤마/원/₩ 자동 제거)
-                if digits.count >= 4, let v = Int(digits) {   // 4자리 이상만 가격으로 가정
+                
+                if digits.count >= 4, digits.count <= 6, let v = Int(digits) {  // 4자리~6자리만 가격으로 가정
                     bestPrice = v
                     break
                 }
             }
+            
             guard let price = bestPrice else { return nil } //가격 찾기 실패하면 리턴
 
             // 상품명 추출: 숫자가 너무 많은 줄은 제외하고 가장 긴 줄을 이름으로
