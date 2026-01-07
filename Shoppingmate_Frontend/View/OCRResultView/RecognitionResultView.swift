@@ -56,6 +56,7 @@ struct RecognitionResultView: View {
                         Text("픽단가")
                             .font(.custom("Arial-BoldMT", size: 20))
                             .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
+                            .fixedSize(horizontal: true, vertical: false)
                     }
                 }
             } //.toolbar

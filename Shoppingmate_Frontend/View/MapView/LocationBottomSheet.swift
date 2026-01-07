@@ -66,8 +66,10 @@ struct LocationBottomSheet: View {
         .padding(.bottom, 12)
         
         .frame(maxWidth: .infinity)
-        .background(Color.white.ignoresSafeArea(edges: .bottom))
-        .cornerRadius(20)
+        .background(Color.white)
+        .clipShape(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+        )
     }
 }
 

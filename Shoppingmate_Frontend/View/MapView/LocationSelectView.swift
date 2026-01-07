@@ -30,12 +30,16 @@ struct LocationSelectView: View {
             // Apple Map
             Map(coordinateRegion: $viewModel.region)
                 .ignoresSafeArea(edges: .all)
-            
-            // 중앙 고정 핀(지도는 움직이고 핀은 고정)
-            Image("mapPin")
-                .resizable()
-                .frame(width: 48, height: 56)
-                .offset(y: -18)
+            VStack {
+                Image("bubble")
+                    .resizable()
+                    .frame(width: 110, height: 50)
+                // 중앙 고정 핀(지도는 움직이고 핀은 고정)
+                Image("mapPin")
+                    .resizable()
+                    .frame(width: 48, height: 56)
+                    .offset(y: -18)
+            }//vstack
         }
         .navigationBarBackButtonHidden(true)
 
@@ -52,7 +56,7 @@ struct LocationSelectView: View {
                     viewModel.confirmLocation()
                 }
             )
-            .ignoresSafeArea(edges: .bottom)
+            .frame(maxWidth: .infinity)
         }
         .overlay(alignment: .bottomTrailing) {
             CurrentLocationButton {
@@ -66,7 +70,7 @@ struct LocationSelectView: View {
         .navigationDestination(
             isPresented: $viewModel.isConfirmed
         ) {
-            CameraOCRView()
+            CameraOCRView(cameFromMap: true)
         }
     }
 }

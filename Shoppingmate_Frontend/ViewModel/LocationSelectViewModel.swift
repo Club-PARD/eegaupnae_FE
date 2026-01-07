@@ -89,16 +89,16 @@ final class LocationSelectViewModel: ObservableObject {
     // 위치 확정: '이 위치로 설정' 버튼
     func confirmLocation() {
 
-        guard let address else {
-            print("❌ 주소가 아직 없습니다")
-            return
-        }
-
-        // 현재 지도 중심 + 주소를 묶음
-        selectedLocation = LocationInfo(
-            coordinate: region.center,
-            address: address
-        )
+//        guard let address else {
+//            print("❌ 주소가 아직 없습니다")
+//            return
+//        }
+//
+//        // 현재 지도 중심 + 주소를 묶음
+//        selectedLocation = LocationInfo(
+//            coordinate: region.center,
+//            address: address
+//        )
 
         // NavigationStack 트리거/
         isConfirmed = true

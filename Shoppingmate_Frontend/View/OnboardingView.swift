@@ -28,7 +28,7 @@ struct OnboardingView: View {
                     .frame(width: 420, height: 840)
                 }
             } else if hasUUID {
-                CameraOCRView()
+                CameraOCRView(cameFromMap: false)
             } else {
                 LoginView()
             }

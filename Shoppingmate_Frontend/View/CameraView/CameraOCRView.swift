@@ -9,17 +9,43 @@ import SwiftUI
 
 struct CameraOCRView: View {
     @StateObject private var camera = CameraManager()
+    
+    let cameFromMap: Bool
+    
     @State private var goResult = false //결과 화면 이동 여부
+    @State private var goToMap = false
+    
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ZStack {
-    
             // 카메라 프리뷰
             CameraPreview(session: camera.session) { layer in
                 camera.previewLayer = layer
             }
             .ignoresSafeArea()
+            //지도로 가는 버튼
+            VStack {
+                HStack {
+                    Button {
+                        if cameFromMap {
+                            dismiss()              // 로그인 → 지도 → 카메라
+                        } else {
+                            goToMap = true         // 로그인 안 거친 경우
+                        }
+                    } label: {
+                        Image("goMap")
+                            .resizable()
+                            .frame(width: 130, height: 40)
+                            .padding(5)
+                    }
+                    .padding(.leading, 5)
+                    .padding(.top, 5)
 
+                    Spacer()
+                }
+                Spacer()
+            }
             .overlay(alignment: .center) {
                 ROIOverlay()
                     .frame(maxWidth: .infinity, maxHeight: .infinity) // 프리뷰 전체 크기 받기
@@ -166,6 +192,9 @@ struct CameraOCRView: View {
             RecognitionResultView(
                 products: makeProducts(from: camera.capturedROIImages)
             )
+        }
+        .navigationDestination(isPresented: $goToMap) {
+            LocationSelectView()
         }
         .navigationBarBackButtonHidden(true)
         .onAppear { camera.startSession() }
