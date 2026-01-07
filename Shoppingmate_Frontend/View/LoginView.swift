@@ -18,7 +18,7 @@ struct LoginView: View {
     @State private var goToLocation = false
 
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             ZStack {
                 Color(red: 0.98, green: 0.98, blue: 0.98)
                     .ignoresSafeArea(edges: .all)
@@ -73,7 +73,7 @@ struct LoginView: View {
             .navigationDestination(isPresented: $goToLocation) {
                 LocationSelectView()
             }
-        }//navigationstack
+//        }//navigationstack
     }
 }
 

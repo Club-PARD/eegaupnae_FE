@@ -16,9 +16,11 @@ final class LocationSelectViewModel: ObservableObject {
     // 지도 상태
     @Published var region: MKCoordinateRegion
 
-    @Published var address: String = "주소를 불러오는 중..."// 현재 지도 중심 좌표의 주소
+    @Published var address: String? = nil// 현재 지도 중심 좌표의 주소
 
     @Published var isConfirmed: Bool = false// "이 위치가 맞아요" 눌렀는지 여부
+    
+    @Published private var shouldMoveToCurrentLocation = false
 
     var selectedLocation: LocationInfo?// 최종 확정된 위치 (다음 화면으로 전달)
     
@@ -31,34 +33,47 @@ final class LocationSelectViewModel: ObservableObject {
     init(locationService: LocationService) {
         self.locationService = locationService
 
-        // 최초 지도 위치 (앞에서 받아온 현재 사용자 위치로 받아오기)
+        // 최초 지도 위치 (앞에서 받아온 현재 사용자 위치로 받아오는걸로 수정해야됨)
         self.region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(
                 latitude: 37.5665,
                 longitude: 126.9780
             ),
             span: MKCoordinateSpan(//얼마나 넓게 보여줄건지(줌 레벨)
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005
+                latitudeDelta: 0.0005,
+                longitudeDelta: 0.0005
             )
         )
         bindLocation()
     }
+    
     private func bindLocation() {
         locationService.$currentLocation
             .compactMap { $0 }// nil 제거
-            .first()// 앞에서 받은 주소 최초 1번만 받기
             .sink { [weak self] location in
                 guard let self else { return }
-                self.region.center = location.coordinate
+                // 현재 위치 버튼을 눌렀을 때만 지도 이동
+                if self.shouldMoveToCurrentLocation {
+                    print("🗺️ 현재 위치로 지도 이동")
+                    withAnimation {
+                        self.region.center = location.coordinate
+                    }
+                    // 주소도 현재 위치 기준으로 갱신
+                    self.reverseGeocode(location.coordinate)
+                    // 1회 처리 후 리셋
+                    self.shouldMoveToCurrentLocation = false
+                }
             }
             .store(in: &cancellables)
     }
 
-    // BottomSheet 버튼
-
-    // "다른 위치" 버튼(=현재 위치로 이동 버튼)
+    // 현재 위치 버튼
     func moveToCurrentLocation() {
+        print("📌 현재 위치 버튼 클릭")
+        
+        // 다음 위치 수신 시 지도 이동하라고 표시
+        shouldMoveToCurrentLocation = true
+        
         locationService.requestCurrentLocation()
         
         let serverViewModel = ServerViewModel()
@@ -71,8 +86,13 @@ final class LocationSelectViewModel: ObservableObject {
         reverseGeocode(region.center)
     }
 
-    // 위치 확정: '이 위치가 맞아요' 버튼
+    // 위치 확정: '이 위치로 설정' 버튼
     func confirmLocation() {
+
+        guard let address else {
+            print("❌ 주소가 아직 없습니다")
+            return
+        }
 
         // 현재 지도 중심 + 주소를 묶음
         selectedLocation = LocationInfo(
@@ -80,7 +100,7 @@ final class LocationSelectViewModel: ObservableObject {
             address: address
         )
 
-        // NavigationStack 트리거
+        // NavigationStack 트리거/
         isConfirmed = true
     }
 

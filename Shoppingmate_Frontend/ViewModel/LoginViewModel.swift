@@ -59,8 +59,7 @@ final class LoginViewModel: ObservableObject {
                 print("🚨 guestLogin 실패:", error)
             }
         }
-        
-        
+
         // 서버 로그인 (추후 연결)
         //loginGuest(uuid: uuid)
     }

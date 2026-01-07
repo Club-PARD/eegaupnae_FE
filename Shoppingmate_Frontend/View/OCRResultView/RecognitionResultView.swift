@@ -34,7 +34,7 @@ struct RecognitionResultView: View {
                             ProductCardView(product: product)
                         }
                         .buttonStyle(.plain)
-                        //                        ProductCardView(product: product)
+                        //ProductCardView(product: product)
                     }
                 }
                 .padding(.horizontal, 21)
@@ -43,7 +43,6 @@ struct RecognitionResultView: View {
             .background(Color.white)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
-            
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack(spacing:10){
