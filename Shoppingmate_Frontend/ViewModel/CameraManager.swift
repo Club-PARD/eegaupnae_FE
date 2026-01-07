@@ -18,7 +18,7 @@ final class CameraManager: NSObject, ObservableObject {
     // SwiftUI에서 관찰할 상태
     @Published var recognizedText: String = "" //OCR 결과 출력(용)
     @Published var isProcessing = false //OCR 로딩 중
-    @Published var croppedROIImage: UIImage? = nil // ROI로 잘린 이미지 저장 변수 (찍으면 업데이트)
+//    @Published var croppedROIImage: UIImage? = nil // ROI로 잘린 이미지 저장 변수 (찍으면 업데이트)
     
     @Published var capturedROIImages: [UIImage] = []   // 사진 여러 장 누적 저장
 //    @Published var capturedTexts: [String] = []        // OCR 누적
@@ -30,23 +30,6 @@ final class CameraManager: NSObject, ObservableObject {
     private let sessionQueue = DispatchQueue(label: "camera.session.queue") // 세션 제어 전용 백그라운드 만들기
     
     var previewLayer: AVCaptureVideoPreviewLayer? // 프리뷰 레이어
-    
-    // ROIOverlay에서 계산한 ROI (previewLayer 좌표계)
-    fileprivate var roiLayerRect: CGRect = .zero
-    
-    //디버그
-    private func logROIContext(_ tag: String) {
-        print("\n===== [ROI DEBUG] \(tag) =====")
-        if let layer = previewLayer {
-            print("layer.bounds:", layer.bounds)
-            print("layer.videoGravity:", layer.videoGravity.rawValue)
-            print("layer.contentsScale:", layer.contentsScale)
-        } else {
-            print("layer: nil")
-        }
-        print("roiLayerRect:", roiLayerRect)
-        print("=============================\n")
-    }
     
     // MARK: - Session 설정
         func configureSession() { // 카메라 세션 최초 세팅 1회 후 유지
@@ -97,16 +80,6 @@ final class CameraManager: NSObject, ObservableObject {
             }
         }
     }
-    
-    // SwiftUI ROI 전달
-    @MainActor
-    func updateROIRect(_ rect: CGRect) {
-        roiLayerRect = rect
-        if roiLayerRect != .zero, previewLayer != nil { //로그 찍을지 판단 (좌표 디버깅)
-            logROIContext("updateROIRect")
-        }
-    }
-    
     // MARK: - 사진 촬영
     func capturePhoto() {
         sessionQueue.async { //촬영 전용 큐
@@ -123,26 +96,7 @@ final class CameraManager: NSObject, ObservableObject {
             }
             
             Task { @MainActor in //촬영
-                self.isProcessing = true //촬영 + OCR 처리
-                
-                // 촬영 순간에 previewLayer.bounds 기준으로 ROI를 강제 계산
-                if let layer = self.previewLayer {
-                    let b = layer.bounds
-                    let rect = CGRect(
-                        x: b.width * 0.1,
-                        y: b.height * 0.4,
-                        width: b.width * 0.8,
-                        height: b.height * 0.2
-                    )
-                    self.roiLayerRect = rect
-                    print("📌 forced roiLayerRect:", rect)
-                } else {
-                    print("❌ previewLayer is nil at capture")
-                }
-                
-                // 로그 찍기
-                self.logROIContext("capturePhoto: before capture")
-                
+                self.isProcessing = true
             }
             
             //실제 촬영 후 delegate로 결과 받기
@@ -194,14 +148,15 @@ final class CameraManager: NSObject, ObservableObject {
                     self.isProcessing = false
                     return
                 }
-                
+         
                 let layer = self.previewLayer
-                let roi = self.roiLayerRect //촬영 순간 ROI 고정
-                
                 guard let layer else {
                     self.isProcessing = false
                     return
                 }
+
+                //UI 박스와 동일한 공식으로 ROI 계산
+                let roi = roiRect(in: layer.bounds.size)
                 
                 Task.detached { [layer, roi] in
                     let cropped = CameraManager.cropToROI( //ROI 기준으로 이미지 크롭
@@ -215,27 +170,27 @@ final class CameraManager: NSObject, ObservableObject {
                         previewLayer: layer,
                         roiLayerRect: roi
                     )
-                    
+
                     await MainActor.run {
                         //ROI 박스랑 같은 사이즈로 리사이즈
-                        let scale = layer.contentsScale   // 보통 2.0 / 3.0
+                        let scale = layer.contentsScale // 보통 2.0 / 3.0
                         let targetSize = CGSize(
                             width: roi.width * scale,
                             height: roi.height * scale
                         )
-                        
-                        self.recognizedText = text                    // 마지막 OCR (UI보여주는용)
+
+                        self.recognizedText = text // 마지막 OCR (UI보여주는용)
                         
                         // 파싱 실패 시 아무것도 저장 안함
                         guard let item = Self.parseItem(from: text) else {
-                                self.isProcessing = false
-                                return
-                            }
-                        
+                            self.isProcessing = false
+                            return
+                        }
+
                         // 파싱 성공 시
                         if let cropped {
                             let resized = cropped.resized(to: targetSize) //리사이즈 적용
-                            self.croppedROIImage = resized                // 마지막 1장
+//                            self.croppedROIImage = resized                // 마지막 1장
                             self.capturedROIImages.append(resized)        // 이미지 누적
                             self.OCRFilters.append(item)             //  파싱한 OCR 결과 누적
                         }
@@ -243,10 +198,11 @@ final class CameraManager: NSObject, ObservableObject {
 //                        if let item = Self.parseItem(from: text) {
 //                            self.OCRFilters.append(item)              // 파싱한 OCR 결과 누적
 //                        }
-                        
+//
 //                        if !text.isEmpty {
 //                            self.capturedTexts.append(text)           // OCR 누적
 //                        }
+
                         self.isProcessing = false
                     }
                 }
@@ -255,11 +211,10 @@ final class CameraManager: NSObject, ObservableObject {
     }
     
    
-    
     // MARK: - OCR (Vision)
     extension CameraManager { //MainActor와 분리된 OCR 함수 (Task.detached에서 안전하게 호출 가능)
         nonisolated
-        static func videoRectInLayer(bounds: CGRect, imageSize: CGSize) -> CGRect {
+        static func videoRectInLayer(bounds: CGRect, imageSize: CGSize) -> CGRect { // 실제 영상이랑 레이어 영역 계산
             let layerW = bounds.width
             let layerH = bounds.height
             
@@ -282,7 +237,7 @@ final class CameraManager: NSObject, ObservableObject {
         }
         
         nonisolated
-        static func normalizedRectFromLayerRect(
+        static func normalizedRectFromLayerRect( // 카메라 이미지 기준 정규화 좌표로 변환
             _ layerRect: CGRect,
             layerBounds: CGRect,
             imageSize: CGSize
@@ -381,18 +336,18 @@ final class CameraManager: NSObject, ObservableObject {
                 imageSize: imageSize
             )
             
-            // 픽셀 rect로 변환 (y 뒤집기)
+            // 픽셀 rect로 변환 (이건 top-left 기준 실행)
             var rect = CGRect(
                 x: normROI.origin.x * W,
-                y: (1 - normROI.origin.y - normROI.height) * H,
+                y: normROI.origin.y * H,
                 width: normROI.width * W,
                 height: normROI.height * H
             ).integral
             
-            print("normROI:", normROI)
-            print("pixelRect:", rect)
-            print("layer.bounds:", previewLayer.bounds)
-            print("cgImage:", cgImage.width, "x", cgImage.height)
+//            print("normROI:", normROI)
+//            print("pixelRect:", rect)
+//            print("layer.bounds:", previewLayer.bounds)
+//            print("cgImage:", cgImage.width, "x", cgImage.height)
             
             //이미지 경계 밖으로 나간거 잘라내기
             rect = rect.intersection(CGRect(x: 0, y: 0, width: W, height: H))
@@ -405,9 +360,7 @@ final class CameraManager: NSObject, ObservableObject {
             
         }
         
-        
-        
-        static func parseItem(from text: String) -> OCRFilter? { //OCR 파싱 함수
+        static func parseItem(from text: String) -> OCRFilter? { //OCR 파싱 함수 (가격 + 상품명 추출)
             //공백 제거
             let lines = text
                 .components(separatedBy: .newlines)
@@ -439,8 +392,6 @@ final class CameraManager: NSObject, ObservableObject {
             guard !name.isEmpty else { return nil }
             return OCRFilter(name: name, price: price, rawText: text)
         }
-
-        
     }
     
     extension UIImage {

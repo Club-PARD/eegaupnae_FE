@@ -171,7 +171,7 @@ struct CameraOCRView: View {
             } // VStack 하단 버튼 구역
             
             
-//            // 결과 표시 (OCR인식)
+//            // 결과 표시 (OCR인식 확인용)
 //            if !camera.recognizedText.isEmpty {
 //                VStack {
 //                    Spacer()
@@ -205,8 +205,7 @@ struct CameraOCRView: View {
                 }
                 .padding()
             }
-
-           
+            
             
         } //ZStack all
         .navigationDestination(isPresented: $goResult) {

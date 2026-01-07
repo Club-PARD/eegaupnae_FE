@@ -7,10 +7,11 @@
 
 import SwiftUI
 
+// 픽단가 페이지 components
 struct ProductCardView: View {
     let product: RecognizedProduct
 
-    var body: some View { //레전드 조정 완료
+    var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             
             ZStack(alignment: .topLeading) {
@@ -31,17 +32,17 @@ struct ProductCardView: View {
                 }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
                 
-//                    if let badge = product.badge {
-//                        Text(badge)
-//                            .font(.custom("Arial-BoldMT", size: 9.5))
-//                            .foregroundColor(.white)
-//                            .padding(.horizontal, 5)
-//                            .padding(.vertical, 3)
-//                            .background(Color(red: 0.28, green: 0.11, blue: 0.96))
-//                            .clipShape(RoundedRectangle(cornerRadius: 6))
-//                            .padding(.top, 6)
-//                            .padding(.leading, 6)
-//                    }
+                    if let badge = product.badge {
+                        Text(badge)
+                            .font(.custom("Arial-BoldMT", size: 9.5))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 3)
+                            .background(Color(red: 0.28, green: 0.11, blue: 0.96))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .padding(.top, 6)
+                            .padding(.leading, 6)
+                    }
                 
             } // ZStack badge
 

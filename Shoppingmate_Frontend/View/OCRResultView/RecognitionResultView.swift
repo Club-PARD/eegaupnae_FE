@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// 픽단가 페이지
 struct RecognitionResultView: View {
     
     @Environment(\.dismiss) private var dismiss // 커스텀 뒤로가기
@@ -34,7 +35,6 @@ struct RecognitionResultView: View {
                             ProductCardView(product: product)
                         }
                         .buttonStyle(.plain)
-                        //ProductCardView(product: product)
                     }
                 }
                 .padding(.horizontal, 21)
