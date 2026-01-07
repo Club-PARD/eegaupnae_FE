@@ -45,17 +45,18 @@ struct RecognitionResultView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing:10){
+                    HStack(spacing:6){
                         Button {
                             dismiss()
                         } label: {
                             Image(systemName: "chevron.left")
-                                .font(.system(size: 22, weight: .semibold))
+                                .font(.system(size: 19, weight: .semibold))
                                 .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
                         }
                         Text("픽단가")
                             .font(.custom("Arial-BoldMT", size: 20))
                             .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
+                            .fixedSize(horizontal: true, vertical: false)
                     }
                 }
             } //.toolbar

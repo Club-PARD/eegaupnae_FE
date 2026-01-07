@@ -24,19 +24,31 @@ struct ProductCardView: View {
                                 height: geo.size.width
                             )
                             .background(
-                                RoundedRectangle(cornerRadius: 8.68)
+                                RoundedRectangle(cornerRadius: 9)
                                     .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
                             )
                     }
                 }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
                 
+//                    if let badge = product.badge {
+//                        Text(badge)
+//                            .font(.custom("Arial-BoldMT", size: 9.5))
+//                            .foregroundColor(.white)
+//                            .padding(.horizontal, 5)
+//                            .padding(.vertical, 3)
+//                            .background(Color(red: 0.28, green: 0.11, blue: 0.96))
+//                            .clipShape(RoundedRectangle(cornerRadius: 6))
+//                            .padding(.top, 6)
+//                            .padding(.leading, 6)
+//                    }
+                
             } // ZStack badge
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(product.brand)
-                    .font(.custom("Arial-BoldMT", size: 11))
-                    .foregroundColor(Color(red: 0.42, green: 0.45, blue: 0.51))
+                    .font(.custom("Arial", size: 11))
+                    .foregroundColor(Color(red: 0.59, green: 0.59, blue: 0.59))
                     .padding(.leading, 5)
                 
                 
@@ -46,27 +58,22 @@ struct ProductCardView: View {
                     .frame(width: 165, alignment: .topLeading)
                     .padding(.leading, 5)
                 
-                Text(product.amount)
-                    .font(Font.custom("Arial", size: 11))
-                    .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
-                    .padding(.leading, 5)
-                
-                HStack(alignment: .center, spacing: 1) {
+//                HStack(alignment: .center, spacing: 1) {
                     Text(product.price)
                         .font(.custom("Arial-BoldMT", size: 18))
                         .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                         .padding(.leading, 5)
-                        .padding(.trailing,3.47)
-                    
+                        .padding(.bottom, 2)
+                
                     Text(product.perUse)
-                        .font(Font.custom("Arial", size: 11))
-                        .foregroundColor(Color(red: 0.29, green: 0.33, blue: 0.4))
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 3)
-                        .background(Color(red: 0.95, green: 0.96, blue: 0.96)
-                            .clipShape(RoundedRectangle(cornerRadius: 3))
-                        )
-                }
+                        .font(Font.custom("Arial-BoldMT", size: 11))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 3)
+                        .padding(.vertical, 2)
+                        .background(Color(red: 0.93, green: 0.39, blue: 0.34))
+                        .cornerRadius(4)
+                        .padding(.leading, 5)
+//                }
             } // VStack text
         } // VStack all
     }
