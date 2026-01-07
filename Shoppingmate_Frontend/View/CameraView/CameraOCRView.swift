@@ -41,19 +41,40 @@ struct CameraOCRView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 16) {
                             ForEach(camera.capturedROIImages.indices, id: \.self) { i in
-                                Image(uiImage: camera.capturedROIImages[i])
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 48, height: 48)
-                                    .clipped()
+                                ZStack{
+                                    // 썸네일 이미지
+                                    Image(uiImage: camera.capturedROIImages[i])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 48, height: 48)
+                                        .clipped()
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            camera.deleteCaptured(at: i)
+                                        }
+                                }
+                                .overlay(alignment: .topTrailing) {
+                                    // 우측 상단 X 버튼
+                                    Button {
+                                        camera.deleteCaptured(at: i)
+                                    } label: {
+                                        Image("LegendDelete")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width:21,height:21)
+                                    }
+                                    .offset(x: 9, y: -9)
+                                }
                             }
                         }
                         .padding(.leading, 30)
                         .padding(.trailing, 16)
+                        .padding(.top,10)
                     }
-                    .frame(height: 56)
+                    .frame(height: 70)
                     .offset(y: -30)
                 }
+                
                 ZStack{
                     Button { //카메라 버튼
                         // guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
@@ -136,28 +157,28 @@ struct CameraOCRView: View {
 //                }
 //            }
             
-//            // 결과 표시 (OCR Filter 적용)
-//            if !camera.OCRFilters.isEmpty {
-//                VStack(alignment: .leading, spacing: 8) {
-//                    Text("📦 Captured Items")
-//                        .font(.headline)
-//
-//                    ForEach(camera.OCRFilters) { item in
-//                        VStack(alignment: .leading, spacing: 4) {
-//                            Text("상품명: \(item.name)")
-//                                .font(.subheadline)
-//
-//                            Text("가격: \(String(item.price))원")
-//                                .font(.caption)
-//                                .foregroundColor(.secondary)
-//                        }
-//                        .padding(8)
-//                        .background(.ultraThinMaterial)
-//                        .cornerRadius(8)
-//                    }
-//                }
-//                .padding()
-//            }
+            // 결과 표시 (OCR Filter 적용)
+            if !camera.OCRFilters.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("📦 Captured Items")
+                        .font(.headline)
+
+                    ForEach(camera.OCRFilters) { item in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("상품명: \(item.name)")
+                                .font(.subheadline)
+
+                            Text("가격: \(String(item.price))원")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(8)
+                    }
+                }
+                .padding()
+            }
 
            
             
@@ -176,7 +197,6 @@ struct CameraOCRView: View {
         images.map { image in
             RecognizedProduct(
                 image: image,
-                badge: "BEST 가성비",
                 brand: "피죤",
                 name: "피죤 실내건조 섬유유연제 라벤더향",
                 amount: "2.5L",

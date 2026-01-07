@@ -31,17 +31,6 @@ struct ProductCardView: View {
                 }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
                 
-                    if let badge = product.badge {
-                        Text(badge)
-                            .font(.custom("Arial-BoldMT", size: 9.5))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 3)
-                            .background(Color(red: 0.28, green: 0.11, blue: 0.96))
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                            .padding(.top, 6)
-                            .padding(.leading, 6)
-                    }
             } // ZStack badge
 
             VStack(alignment: .leading, spacing: 2) {
