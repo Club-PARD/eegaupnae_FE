@@ -33,13 +33,14 @@ struct LocationSelectView: View {
             VStack {
                 Image("bubble")
                     .resizable()
-                    .frame(width: 110, height: 50)
+                    .frame(width: 120, height: 60)
                 // 중앙 고정 핀(지도는 움직이고 핀은 고정)
                 Image("mapPin")
                     .resizable()
                     .frame(width: 48, height: 56)
                     .offset(y: -18)
             }//vstack
+            .padding(.bottom, 150)
         }
         .navigationBarBackButtonHidden(true)
 
