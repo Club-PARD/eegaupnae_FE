@@ -38,7 +38,8 @@ struct LocationBottomSheet: View {
                         .foregroundColor(.gray)
                 }
             }
-            .padding(.vertical, 23)
+            .padding(.horizontal, 23)
+            .padding(.top, 23)
             
             //"이 위치로 주소 등록" 버튼
             Button {
@@ -49,26 +50,22 @@ struct LocationBottomSheet: View {
                         Font.custom("Arial", size: 16)
                             .weight(.bold)
                     )
-                //.multilineTextAlignment(.center)
                     .foregroundColor(.white)
-                //프레임
+                    .frame(width: 360, height: 52)
                     .background(Color(red: 0.25, green: 0.28, blue: 0.61))
                     .cornerRadius(14)
             }
-            .padding(.horizontal, 55)
-            .padding(.vertical, 13)
-            .frame(width: 360, height: 52, alignment: .center)
-            .background(Color(red: 0.25, green: 0.28, blue: 0.61))
-            .cornerRadius(14)
+            //.padding(.horizontal, 55)
+            //.padding(.vertical, 13)
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
         }
         .padding(.horizontal, 20)
-        .padding(.top, 16)
-        .padding(.bottom, 12)
-        
+        .padding(.bottom, 40)
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .clipShape(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 70, style: .continuous)
         )
     }
 }

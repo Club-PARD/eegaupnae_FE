@@ -57,14 +57,13 @@ struct LocationSelectView: View {
                     viewModel.confirmLocation()
                 }
             )
-            .frame(maxWidth: .infinity)
         }
         .overlay(alignment: .bottomTrailing) {
             CurrentLocationButton {
                 print("📌 현재 위치 버튼 눌림")
                 viewModel.moveToCurrentLocation()
             }
-            .padding(Edge.Set.trailing, 25)
+            .padding(Edge.Set.trailing, 20)
             .padding(Edge.Set.bottom, 230) // BottomSheet 높이만큼 띄우기
         }
         // 다음 화면 이동

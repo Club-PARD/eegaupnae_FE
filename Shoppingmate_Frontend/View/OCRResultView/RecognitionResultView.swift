@@ -24,45 +24,120 @@ struct RecognitionResultView: View {
     
     var body: some View {
         ZStack{
-            Color(red: 0.98, green: 0.98, blue: 0.98)
+            Color(red: 0.95, green: 0.95, blue: 0.95)
                 .ignoresSafeArea(edges: .all)
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 20.29) {
-                    ForEach(products) { product in
-                        NavigationLink {
-                            DetailView(product: product)
-                        } label: {
-                            ProductCardView(product: product)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 21)
-                .padding(.top, 76)
-            } //ScrollView
-            .background(Color.white)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing:6){
+            VStack {
+                ZStack {
+                    Rectangle()
+                        .frame(height: 61)
+                        .foregroundColor(.white)
+                    HStack {
                         Button {
                             dismiss()
                         } label: {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 19, weight: .semibold))
-                                .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
+                            Image("backArrow")
+                                .resizable()
+                                .frame(width: 20, height: 24)
+                                .padding(.leading, 20)
                         }
                         Text("픽단가")
-                            .font(.custom("Arial-BoldMT", size: 20))
-                            .foregroundColor(Color(red: 0.04, green: 0.04, blue: 0.04))
-                            .fixedSize(horizontal: true, vertical: false)
+                            .font(
+                                Font.custom("Arial", size: 20)
+                                    .weight(.bold)
+                            )
+                        Spacer()
                     }
                 }
-            } //.toolbar
-            .safeAreaInset(edge: .top) { // 툴바 경계선
                 Divider()
+                    .padding(.top, -10)
+                HStack(spacing: 12) {
+                            Image("sparkles")
+                                .resizable()
+                                .frame(width: 29, height: 27)
+                                //.padding(.leading, 5)
+                                .padding(.trailing, -10)
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [
+                                            Color(red: 0.45, green: 0.35, blue: 0.95),
+                                            Color(red: 0.30, green: 0.75, blue: 0.95)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                    
+                                        )
+                            Text("Ai 픽단가")
+                              .font(
+                                Font.custom("Pretendard", size: 17)
+                              )
+                              .foregroundStyle(
+                                      LinearGradient(
+                                          colors: [
+                                              Color(red: 0.65, green: 0.32, blue: 0.91),
+                                              Color(red: 0.19, green: 0.53, blue: 1)
+                                          ],
+                                          startPoint: .leading,
+                                          endPoint: .trailing
+                                      )
+                                  )
+                            Text("환산으로 최저가를 확인하세요")
+                              .font(
+                                Font.custom("Pretendard", size: 17)
+                              )
+                              .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
+                              .lineLimit(1)
+                              .padding(.leading, -8)
+//                            Button(action: onClose) { {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
+//                            }
+                }//hstack
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .background(
+                            BottomRoundedRectangle(radius: 20)
+                                .fill(Color(red: 0.95, green: 0.95, blue: 1.0))
+                                .frame(width: 361, height: 61)
+                        )
+                .padding(.horizontal, 16)
+                .padding(.top, -14)
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 20.29) {
+                        ForEach(products) { product in
+                            NavigationLink {
+                                DetailView(product: product)
+                            } label: {
+                                ProductCardView(product: product)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 21)
+                    .padding(.top, 76)
+                } //ScrollView
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden(true)
             }
-        }
+        } //zstack
+    }
+}
+
+#Preview {
+    let mockProducts: [RecognizedProduct] = [
+            RecognizedProduct(
+                image: UIImage(systemName: "photo"),
+                badge: "Best 가성비",
+                brand: "피죤",
+                name: "피죤 실내건조 섬유유연제 라벤더향",
+                amount: "2.5L",
+                price: "12,800원",
+                perUse: "1회당 40원"
+            )
+    ]
+    NavigationStack {
+        RecognitionResultView(products: mockProducts)
     }
 }
