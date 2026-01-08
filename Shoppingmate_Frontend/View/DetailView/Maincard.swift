@@ -19,17 +19,17 @@ struct Maincard: View {
             HStack(spacing: 12) {
                 Text(detail.title)
                     .font(
-                        Font.custom("Arial-BoldMT", size: 24)
+                        Font.custom("Pretendard-Bold", size: 24)
                     )
                     .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
                 Spacer()
-            }//상품명
+            } //상품명
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(red: 0.95, green: 0.95, blue: 1.0))
-            )
+//            .background(
+//                RoundedRectangle(cornerRadius: 16)
+//                    .fill(Color(red: 0.95, green: 0.95, blue: 1.0))
+//            )
             .padding(.horizontal, 16)
             Divider()
             HStack {
@@ -62,10 +62,43 @@ struct Maincard: View {
                       )
                 StarRatingView(rating: detail.rating)
                 Text(String(format: "%.1f", detail.rating))
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.secondary)
+                    .font(.custom("Pretendard-Bold", size: 35))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.45, green: 0.35, blue: 0.95),
+                                Color(red: 0.30, green: 0.75, blue: 0.95)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                   )
             }
-        }//vstack
+            HStack {
+                Text("마트 판매가")
+                  .font(.custom("Pretendard-Bold", size: 10))
+                  .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                Spacer()
+                Text(detail.martPrice)
+                    .font(.custom("Pretendard-Bold", size: 18))
+                    .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                    .padding(.leading, 5)
+                    .padding(.bottom, 2)
+            }
+            HStack {
+                Text("온라인 최저가")
+                    .font(.custom("Pretendard-Bold", size: 10))
+                    .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                Spacer()
+                Text(detail.onlinePrice)
+                    .font(.custom("Pretendard-Bold", size: 18))
+                    .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                    .padding(.leading, 5)
+                    .padding(.bottom, 2)
+            }
+            
+            
+        } //vstack
 
     }
 }
@@ -105,6 +138,18 @@ struct Maincard: View {
 //        .clipShape(RoundedRectangle(cornerRadius: 14))
 //    }
 
-//#Preview {
-//    Maincard(product: product)
-//}
+#Preview {
+    let mockProduct = RecognizedProduct(
+        image: UIImage(systemName: "photo"),
+        badge: "Best 가성비",
+        brand: "피죤",
+        name: "퍼실 라벤더 1.5(겸용)",
+        amount: "2.5L",
+        price: "8,800원",
+        onlinePrice: "12,800원",
+        perUse: "한번 사용 283원꼴"
+    )
+
+    return Maincard(product: mockProduct)
+}
+

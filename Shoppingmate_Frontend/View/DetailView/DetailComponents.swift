@@ -15,7 +15,16 @@ struct StarRatingView: View { //별점 UI
             ForEach(0..<5, id: \.self) { idx in
                 Image(systemName: idx < Int(round(rating)) ? "star.fill" : "star")
                     .font(.system(size: 12))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.45, green: 0.35, blue: 0.95),
+                                Color(red: 0.30, green: 0.75, blue: 0.95)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                   )
             }
         }
     }
@@ -57,43 +66,5 @@ struct InfoCard<Content: View>: View { // 섹션 카드 컨테이너
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
-    }
-}
-
-struct BulletList: View { // 분석 문장
-    let items: [String]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(items.indices, id: \.self) { i in
-                HStack(alignment: .top, spacing: 8) {
-                    Text("•")
-                    Text(items[i])
-                        .font(.system(size: 13))
-                        .foregroundStyle(.black.opacity(0.85))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
-    }
-}
-
-struct NumberedList: View { // 정보 문장
-    let items: [String]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(items.indices, id: \.self) { i in
-                HStack(alignment: .top, spacing: 8) {
-                    Text("\(i + 1).")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.black.opacity(0.85))
-                    Text(items[i])
-                        .font(.system(size: 13))
-                        .foregroundStyle(.black.opacity(0.85))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
     }
 }
