@@ -11,6 +11,7 @@ import Combine
 
 final class LoginViewModel: ObservableObject {
     @Published var isUserReady: Bool = false
+    
     //@EnvironmentObject var serverViewModel: ServerViewModel
     
     let locationService = LocationService()

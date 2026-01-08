@@ -32,8 +32,8 @@ struct ROIOverlay: View {
                     .position(x: startRect.midX, y: startRect.midY)
                     .opacity(hideImage ? 0 : 1)
                     .offset(
-                        x: hideImage ? -50 : 0,
-                        y: hideImage ? -30 : 0
+                        x: hideImage ? 0 : 0,
+                        y: hideImage ? 0 : 0
                     )
                     .animation(.easeOut(duration: 0.2), value: hideImage)
                 

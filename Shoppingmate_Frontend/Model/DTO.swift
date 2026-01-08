@@ -14,6 +14,10 @@ struct UUIDDTO: Codable {
     let uuid: String
 }
 
+struct UserIdResponse: Codable {
+    let userId: Int
+}
+
 // DTO: Data Transfer Object
 struct LocationDTO: Codable {
     let userId: Int
@@ -21,8 +25,28 @@ struct LocationDTO: Codable {
     let longitude: Double
 }
 
-struct UserIdResponse: Codable {
+struct ScanUploadRequest: Codable {
     let userId: Int
+    let items: [ScanUploadItem]
+}
+
+struct ScanUploadItem: Codable {
+    let scanName: String
+    let scanPrice: Int
+}
+
+struct ScanItemResponse: Codable, Identifiable {
+    let userId: Int
+    let scanId: Int
+    let scanName: String
+    let scanPrice: Int
+    let naverPrice: Int?
+    let naverBrand: String?
+    let naverMaker: String?      // 서버에 있을 수 있으니 포함 (안 오면 무시)
+    let naverImage: String?
+    let aiUnitPrice: String?
+
+    var id: Int { scanId }
 }
 
 struct scanIdDTO: Codable {
