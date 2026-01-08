@@ -25,24 +25,24 @@ struct LocationDTO: Codable {
     let longitude: Double
 }
 
-struct ScanUploadRequest: Codable {
+struct ScanUploadRequest: Codable { //scan post
     let userId: Int
     let items: [ScanUploadItem]
 }
 
-struct ScanUploadItem: Codable {
+struct ScanUploadItem: Codable { //scan post
     let scanName: String
     let scanPrice: Int
 }
 
-struct ScanItemResponse: Codable, Identifiable {
+struct ScanItemResponse: Codable, Identifiable { //scan get
     let userId: Int
     let scanId: Int
     let scanName: String
     let scanPrice: Int
     let naverPrice: Int?
     let naverBrand: String?
-    let naverMaker: String?      // 서버에 있을 수 있으니 포함 (안 오면 무시)
+    let naverMaker: String?
     let naverImage: String?
     let aiUnitPrice: String?
 

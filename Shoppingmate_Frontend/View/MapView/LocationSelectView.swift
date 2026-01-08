@@ -9,6 +9,7 @@ import SwiftUI
 import MapKit
 
 struct LocationSelectView: View {
+    @EnvironmentObject private var serverViewModel: ServerViewModel
 
     @StateObject private var locationService = LocationService()
     @StateObject private var viewModel: LocationSelectViewModel
@@ -42,6 +43,15 @@ struct LocationSelectView: View {
             // Apple Map
             Map(coordinateRegion: $viewModel.region)
                 .ignoresSafeArea(edges: .all)
+            VStack{
+                Spacer()
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(height: 100)
+                    .frame(maxWidth: .infinity)
+            }
+            .ignoresSafeArea(edges: .bottom)
+         
             VStack {
                 Image("bubble")
                     .resizable()
@@ -63,12 +73,14 @@ struct LocationSelectView: View {
                 // 다른 위치
                 onCurrentLocationTap: {
                     viewModel.moveToCurrentLocation()
+                    serverViewModel.handleLocationUpdateAfterButton()
                 },
                 //이 위치로 설정
                 onConfirmTap: {
                     viewModel.confirmLocation()
                 }
             )
+//            .ignoresSafeArea(edges: .bottom)
         }
         .overlay(alignment: .bottomTrailing) {
             CurrentLocationButton {
@@ -85,7 +97,21 @@ struct LocationSelectView: View {
             CameraOCRView(cameFromMap: true, userIdResponse: userIdResponse)        }
     }
 }
+//
+//#Preview {
+//    NavigationStack{
+//        LocationSelectView(userIdResponse: UserIdResponse(userId: 1))
+//    }
+//    .environmentObject(ServerViewModel())
+//}
 
 #Preview {
-    LocationSelectView(userIdResponse: UserIdResponse(userId: 1))
+    let loginVM = LoginViewModel()
+    let serverVM = ServerViewModel(loginViewModel: loginVM)
+
+    return NavigationStack {
+        LocationSelectView(userIdResponse: UserIdResponse(userId: 1))
+    }
+    .environmentObject(loginVM)    // 필요하면 같이 주입
+    .environmentObject(serverVM)
 }
