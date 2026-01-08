@@ -25,6 +25,7 @@ struct UserIdResponse: Codable {
     let userId: Int
 }
 
+
 // Apple이 만든 CLLocation type에 새 기능 추가
 // CLLocation 상속은 불가, 확장만 가능
 extension CLLocation {

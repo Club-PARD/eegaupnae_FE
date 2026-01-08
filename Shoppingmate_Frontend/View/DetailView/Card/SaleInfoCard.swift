@@ -24,6 +24,7 @@ struct SaleInfoCard: View {
                     .font(Font.custom("Pretendard-Bold", size: 18))
                     .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
             }
+            .padding(.top, -5)
 
             // 🔹 내용
             VStack(spacing: 10) {
@@ -51,7 +52,7 @@ struct SaleInfoCard: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(red: 0.93, green: 0.94, blue: 1.0))
         )
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 5)
     }
 }
 

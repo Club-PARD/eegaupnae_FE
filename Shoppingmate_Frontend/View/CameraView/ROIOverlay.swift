@@ -38,7 +38,9 @@ struct ROIOverlay: View {
                     .animation(.easeOut(duration: 0.2), value: hideImage)
                 
                 Text("가격표를 찍어주세요")
-                    .font(.custom("Arial-BoldMT", size: 22))
+                    .font(
+                        Font.custom("Pretendard-Bold", size: 22)
+                    )
                     .foregroundColor(.white)
                     .position(
                         x: startRect.midX,
@@ -77,7 +79,9 @@ struct ROIOverlay: View {
                 
                 if ParseFail {
                     Text("가격표를 눌러주세요")
-                        .font(.custom("Arial-BoldMT", size: 22))
+                        .font(
+                            Font.custom("Pretendard-Bold", size: 22)
+                        )
                         .foregroundColor(.white)
                         .position(
                             x: endRect.midX,

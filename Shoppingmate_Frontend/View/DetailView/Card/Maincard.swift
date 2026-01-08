@@ -26,12 +26,14 @@ struct Maincard: View {
             } //상품명
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
+            .padding(.top, 10)
 //            .background(
 //                RoundedRectangle(cornerRadius: 16)
 //                    .fill(Color(red: 0.95, green: 0.95, blue: 1.0))
 //            )
             .padding(.horizontal, 16)
             Divider()
+                .padding(.horizontal, 30)
             HStack {
                 Image("sparkles")
                     .resizable()
@@ -60,6 +62,7 @@ struct Maincard: View {
                               endPoint: .trailing
                           )
                       )
+                Spacer()
                 StarRatingView(rating: detail.rating)
                 Text(String(format: "%.1f", detail.rating))
                     .font(.custom("Pretendard-Bold", size: 35))
@@ -74,28 +77,31 @@ struct Maincard: View {
                         )
                    )
             }
+            .padding(.horizontal, 30)
             HStack {
                 Text("마트 판매가")
-                  .font(.custom("Pretendard-Bold", size: 10))
+                    .font(.custom("Pretendard-Regular", size: 16))
                   .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
                 Text(detail.martPrice)
-                    .font(.custom("Pretendard-Bold", size: 18))
+                    .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
                     .padding(.bottom, 2)
             }
+            .padding(.horizontal, 30)
             HStack {
                 Text("온라인 최저가")
-                    .font(.custom("Pretendard-Bold", size: 10))
+                    .font(.custom("Pretendard-Regular", size: 16))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
                 Text(detail.onlinePrice)
-                    .font(.custom("Pretendard-Bold", size: 18))
+                    .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
                     .padding(.bottom, 2)
             }
+            .padding(.horizontal, 30)
             
             
         } //vstack

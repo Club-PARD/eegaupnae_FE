@@ -42,8 +42,7 @@ struct RecognitionResultView: View {
                         }
                         Text("픽단가")
                             .font(
-                                Font.custom("Arial", size: 20)
-                                    .weight(.bold)
+                                Font.custom("Pretendard-Bold", size: 20)
                             )
                         Spacer()
                     }

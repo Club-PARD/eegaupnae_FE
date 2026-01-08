@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailData: Identifiable {
-    let id: String
+    let userId: String
 
     // 헤더 이미지
     let headerImageName: String
@@ -16,10 +16,8 @@ struct DetailData: Identifiable {
     // 기본 정보
     let title: String
     let rating: Double
-    let reviewCount: Int
 
     // 가격
-    let pickPrice: String
     let martPrice: String
     let onlinePrice: String
 
@@ -35,12 +33,10 @@ enum MockDetailStore {
     static func detail(for product: RecognizedProduct) -> DetailData {
         // product.id 기준으로 분기하고 싶으면 switch 넣으면 됨
         DetailData(
-            id: product.id.uuidString,
-            headerImageName: "jh", 
+            userId: product.id.uuidString,
+            headerImageName: "jh",
             title: "\(product.name) \(product.amount)",
             rating: 2.5,
-            reviewCount: 308,
-            pickPrice: "8,480원",
             martPrice: "12,800원",
             onlinePrice: "6,080원",
             saleBannerText: "점심시간! 3일 뒤에 행사가 있어요\n1/9(목)부터 1번 1+1 행사입니다.\n현지점 가격에 도움이 필요하면 눌러주세요!",

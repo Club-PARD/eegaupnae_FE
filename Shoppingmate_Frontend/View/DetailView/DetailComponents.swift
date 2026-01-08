@@ -14,7 +14,7 @@ struct StarRatingView: View { //별점 UI
         HStack(spacing: 2) {
             ForEach(0..<5, id: \.self) { idx in
                 Image(systemName: idx < Int(round(rating)) ? "star.fill" : "star")
-                    .font(.system(size: 12))
+                    .font(.system(size: 17))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [

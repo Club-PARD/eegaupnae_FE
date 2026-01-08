@@ -33,7 +33,9 @@ struct ProductCardView: View {
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
                 
                 Text(product.perUse)
-                        .font(Font.custom("Arial-BoldMT", size: 11))
+                    .font(
+                        Font.custom("Pretendard-Bold", size: 11)
+                    )
                         .foregroundStyle(
                                 LinearGradient(
                                     colors: [

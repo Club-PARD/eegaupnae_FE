@@ -20,21 +20,20 @@ struct LocationBottomSheet: View {
             // 주소 영역
             VStack(alignment: .leading, spacing: 8) {
                 Text("현재 위치")
-                    .font(Font.custom("Arial", size: 14))
+                    .font(.custom("Pretendard-Regular", size: 14))
                     .foregroundColor(Color(red: 0.42, green: 0.45, blue: 0.51))
                 Text("(현재마트 받아오기)")
                     .font(
-                        Font.custom("Arial", size: 22)
-                            .weight(.bold)
+                        Font.custom("Pretendard-Bold", size: 22)
                     )
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 if let address = viewModel.address {
                     Text(address)
-                        .font(Font.custom("Arial", size: 15))
+                        .font(.custom("Pretendard-Regular", size: 15))
                         .foregroundColor(Color(red: 0.29, green: 0.33, blue: 0.4))
                 } else {
                     Text("주소를 불러오는 중…")
-                        .font(Font.custom("Arial", size: 15))
+                        .font(.custom("Pretendard-Regular", size: 15))
                         .foregroundColor(.gray)
                 }
             }
@@ -47,8 +46,7 @@ struct LocationBottomSheet: View {
             } label: {
                 Text("이 위치로 설정")
                     .font(
-                        Font.custom("Arial", size: 16)
-                            .weight(.bold)
+                        Font.custom("Pretendard-Bold", size: 16)
                     )
                     .foregroundColor(.white)
                     .frame(width: 360, height: 52)

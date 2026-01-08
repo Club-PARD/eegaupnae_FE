@@ -32,15 +32,14 @@ struct LoginView: View {
                         .clipped()
                         .padding(.bottom, 25)
                     Text("초간단 온/오프라인 가격비표")
-                      .font(Font.custom("Arial", size: 26))
+                        .font(.custom("Pretendard-Regular", size: 26))
                       .multilineTextAlignment(.center)
                       .foregroundColor(.black)
                       .padding(.bottom, 15)
                     Text("지금 바로,\n시작해 볼까요?")
-                      .font(
-                        Font.custom("Arial", size: 43)
-                          .weight(.bold)
-                      )
+                        .font(
+                            Font.custom("Pretendard-Bold", size: 43)
+                        )
                       .foregroundColor(.black)
                       .padding(.bottom, 160)
                     
@@ -54,7 +53,9 @@ struct LoginView: View {
                             } label: {
                                 HStack(alignment: .center, spacing: 8) {
                                     Text("게스트 로그인")
-                                        .font(Font.custom("Arial-BoldMT", size: 16))
+                                        .font(
+                                            Font.custom("Pretendard-Bold", size: 16)
+                                        )
                                         .foregroundColor(.white)
                                 }
                                 .frame(width: 362, height: 55, alignment: .center)

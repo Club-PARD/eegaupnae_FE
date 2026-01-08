@@ -35,8 +35,7 @@ struct DetailView: View {
                         }
                         Text("픽스코어")
                             .font(
-                                Font.custom("Arial", size: 20)
-                                    .weight(.bold)
+                                Font.custom("Pretendard-Bold", size: 20)
                             )
                         Spacer()
                     }
@@ -62,12 +61,19 @@ struct DetailView: View {
                         SaleInfoCard()
                             .listRowSeparator(.hidden)
                     }
-
+                    //구매 추천 or 비추천
                     Section {
                         PurchaseHoldCard()
                     }
+                    //품질 및 가격 요약
+                    Section {
+                        SummaryCard()
+                    }
+                    //5대 지표 심층 분석
+                    Section {
+                        AnalysisCard()
+                    }
                 }
-                .padding(.top,-5)
                 .listSectionSpacing(18)
                 
             } //vstack
