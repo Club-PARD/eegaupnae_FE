@@ -229,7 +229,8 @@ struct CameraOCRView: View {
                 name: "피죤 실내건조 섬유유연제 라벤더향",
                 amount: "2.5L",
                 price: "12,800원",
-                perUse: "1회당 40원"
+                onlinePrice: "15,000원",
+                perUse: "한번 사용 283원꼴"
             )
         }
     }

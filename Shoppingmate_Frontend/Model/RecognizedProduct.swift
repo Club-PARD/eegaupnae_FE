@@ -10,12 +10,13 @@ import UIKit
 
 struct RecognizedProduct: Identifiable {
     let id : UUID
-    let image: UIImage? //ROI 이미지
+    let image: UIImage? //네이버 API 상품이미지
     let badge: String?    //"Best 가성비"
     let brand: String         //"피죤"
     let name: String         //"피죤 실내건조 섬유유연제 라벤더향"
     let amount: String      //"2.5L"
     let price: String     //"12,800원"
+    let onlinePrice: String
     let perUse: String    //"1회당 40원"
     
     init( //구조체가 그려질 때 한 번만 저장
@@ -26,6 +27,7 @@ struct RecognizedProduct: Identifiable {
         name: String,
         amount: String,
         price: String,
+        onlinePrice: String,
         perUse: String
     ) {
         self.id = id
@@ -35,6 +37,7 @@ struct RecognizedProduct: Identifiable {
         self.name = name
         self.amount = amount
         self.price = price
+        self.onlinePrice = onlinePrice
         self.perUse = perUse
     }
 }

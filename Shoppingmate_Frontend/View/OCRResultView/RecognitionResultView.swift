@@ -65,12 +65,9 @@ struct RecognitionResultView: View {
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
-                                    
-                                        )
+                               )
                             Text("Ai 픽단가")
-                              .font(
-                                Font.custom("Pretendard", size: 17)
-                              )
+                              .font(.custom("Pretendard-Bold", size: 17))
                               .foregroundStyle(
                                       LinearGradient(
                                           colors: [
@@ -82,9 +79,7 @@ struct RecognitionResultView: View {
                                       )
                                   )
                             Text("환산으로 최저가를 확인하세요")
-                              .font(
-                                Font.custom("Pretendard", size: 17)
-                              )
+                              .font(.custom("Pretendard-Bold", size: 17))
                               .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
                               .lineLimit(1)
                               .padding(.leading, -8)
@@ -133,8 +128,9 @@ struct RecognitionResultView: View {
                 brand: "피죤",
                 name: "피죤 실내건조 섬유유연제 라벤더향",
                 amount: "2.5L",
-                price: "12,800원",
-                perUse: "1회당 40원"
+                price: "8,800원",
+                onlinePrice: "12,800원",
+                perUse: "한번 사용 283원꼴"
             )
     ]
     NavigationStack {
