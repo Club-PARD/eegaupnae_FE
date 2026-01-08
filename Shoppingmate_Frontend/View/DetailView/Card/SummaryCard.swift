@@ -66,6 +66,6 @@ struct SummaryCard: View {
     }
 }
 
-#Preview {
-    SummaryCard()
-}
+//#Preview {
+//    SummaryCard(detail: unwrappedDetail)
+//}

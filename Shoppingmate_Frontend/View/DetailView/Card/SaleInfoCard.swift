@@ -59,7 +59,7 @@ struct SaleInfoCard: View {
     }
 }
 
-#Preview {
+//#Preview {
 //    let mockProduct = RecognizedProduct(
 //        image: UIImage(systemName: "photo"),
 //        badge: "Best 가성비",
@@ -71,5 +71,5 @@ struct SaleInfoCard: View {
 //        perUse: "한번 사용 283원꼴"
 //    )
 
-    SaleInfoCard()
-}
+//    SaleInfoCard()
+//}

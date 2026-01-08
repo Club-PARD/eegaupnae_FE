@@ -105,22 +105,22 @@ struct Maincard: View {
 }
 
 
-#Preview {
-    Maincard(
-        detail: DetailResponse(
-            naverImage: "https://example.com/image.jpg",
-            scanName: "아리엘 액체세제 2L",
-            pickScore: 4.5,
-            scanPrice: 9800,
-            naverPrice: 12800,
-            priceDiff: -3000,
-            isCheaper: true,
-            conclusion: "구매 추천",
-            qualitySummary: "세정력이 뛰어나요",
-            priceSummary: "온라인보다 저렴해요",
-            category: "생활용품",
-            indexes: []
-        )
-    )
-}
+//#Preview {
+//    Maincard(
+//        detail: DetailResponse(
+//            naverImage: "https://example.com/image.jpg",
+//            scanName: "아리엘 액체세제 2L",
+//            pickScore: 4.5,
+//            scanPrice: 9800,
+//            naverPrice: 12800,
+//            priceDiff: -3000,
+//            isCheaper: true,
+//            conclusion: "구매 추천",
+//            qualitySummary: "세정력이 뛰어나요",
+//            priceSummary: "온라인보다 저렴해요",
+//            category: "생활용품",
+//            indexes: []
+//        )
+//    )
+//}
 

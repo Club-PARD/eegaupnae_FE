@@ -334,7 +334,8 @@ struct CameraOCRView: View {
                     price: "\(scan.scanPrice)원",
                     onlinePrice: scan.naverPrice.map { "\($0)원" } ?? "-",
                     perUse: scan.aiUnitPrice ?? "분석 중...",
-                    imageURL: scan.naverImage
+                    imageURL: scan.naverImage,
+                    scanId: scan.scanId
                 )
             }
 

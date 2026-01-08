@@ -12,7 +12,7 @@ struct DetailView: View {
     
     let scanId: Int
     
-    @State private var detail: DetailResponse
+    @State private var detail: DetailResponse?
     
     var body: some View {
         ZStack{
@@ -39,30 +39,60 @@ struct DetailView: View {
                             )
                         Spacer()
                         
-                        NavigationLink {
-                            CameraOCRView(cameFromMap: true)
-                        } label: {
-                            Image("cameraBack")
-                                .resizable()
-                                .frame(width: 35, height: 35)
-                                .padding(.trailing, 10)
-                        }
+//                        NavigationLink {
+//                            CameraOCRView(cameFromMap: true)
+//                        } label: {
+//                            Image("cameraBack")
+//                                .resizable()
+//                                .frame(width: 35, height: 35)
+//                                .padding(.trailing, 10)
+//                        }
                      
                     }
                 }
                 Divider()
                 
-                if let deatail = detail {
+                if let unwrappedDetail = detail {
                     List{
                         Section{
-                            Image(detail.naverImage)
-                                .resizable()
-                                . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
-                                .frame(width: 362, height: 360)
-                                .listRowBackground(Color.clear)
-                                .clipShape(
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                )
+                            if let imageUrlString = unwrappedDetail.naverImage,
+                               let url = URL(string: imageUrlString) {
+
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(height: 360)
+
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 362, height: 360)
+                                            .clipShape(
+                                                RoundedRectangle(
+                                                    cornerRadius: 12,
+                                                    style: .continuous
+                                                )
+                                            )
+
+                                    case .failure:
+                                        Image(systemName: "photo")
+                                            .frame(height: 360)
+
+                                    @unknown default:
+                                        EmptyView()
+                                    }
+                                }
+                            }
+//                            AsyncImage(unwrappedDetail.naverImage)
+//                                .resizable()
+//                                . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
+//                                .frame(width: 362, height: 360)
+//                                .listRowBackground(Color.clear)
+//                                .clipShape(
+//                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+//                                )
                         }
                         .listSectionSpacing(13) // 이거 해야 총 18
                         if let unwrappedDetail = detail {
@@ -70,7 +100,7 @@ struct DetailView: View {
                                 Section {
                                     Maincard(detail: unwrappedDetail)
                                         .listRowInsets(EdgeInsets())
-                                    SaleInfoCard()
+                                    SaleInfoCard(detail: unwrappedDetail)
                                         .listRowSeparator(.hidden)
                                 }
                                 // 다른 카드들도 동일하게 unwrappedDetail 사용
@@ -86,18 +116,15 @@ struct DetailView: View {
 //                        }
                         //구매 추천 or 비추천
                         Section {
-                            PurchaseHoldCard()
+                            PurchaseHoldCard(detail: unwrappedDetail)
                         }
                         //품질 및 가격 요약
                         Section {
-                            SummaryCard()
+                            SummaryCard(detail: unwrappedDetail)
                         }
                         //5대 지표 심층 분석
                         Section {
-                            AnalysisCard(
-                                category: "위생",
-                                indexes: AnalysisIndex.modeling
-                            )
+                            AnalysisCard(detail: unwrappedDetail)
                         }
                     }
                     .listSectionSpacing(18)
@@ -117,8 +144,7 @@ struct DetailView: View {
     }
     private func loadDetail() async {
         do {
-            let dto = scanIdDTO(scanId: scanId)
-            detail = try await getGemini(scanId: dto)
+            detail = try await getGemini(scanId: scanId)
         } catch {
             print("❌ detail 로딩 실패:", error)
         }
@@ -126,22 +152,22 @@ struct DetailView: View {
 }
 
 
-#Preview {
-    DetailView(
-        detail: DetailResponse(
-        naverImage: "https://example.com/image.jpg",
-        scanName: "아리엘 액체세제 2L",
-        pickScore: 4.5,
-        scanPrice: 9800,
-        naverPrice: 12800,
-        priceDiff: -3000,
-        isCheaper: true,
-        conclusion: "구매 추천",
-        qualitySummary: "세정력이 뛰어나요",
-        priceSummary: "온라인보다 저렴해요",
-        category: "생활용품",
-        indexes: []
-        )
-    )
-}
+//#Preview {
+//    DetailView(
+//        detail: DetailResponse(
+//        naverImage: "https://example.com/image.jpg",
+//        scanName: "아리엘 액체세제 2L",
+//        pickScore: 4.5,
+//        scanPrice: 9800,
+//        naverPrice: 12800,
+//        priceDiff: -3000,
+//        isCheaper: true,
+//        conclusion: "구매 추천",
+//        qualitySummary: "세정력이 뛰어나요",
+//        priceSummary: "온라인보다 저렴해요",
+//        category: "생활용품",
+//        indexes: []
+//        )
+//    )
+//}
 

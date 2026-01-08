@@ -179,10 +179,11 @@ final class UploadService {
 }
 
 //gemini GET
-func getGemini(scanId: scanIdDTO) async throws -> DetailResponse {
+func getGemini(scanId: Int) async throws -> DetailResponse {
     // URL 생성
     let baseURL = baseURL.base.rawValue
-    guard let url = URL(string: "\(baseURL)/gemini/{scanId}") else {
+    
+    guard let url = URL(string: "\(baseURL)/gemini/\(scanId)") else {
         print("❌ URL 생성 실패")
         throw URLError(.badURL)
     }
@@ -198,30 +199,40 @@ func getGemini(scanId: scanIdDTO) async throws -> DetailResponse {
     let (data, response) = try await URLSession.shared.data(for: request)
     
     // 응답 검증
-    guard let httpResponse = response as? HTTPURLResponse else {
-        print("❌ HTTPResponse 캐스팅 실패")
+    guard let httpResponse = response as? HTTPURLResponse,
+          (200...299).contains(httpResponse.statusCode) else {
+        print("❌ Server Error:", String(data: data, encoding: .utf8) ?? "")
         throw URLError(.badServerResponse)
     }
-    print("📥 StatusCode:", httpResponse.statusCode)
-
-    if !(200...299).contains(httpResponse.statusCode) {
-        if let errorBody = String(data: data, encoding: .utf8) {
-            print("❌ Server Error Body:", errorBody)
-        }
-        throw URLError(.badServerResponse)
+    //    guard let httpResponse = response as? HTTPURLResponse else {
+    //        print("❌ HTTPResponse 캐스팅 실패")
+    //        throw URLError(.badServerResponse)
+    //    }
+    //    print("📥 StatusCode:", httpResponse.statusCode)
+    //
+    //    if !(200...299).contains(httpResponse.statusCode) {
+    //        if let errorBody = String(data: data, encoding: .utf8) {
+    //            print("❌ Server Error Body:", errorBody)
+    //        }
+    //        throw URLError(.badServerResponse)
+    //    }
+    
+    if let body = String(data: data, encoding: .utf8) {
+        print("📦 Raw JSON:", body)
     }
-
+    
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    
     do {
-        let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
+        let decoded = try decoder.decode(DetailResponse.self, from: data)
         print("✅ get Gemini info 성공")
         return decoded
     } catch {
         print("❌ Decoding Error:", error)
-        if let body = String(data: data, encoding: .utf8) {
-            print("📦 Raw JSON:", body)
-        }
         throw error
     }
+}
 //    if let body = String(data: data, encoding: .utf8) {
 //        print("📦 Response Body:", body)
 //    }
@@ -229,7 +240,7 @@ func getGemini(scanId: scanIdDTO) async throws -> DetailResponse {
 //    let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
 //    print("✅ get Gemini info 성공")
 //    return decoded
-}
+
 
 //디버깅용 로그함수
 private func logRequest(_ request: URLRequest) {

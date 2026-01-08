@@ -48,7 +48,7 @@ struct PurchaseHoldCard: View {
         .padding(.horizontal, 16)
     }
 }
-
-#Preview {
-    PurchaseHoldCard()
-}
+//
+//#Preview {
+//    PurchaseHoldCard()
+//}
