@@ -88,7 +88,7 @@ final class UploadService {
         print("📥 StatusCode:", httpResponse.statusCode)
 
         let decoded = try JSONDecoder().decode(UserIdResponse.self, from: data)
-        //UserDefaults.standard.set(decoded.id, forKey: "userId")
+        UserDefaults.standard.set(decoded.userId, forKey: "userId")
         print("✅ uploadUUID 성공")
         return decoded
     }
