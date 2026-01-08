@@ -12,8 +12,16 @@ struct CameraOCRView: View {
     
     let cameFromMap: Bool
     
+    
+    @State private var ParseFail = false // 파싱 실패 시 출력 문구
+    @State private var ocrBeforeCount: Int = 0 // OCR 촬영 저장 확인용 (문구)
+    @State private var didTapCapture = false // OCR 촬영 저장 확인용
+
+    
     @State private var goResult = false //결과 화면 이동 여부
     @State private var goToMap = false
+    
+    @State private var roiOverlayID = UUID() // 애니메이션 용 UUID 관찰
     
     @Environment(\.dismiss) private var dismiss
 
@@ -47,7 +55,8 @@ struct CameraOCRView: View {
                 Spacer()
             }
             .overlay(alignment: .center) {
-                ROIOverlay()
+                ROIOverlay(ParseFail: $ParseFail)
+                    .id(roiOverlayID) // id 바뀌면 ROI 재생성
                     .frame(maxWidth: .infinity, maxHeight: .infinity) // 프리뷰 전체 크기 받기
                     .ignoresSafeArea()                                // 카메라 프리뷰랑 좌표 맞추기
                     .allowsHitTesting(false)
@@ -103,8 +112,13 @@ struct CameraOCRView: View {
                 
                 ZStack{
                     Button { //카메라 버튼
-                        // guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
+                        ocrBeforeCount = camera.OCRFilters.count
+                        didTapCapture = true
                         camera.capturePhoto()
+                        
+                        // guard !camera.isProcessing else { return } // 연타 시 꼬임 방지
+                        
+//                        camera.capturePhoto() // ParseFail 안하면 이거만ㄱ
                     } label: {
                         ZStack{
                             Circle()
@@ -208,6 +222,16 @@ struct CameraOCRView: View {
             
             
         } //ZStack all
+        .onChange(of: camera.isProcessing) { isProcessing in //파싱 시 안내 문구 출력
+            // processing이 끝나는 순간만 체크
+            guard didTapCapture, isProcessing == false else { return }
+            didTapCapture = false
+            // 촬영 전후 count가 같으면 "추가가 안 된 것" → 실패 문구
+            if camera.OCRFilters.count == ocrBeforeCount {
+                handleParseFail()
+            }
+        }
+
         .navigationDestination(isPresented: $goResult) {
             RecognitionResultView(
                 products: makeProducts(from: camera.capturedROIImages)
@@ -217,7 +241,11 @@ struct CameraOCRView: View {
             LocationSelectView()
         }
         .navigationBarBackButtonHidden(true)
-        .onAppear { camera.startSession() }
+        .onAppear {
+            camera.startSession()
+            roiOverlayID = UUID() // 카메라 페이지 들어올 때마다 애니메이션 다시
+        }
+
         //        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
     } // var body
     
@@ -234,4 +262,17 @@ struct CameraOCRView: View {
             )
         }
     }
+    
+   private func handleParseFail() { // 파싱 실패 시 문구
+       guard ParseFail == false else { return }
+        ParseFail = true
+
+        // 1초 후 fade out
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            withAnimation(.easeOut(duration: 0.3)) {
+                ParseFail = false
+            }
+        }
+    }
+
 } // struct View
