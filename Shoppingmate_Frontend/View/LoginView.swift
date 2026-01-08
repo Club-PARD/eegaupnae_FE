@@ -14,8 +14,9 @@ enum UserType {
 }
 
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
     @State private var goToLocation = false
+    @EnvironmentObject var loginViewModel: LoginViewModel
+    @EnvironmentObject var serverViewModel: ServerViewModel
 
     var body: some View {
 //        NavigationStack {
@@ -47,8 +48,8 @@ struct LoginView: View {
                         //게스트 로그인 버튼
                         HStack(alignment: .center, spacing: 8) {
                             Button {
-                                viewModel.guestLogin()
-                                goToLocation = true
+                                loginViewModel.guestLogin()
+//                                goToLocation = true
                                 //appState.userType = .normal
                             } label: {
                                 HStack(alignment: .center, spacing: 8) {
@@ -59,6 +60,13 @@ struct LoginView: View {
                                 .frame(width: 362, height: 55, alignment: .center)
                                 .background(Color(red: 0.25, green: 0.28, blue: 0.61))
                                 .cornerRadius(12)
+                            }
+                            .onChange(of: loginViewModel.isUserReady) { ready in
+                                if ready {
+                                    //위치 들어온 뒤 확인 후 처리
+                                    serverViewModel.handleLocationAfterLogin()
+                                    goToLocation = true 
+                                }
                             }
                             .buttonStyle(.plain)
                         } //hstack
@@ -71,9 +79,10 @@ struct LoginView: View {
                 }//vstack
             }//zstack
             .navigationDestination(isPresented: $goToLocation) {
-                LocationSelectView()
+                let uid = UserDefaults.standard.integer(forKey: "userId")
+                LocationSelectView(userIdResponse: UserIdResponse(userId: uid))
+//                LocationSelectView()
             }
-//        }//navigationstack
     }
 }
 

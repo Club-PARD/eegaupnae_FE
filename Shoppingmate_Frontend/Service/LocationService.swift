@@ -32,6 +32,7 @@ final class LocationService: NSObject, ObservableObject {
 
         // super.init(): NSObject 초기화(상위 클래스 초기화) 반드시 호출
         super.init()
+        
 
         // delegate 연결: 위치 업데이트/권한 변경 같은 이벤트를 이 클래스가 받도록 설정
         locationManager.delegate = self

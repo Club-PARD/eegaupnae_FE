@@ -28,6 +28,7 @@ final class LocationSelectViewModel: ObservableObject {
 
     private let locationService: LocationService
     private var cancellables = Set<AnyCancellable>()
+    @EnvironmentObject var serverViewModel: ServerViewModel
 
     // 초기화
     init(locationService: LocationService) {
@@ -75,8 +76,6 @@ final class LocationSelectViewModel: ObservableObject {
         shouldMoveToCurrentLocation = true
         
         locationService.requestCurrentLocation()
-        
-        let serverViewModel = ServerViewModel()
         serverViewModel.handleLocationUpdateAfterButton()
     }
 
@@ -88,7 +87,6 @@ final class LocationSelectViewModel: ObservableObject {
 
     // 위치 확정: '이 위치로 설정' 버튼
     func confirmLocation() {
-
 //        guard let address else {
 //            print("❌ 주소가 아직 없습니다")
 //            return

@@ -11,6 +11,7 @@ struct CameraOCRView: View {
     @StateObject private var camera = CameraManager()
     
     let cameFromMap: Bool
+    let userIdResponse: UserIdResponse // userID 업로드
     
     
     @State private var ParseFail = false // 파싱 실패 시 출력 문구
@@ -22,6 +23,11 @@ struct CameraOCRView: View {
     @State private var goToMap = false
     
     @State private var roiOverlayID = UUID() // 애니메이션 용 UUID 관찰
+    
+    //업로드 UI 상태
+    @State private var isUploading = false
+    @State private var showUploadError = false
+    @State private var uploadErrorMessage = ""
     
     @Environment(\.dismiss) private var dismiss
 
@@ -68,6 +74,10 @@ struct CameraOCRView: View {
                 
                 if camera.isProcessing { //로딩 표시
                     ProgressView("OCR 중...")
+                        .padding()
+                }
+                if isUploading {
+                    ProgressView("서버 전송 중...")
                         .padding()
                 }
                 
@@ -154,9 +164,20 @@ struct CameraOCRView: View {
                                 //   guard !camera.isProcessing else { return } //연타 시 꼬임 방지
                                 //   guard !camera.capturedROIImages.isEmpty else { return }
                                 //   goResult = true
-                            if !camera.capturedROIImages.isEmpty {
-                                goResult = true
-                            }
+                            
+//                            if !camera.capturedROIImages.isEmpty {
+//                                goResult = true
+//                            }
+                            
+                            print("✅ 체크 버튼 눌림")
+                            Text("filters:\(camera.OCRFilters.count) proc:\(camera.isProcessing ? "T":"F") up:\(isUploading ? "T":"F")")
+                                .font(.caption2)
+                                .foregroundStyle(.white)
+
+                            
+                            
+                            Task { await uploadAndGoResult() }
+                            
                         } label: {
                             Image("Check")
                                 .resizable()
@@ -173,8 +194,11 @@ struct CameraOCRView: View {
                             // .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
                             // .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
                         
-                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
 //                        .disabled(camera.OCRFilters.isEmpty) // OCRFilter 값 없으면 비활성
+                        
+//                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+//                          .disabled(camera.OCRFilters.isEmpty || camera.isProcessing || isUploading)
+                        .disabled(false)
                         
                         .padding(.trailing, 20) // 우측 여백
                         
@@ -238,7 +262,7 @@ struct CameraOCRView: View {
             )
         }
         .navigationDestination(isPresented: $goToMap) {
-            LocationSelectView()
+            LocationSelectView(userIdResponse: userIdResponse)
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
@@ -275,4 +299,34 @@ struct CameraOCRView: View {
         }
     }
 
+    @MainActor
+    private func uploadAndGoResult() async { // 서버 업로드 함수
+        print("🚀 uploadAndGoResult 진입, OCRFilters:", camera.OCRFilters.count)
+        guard !camera.OCRFilters.isEmpty else { return }
+
+        isUploading = true
+        defer { isUploading = false }
+
+        let items: [ScanUploadItem] = camera.OCRFilters.map {
+            ScanUploadItem(scanName: $0.name, scanPrice: $0.price)
+        }
+
+        do {
+            print("📤 [SCAN] 서버 업로드 시작")
+            try await ScanService.shared.uploadScans(
+                userId: userIdResponse.userId,
+                items: items
+            )
+            print("✅ 서버 업로드 성공 → goResult = true 설정 직전")
+               goResult = true
+               print("➡️ goResult 현재값:", goResult)
+//            goResult = true
+        } catch {
+            print("❌ uploadAndGoResult catch:", error.localizedDescription)
+            uploadErrorMessage = error.localizedDescription
+            showUploadError = true
+        }
+    }
+
+    
 } // struct View
