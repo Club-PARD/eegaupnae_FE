@@ -49,7 +49,7 @@ struct LoginView: View {
                         HStack(alignment: .center, spacing: 8) {
                             Button {
                                 loginViewModel.guestLogin()
-                                goToLocation = true
+//                                goToLocation = true
                                 //appState.userType = .normal
                             } label: {
                                 HStack(alignment: .center, spacing: 8) {
@@ -65,6 +65,7 @@ struct LoginView: View {
                                 if ready {
                                     //위치 들어온 뒤 확인 후 처리
                                     serverViewModel.handleLocationAfterLogin()
+                                    goToLocation = true
                                 }
                             }
                             .buttonStyle(.plain)
@@ -78,7 +79,9 @@ struct LoginView: View {
                 }//vstack
             }//zstack
             .navigationDestination(isPresented: $goToLocation) {
-                LocationSelectView()
+                let uid = UserDefaults.standard.integer(forKey: "userId")
+                LocationSelectView(userIdResponse: UserIdResponse(userId: uid))
+//                LocationSelectView()
             }
     }
 }

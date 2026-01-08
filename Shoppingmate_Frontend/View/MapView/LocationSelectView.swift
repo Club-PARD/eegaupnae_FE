@@ -13,17 +13,29 @@ struct LocationSelectView: View {
     @StateObject private var locationService = LocationService()
     @StateObject private var viewModel: LocationSelectViewModel
     
+    let userIdResponse: UserIdResponse
+    
     //private let currentLocationButtonView = CurrentLocationButton()
 
     // LocationService를 ViewModel과 공유하기 위한 init
-    init() {
-        let service = LocationService()
+//    init() {
+//        let service = LocationService()
+//
+//        _locationService = StateObject(wrappedValue: service)
+//        _viewModel = StateObject(
+//            wrappedValue: LocationSelectViewModel(locationService: service)
+//        )
+//    }
+    init(userIdResponse: UserIdResponse) {
+        self.userIdResponse = userIdResponse
 
+        let service = LocationService()
         _locationService = StateObject(wrappedValue: service)
         _viewModel = StateObject(
             wrappedValue: LocationSelectViewModel(locationService: service)
         )
     }
+
 
     var body: some View {
         ZStack {
@@ -70,11 +82,10 @@ struct LocationSelectView: View {
         .navigationDestination(
             isPresented: $viewModel.isConfirmed
         ) {
-            CameraOCRView(cameFromMap: true)
-        }
+            CameraOCRView(cameFromMap: true, userIdResponse: userIdResponse)        }
     }
 }
 
 #Preview {
-    LocationSelectView()
+    LocationSelectView(userIdResponse: UserIdResponse(userId: 1))
 }

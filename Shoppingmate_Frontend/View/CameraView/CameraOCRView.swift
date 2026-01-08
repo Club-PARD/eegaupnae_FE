@@ -11,6 +11,7 @@ struct CameraOCRView: View {
     @StateObject private var camera = CameraManager()
     
     let cameFromMap: Bool
+    let userIdResponse: UserIdResponse // userID 업로드
     
     
     @State private var ParseFail = false // 파싱 실패 시 출력 문구
@@ -19,9 +20,15 @@ struct CameraOCRView: View {
 
     
     @State private var goResult = false //결과 화면 이동 여부
+    @State private var products: [RecognizedProduct] = []   // 결과화면에 넘길 실제 서버 데이터
     @State private var goToMap = false
     
     @State private var roiOverlayID = UUID() // 애니메이션 용 UUID 관찰
+    
+    //업로드 UI 상태
+    @State private var isUploading = false
+    @State private var showUploadError = false
+    @State private var uploadErrorMessage = ""
     
     @Environment(\.dismiss) private var dismiss
 
@@ -68,6 +75,10 @@ struct CameraOCRView: View {
                 
                 if camera.isProcessing { //로딩 표시
                     ProgressView("OCR 중...")
+                        .padding()
+                }
+                if isUploading {
+                    ProgressView("서버 전송 중...")
                         .padding()
                 }
                 
@@ -154,9 +165,20 @@ struct CameraOCRView: View {
                                 //   guard !camera.isProcessing else { return } //연타 시 꼬임 방지
                                 //   guard !camera.capturedROIImages.isEmpty else { return }
                                 //   goResult = true
-                            if !camera.capturedROIImages.isEmpty {
-                                goResult = true
-                            }
+                            
+//                            if !camera.capturedROIImages.isEmpty {
+//                                goResult = true
+//                            }
+                            
+                            print("✅ 체크 버튼 눌림")
+                            Text("filters:\(camera.OCRFilters.count) proc:\(camera.isProcessing ? "T":"F") up:\(isUploading ? "T":"F")")
+                                .font(.caption2)
+                                .foregroundStyle(.white)
+
+                            
+                            
+                            Task { await uploadAndGoResult() }
+                            
                         } label: {
                             Image("Check")
                                 .resizable()
@@ -173,8 +195,10 @@ struct CameraOCRView: View {
                             // .disabled(camera.capturedROIImages.isEmpty || camera.isProcessing) // 연타 시 꼬임 방지
                             // .opacity((camera.capturedROIImages.isEmpty || camera.isProcessing) ? 0.6 : 1.0)
                         
-                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
 //                        .disabled(camera.OCRFilters.isEmpty) // OCRFilter 값 없으면 비활성
+                        
+//                        .disabled(camera.capturedROIImages.isEmpty) // ROI 이미지 없으면 비활성
+                          .disabled(camera.OCRFilters.isEmpty || camera.isProcessing || isUploading)
                         
                         .padding(.trailing, 20) // 우측 여백
                         
@@ -233,12 +257,10 @@ struct CameraOCRView: View {
         }
 
         .navigationDestination(isPresented: $goResult) {
-            RecognitionResultView(
-                products: makeProducts(from: camera.capturedROIImages)
-            )
+            RecognitionResultView(products: products)
         }
         .navigationDestination(isPresented: $goToMap) {
-            LocationSelectView()
+            LocationSelectView(userIdResponse: userIdResponse)
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
@@ -249,19 +271,19 @@ struct CameraOCRView: View {
         //        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
     } // var body
     
-    private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {
-        images.map { image in
-            RecognizedProduct(
-                image: image,
-                brand: "피죤",
-                name: "피죤 실내건조 섬유유연제 라벤더향",
-                amount: "2.5L",
-                price: "12,800원",
-                onlinePrice: "15,000원",
-                perUse: "한번 사용 283원꼴"
-            )
-        }
-    }
+//    private func makeProducts(from images: [UIImage]) -> [RecognizedProduct] {
+//        images.map { image in
+//            RecognizedProduct(
+//                image: image,
+//                brand: "피죤",
+//                name: "피죤 실내건조 섬유유연제 라벤더향",
+//                amount: "2.5L",
+//                price: "12,800원",
+//                onlinePrice: "15,000원",
+//                perUse: "한번 사용 283원꼴"
+//            )
+//        }
+//    }
     
    private func handleParseFail() { // 파싱 실패 시 문구
        guard ParseFail == false else { return }
@@ -272,6 +294,58 @@ struct CameraOCRView: View {
             withAnimation(.easeOut(duration: 0.3)) {
                 ParseFail = false
             }
+        }
+    }
+    
+    @MainActor
+    private func uploadAndGoResult() async { // 서버 업로드 함수
+        print("🚀 uploadAndGoResult 진입, OCRFilters:", camera.OCRFilters.count)
+        guard !camera.OCRFilters.isEmpty else { return }
+
+        isUploading = true
+        defer { isUploading = false }
+
+        let items: [ScanUploadItem] = camera.OCRFilters.map {
+            ScanUploadItem(scanName: $0.name, scanPrice: $0.price)
+        }
+    
+        do {
+            print("📤 [SCAN] 서버 업로드 시작")
+
+            // 1) POST /scan
+            try await ScanService.shared.uploadScans(
+                userId: userIdResponse.userId,
+                items: items
+            )
+
+            print("✅ 서버 업로드 성공 → 이제 GET /scan로 products 구성")
+
+            // 2) GET /scan?userId=...
+            let scanList = try await ScanService.shared.fetchScans(userId: userIdResponse.userId)
+
+            // 3) 서버 데이터를 RecognizedProduct로 변환
+            self.products = scanList.map { scan in
+                RecognizedProduct(
+                    image: nil, // 서버 URL로 그릴 거라 nil
+                    badge: "",  // 필요하면 Best 가성비 같은거 서버가 주는 날 넣자
+                    brand: scan.naverBrand ?? "",
+                    name: scan.scanName,
+                    amount: "", // 지금 6개 필드에 없음
+                    price: "\(scan.scanPrice)원",
+                    onlinePrice: scan.naverPrice.map { "\($0)원" } ?? "-",
+                    perUse: scan.aiUnitPrice ?? "분석 중...",
+                    imageURL: scan.naverImage
+                )
+            }
+
+            print("✅ products 세팅 완료: \(self.products.count)개 → goResult 이동")
+            goResult = true
+            print("➡️ goResult 현재값:", goResult)
+
+        } catch {
+            print("❌ uploadAndGoResult catch:", error.localizedDescription)
+            uploadErrorMessage = error.localizedDescription
+            showUploadError = true
         }
     }
 

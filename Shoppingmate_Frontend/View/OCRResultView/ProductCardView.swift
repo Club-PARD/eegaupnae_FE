@@ -15,23 +15,70 @@ struct ProductCardView: View {
         VStack(alignment: .leading, spacing: 6) {
             
             ZStack(alignment: .bottomLeading) {
+                
                 GeometryReader { geo in
-                    if let image = product.image {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(
-                                width: geo.size.width, //사진 박스 크기
-                                height: geo.size.width
-                            )
-                            .background(
+                    let side = geo.size.width
+
+                    if let urlString = product.imageURL,
+                       let url = URL(string: urlString) {
+
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
                                 RoundedRectangle(cornerRadius: 9)
                                     .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
-                            )
+                                    .overlay(ProgressView())
+                                    .frame(width: side, height: side)
+
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: side, height: side)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 9)
+                                            .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
+                                    )
+
+                            case .failure:
+                                RoundedRectangle(cornerRadius: 9)
+                                    .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
+                                    .overlay(Image(systemName: "photo").font(.system(size: 24)))
+                                    .frame(width: side, height: side)
+
+                            @unknown default:
+                                RoundedRectangle(cornerRadius: 9)
+                                    .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
+                                    .frame(width: side, height: side)
+                            }
+                        }
+
+                    } else {
+                        RoundedRectangle(cornerRadius: 9)
+                            .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
+                            .overlay(Image(systemName: "photo").font(.system(size: 24)))
+                            .frame(width: side, height: side)
                     }
                 }
+                .aspectRatio(1, contentMode: .fit) // 정사각형 유지
+           
+//                GeometryReader { geo in
+//                    if let image = product.image {
+//                        Image(uiImage: image)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(
+//                                width: geo.size.width, //사진 박스 크기
+//                                height: geo.size.width
+//                            )
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 9)
+//                                    .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
+//                            )
+//                    }
+//                }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
-                
+       
                 Text(product.perUse)
                         .font(Font.custom("Arial-BoldMT", size: 11))
                         .foregroundStyle(
