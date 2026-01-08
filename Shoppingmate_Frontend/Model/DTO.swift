@@ -35,6 +35,20 @@ struct ScanUploadItem: Codable {
     let scanPrice: Int
 }
 
+struct ScanItemResponse: Codable, Identifiable {
+    let userId: Int
+    let scanId: Int
+    let scanName: String
+    let scanPrice: Int
+    let naverPrice: Int?
+    let naverBrand: String?
+    let naverMaker: String?      // 서버에 있을 수 있으니 포함 (안 오면 무시)
+    let naverImage: String?
+    let aiUnitPrice: String?
+
+    var id: Int { scanId }
+}
+
 // Apple이 만든 CLLocation type에 새 기능 추가
 // CLLocation 상속은 불가, 확장만 가능
 extension CLLocation {

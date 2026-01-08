@@ -73,8 +73,6 @@ final class ScanService {
                   print("StatusCode:", httpResponse.statusCode)
                   print("Body:", bodyText)
             
-//            print("📥 StatusCode:", httpResponse.statusCode)
-            
             guard (200...299).contains(httpResponse.statusCode) else {
                 throw APIError.httpStatus(httpResponse.statusCode, bodyText)
             }
@@ -84,4 +82,63 @@ final class ScanService {
             throw APIError.transport(error)
         }
     }
+    
+    
+
+        // scan get
+        func fetchScans(userId: Int) async throws -> [ScanItemResponse] {
+            let baseURL = baseURL.base.rawValue
+
+            guard var components = URLComponents(string: "\(baseURL)/scan") else {
+                print("❌ [SCAN GET] URLComponents 생성 실패")
+                throw APIError.invalidURL
+            }
+
+            components.queryItems = [
+                URLQueryItem(name: "userId", value: String(userId))
+            ]
+
+            guard let url = components.url else {
+                print("❌ [SCAN GET] URL 생성 실패")
+                throw APIError.invalidURL
+            }
+
+            // 🔎 요청 로그
+            print("❗️ [SCAN GET REQUEST]")
+            print("URL:", url.absoluteString)
+            print("Method: GET")
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.timeoutInterval = 60
+
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+
+                let bodyText = String(data: data, encoding: .utf8) ?? ""
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("❌ [SCAN GET] HTTPResponse 캐스팅 실패")
+                    throw URLError(.badServerResponse)
+                }
+
+                // 🔎 응답 로그
+                print("📥 [SCAN GET RESPONSE]")
+                print("StatusCode:", httpResponse.statusCode)
+                print("Body:", bodyText)
+
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    throw APIError.httpStatus(httpResponse.statusCode, bodyText)
+                }
+
+                let decoded = try JSONDecoder().decode([ScanItemResponse].self, from: data)
+                print("✅ fetchScans 성공: \(decoded.count)개")
+                return decoded
+
+            } catch {
+                throw APIError.transport(error)
+            }
+        }
+
+    
 }

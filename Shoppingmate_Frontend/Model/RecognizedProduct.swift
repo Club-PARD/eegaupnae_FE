@@ -18,6 +18,7 @@ struct RecognizedProduct: Identifiable {
     let price: String     //"12,800원"
     let onlinePrice: String
     let perUse: String    //"1회당 40원"
+    let imageURL: String? //네이버 이미지 URL
     
     init( //구조체가 그려질 때 한 번만 저장
         id: UUID = UUID(),
@@ -28,7 +29,8 @@ struct RecognizedProduct: Identifiable {
         amount: String,
         price: String,
         onlinePrice: String,
-        perUse: String
+        perUse: String,
+        imageURL: String? = nil
     ) {
         self.id = id
         self.image = image
@@ -39,5 +41,6 @@ struct RecognizedProduct: Identifiable {
         self.price = price
         self.onlinePrice = onlinePrice
         self.perUse = perUse
+        self.imageURL = imageURL
     }
 }
