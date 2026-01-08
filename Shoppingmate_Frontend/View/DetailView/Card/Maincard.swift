@@ -9,15 +9,12 @@ import SwiftUI
 
 struct Maincard: View {
     
-    let product: RecognizedProduct
-    private var detail: DetailData {
-        MockDetailStore.detail(for: product)
-    }
+    let detail: DetailResponse
     
     var body: some View {
         VStack {
             HStack(spacing: 12) {
-                Text(detail.title)
+                Text(detail.scanName)
                     .font(
                         Font.custom("Pretendard-Bold", size: 24)
                     )
@@ -63,8 +60,8 @@ struct Maincard: View {
                           )
                       )
                 Spacer()
-                StarRatingView(rating: detail.rating)
-                Text(String(format: "%.1f", detail.rating))
+                StarRatingView(rating: detail.pickScore ?? 0)
+                Text(String(format: "%.1f", detail.pickScore ?? 0))
                     .font(.custom("Pretendard-Bold", size: 35))
                     .foregroundStyle(
                         LinearGradient(
@@ -83,7 +80,7 @@ struct Maincard: View {
                     .font(.custom("Pretendard-Regular", size: 16))
                   .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
-                Text(detail.martPrice)
+                Text("\(detail.scanPrice)")
                     .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
@@ -95,67 +92,35 @@ struct Maincard: View {
                     .font(.custom("Pretendard-Regular", size: 16))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
-                Text(detail.onlinePrice)
+                Text("\(detail.naverPrice)")
                     .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
                     .padding(.bottom, 2)
             }
             .padding(.horizontal, 30)
-            
-            
         } //vstack
 
     }
 }
 
 
-//    // ✅ 가격 비교 카드
-//    VStack(alignment: .leading, spacing: 10) {
-//        PriceRow(title: "📍 픽 제품 가격 (Pick Price)", price: detail.pickPrice, isEmphasis: true)
-//        PriceRow(title: "마트 판매가", price: detail.martPrice, isEmphasis: false)
-//        PriceRow(title: "온라인가", price: detail.onlinePrice, isEmphasis: false)
-//    }
-//    .padding(14)
-//    .background(Color.white)
-//    .clipShape(RoundedRectangle(cornerRadius: 14))
-//    .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
-//    
-//    // ✅ SALE 배너
-//    if let banner = detail.saleBannerText, !banner.isEmpty {
-//        HStack(alignment: .top, spacing: 10) {
-//            Text("SALE")
-//                .font(.system(size: 12, weight: .bold))
-//                .foregroundStyle(.white)
-//                .padding(.horizontal, 10)
-//                .padding(.vertical, 6)
-//                .background(Color.red)
-//                .clipShape(RoundedRectangle(cornerRadius: 8))
-//            
-//            Text(banner)
-//                .font(.system(size: 13, weight: .semibold))
-//                .foregroundStyle(.white)
-//                .fixedSize(horizontal: false, vertical: true)
-//            
-//            Spacer(minLength: 0)
-//        }
-//        .padding(14)
-//        .background(Color.red.opacity(0.85))
-//        .clipShape(RoundedRectangle(cornerRadius: 14))
-//    }
-
 #Preview {
-    let mockProduct = RecognizedProduct(
-        image: UIImage(systemName: "photo"),
-        badge: "Best 가성비",
-        brand: "피죤",
-        name: "퍼실 라벤더 1.5(겸용)",
-        amount: "2.5L",
-        price: "8,800원",
-        onlinePrice: "12,800원",
-        perUse: "한번 사용 283원꼴"
+    Maincard(
+        detail: DetailResponse(
+            naverImage: "https://example.com/image.jpg",
+            scanName: "아리엘 액체세제 2L",
+            pickScore: 4.5,
+            scanPrice: 9800,
+            naverPrice: 12800,
+            priceDiff: -3000,
+            isCheaper: true,
+            conclusion: "구매 추천",
+            qualitySummary: "세정력이 뛰어나요",
+            priceSummary: "온라인보다 저렴해요",
+            category: "생활용품",
+            indexes: []
+        )
     )
-
-    return Maincard(product: mockProduct)
 }
 

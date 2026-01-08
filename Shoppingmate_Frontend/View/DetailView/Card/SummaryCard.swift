@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SummaryCard: View {
+    
+    let detail: DetailResponse
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -24,7 +27,7 @@ struct SummaryCard: View {
                 Image("qualityIcon")
                     .resizable()
                     .frame(width: 18, height: 18)
-                Text("품질 우수")
+                Text(detail.qualitySummary)
                     .font(.custom("Pretendard-Bold", size: 15))
                     .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
             }
@@ -40,7 +43,7 @@ struct SummaryCard: View {
                 Image("priceIcon")
                     .resizable()
                     .frame(width: 18, height: 18)
-                Text("가격 아쉬움")
+                Text(detail.priceSummary)
                     .font(.custom("Pretendard-Bold", size: 15))
                     .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
             }

@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct PurchaseHoldCard: View {
+    
+    let detail: DetailResponse
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // 타이틀
-            Text("구매 보류 추천")
+            Text(detail.conclusion)
                 .font(.custom("Pretendard-Bold", size: 20))
                 .foregroundColor(Color(red: 0.90, green: 0.30, blue: 0.35))
 

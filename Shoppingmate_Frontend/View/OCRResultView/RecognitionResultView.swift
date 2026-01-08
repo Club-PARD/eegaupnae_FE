@@ -12,6 +12,7 @@ struct RecognitionResultView: View {
     
     @Environment(\.dismiss) private var dismiss // 커스텀 뒤로가기
     let products: [RecognizedProduct]
+    let detail: DetailResponse
     
     private let columns = [ //2행 정렬
         GridItem(.flexible(), spacing: 14),
@@ -97,7 +98,7 @@ struct RecognitionResultView: View {
                     LazyVGrid(columns: columns, spacing: 20.29) {
                         ForEach(products) { product in
                             NavigationLink {
-                                DetailView(product: product)
+                                DetailView(detail: detail)
                             } label: {
                                 ProductCardView(product: product)
                             }
@@ -114,20 +115,20 @@ struct RecognitionResultView: View {
     }
 }
 
-#Preview {
-    let mockProducts: [RecognizedProduct] = [
-            RecognizedProduct(
-                image: UIImage(systemName: "photo"),
-                badge: "Best 가성비",
-                brand: "피죤",
-                name: "피죤 실내건조 섬유유연제 라벤더향",
-                amount: "2.5L",
-                price: "8,800원",
-                onlinePrice: "12,800원",
-                perUse: "한번 사용 283원꼴"
-            )
-    ]
-    NavigationStack {
-        RecognitionResultView(products: mockProducts)
-    }
-}
+//#Preview {
+//    let mockProducts: [RecognizedProduct] = [
+//            RecognizedProduct(
+//                image: UIImage(systemName: "photo"),
+//                badge: "Best 가성비",
+//                brand: "피죤",
+//                name: "피죤 실내건조 섬유유연제 라벤더향",
+//                amount: "2.5L",
+//                price: "8,800원",
+//                onlinePrice: "12,800원",
+//                perUse: "한번 사용 283원꼴"
+//            )
+//    ]
+//    NavigationStack {
+//        RecognitionResultView(products: mockProducts)
+//    }
+//}

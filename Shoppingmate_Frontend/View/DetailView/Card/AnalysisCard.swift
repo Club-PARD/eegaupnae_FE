@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct AnalysisCard: View {
+    
+    let detail: DetailResponse
+    
+    private var iconNames: [String] {
+       AnalysisIconProvider.icons(for: detail.category)
+   }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -20,38 +27,31 @@ struct AnalysisCard: View {
                 Spacer()
             }
             .padding(.bottom, 10)
-            HStack {
-                Image("qualityIcon")
-                    .resizable()
-                    .frame(width: 18, height: 18)
-                Text("품질 우수")
-                    .font(.custom("Pretendard-Bold", size: 15))
-                    .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
+
+            //5개 지표 나열
+            ForEach(Array(zip(detail.indexes.indices, detail.indexes)), id: \.0) { i, item in
+                
+                HStack(alignment: .top, spacing: 12) {
+
+                    Image(iconNames[safe: i] ?? "icon_default")
+                        .resizable()
+                        .frame(width: 48, height: 48)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.name)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+
+                        Text(item.reason)
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }
             }
-            Text("품질 상세 설명~~~~~~")
-                .font(.custom("Pretendard-Regular", size: 14))
-                .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
-                .padding(.leading, 25)
-                .padding(.bottom, 10)
+    
             
-            Divider()
-            
-            HStack {
-                Image("priceIcon")
-                    .resizable()
-                    .frame(width: 18, height: 18)
-                Text("가격 아쉬움")
-                    .font(.custom("Pretendard-Bold", size: 15))
-                    .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
-            }
-            .padding(.top, 10)
-            Text("가격 상세 설명~~~~~~")
-                .font(.custom("Pretendard-Regular", size: 14))
-                .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
-                .padding(.leading, 25)
-                .padding(.bottom, 10)
-                 
-            
+            //.listRowSeparator(.hidden)//구분선 안보이게
+           
      
         }
         .padding(.vertical, 5)
@@ -63,6 +63,13 @@ struct AnalysisCard: View {
     }
 }
 
-#Preview {
-    AnalysisCard()
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        guard indices.contains(index) else { return nil }
+        return self[index]
+    }
 }
+
+//#Preview {
+//    AnalysisCard()
+//}

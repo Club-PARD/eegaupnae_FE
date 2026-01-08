@@ -95,43 +95,43 @@ final class UploadService {
 
     //UUID GET
     //이거 아직 호출 안함. 어디서 get할건지 정하기
-    func fetchUserInfo(uuid: String) async throws {
-        // URL 생성
-        let baseURL = baseURL.base.rawValue
-        guard let url = URL(string: "\(baseURL)/users/{uuid}") else {
-            print("❌ URL 생성 실패")
-            throw URLError(.badURL)
-        }
-        
-        // URLRequest 설정
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        logRequest(request)
-        
-        // 네트워크 요청
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        // 응답 검증
-        guard let httpResponse = response as? HTTPURLResponse else {
-            print("❌ HTTPResponse 캐스팅 실패")
-            throw URLError(.badServerResponse)
-        }
-        print("📥 StatusCode:", httpResponse.statusCode)
-
-        if !(200...299).contains(httpResponse.statusCode) {
-            if let errorBody = String(data: data, encoding: .utf8) {
-                print("❌ Server Error Body:", errorBody)
-            }
-            throw URLError(.badServerResponse)
-        }
-
-        if let body = String(data: data, encoding: .utf8) {
-            print("📦 Response Body:", body)
-        }
-
-        print("✅ fetchUserInfo 성공")
-    }
+//    func fetchUserInfo(uuid: String) async throws {
+//        // URL 생성
+//        let baseURL = baseURL.base.rawValue
+//        guard let url = URL(string: "\(baseURL)/users/{uuid}") else {
+//            print("❌ URL 생성 실패")
+//            throw URLError(.badURL)
+//        }
+//        
+//        // URLRequest 설정
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        
+//        logRequest(request)
+//        
+//        // 네트워크 요청
+//        let (data, response) = try await URLSession.shared.data(for: request)
+//        
+//        // 응답 검증
+//        guard let httpResponse = response as? HTTPURLResponse else {
+//            print("❌ HTTPResponse 캐스팅 실패")
+//            throw URLError(.badServerResponse)
+//        }
+//        print("📥 StatusCode:", httpResponse.statusCode)
+//
+//        if !(200...299).contains(httpResponse.statusCode) {
+//            if let errorBody = String(data: data, encoding: .utf8) {
+//                print("❌ Server Error Body:", errorBody)
+//            }
+//            throw URLError(.badServerResponse)
+//        }
+//
+//        if let body = String(data: data, encoding: .utf8) {
+//            print("📦 Response Body:", body)
+//        }
+//
+//        print("✅ fetchUserInfo 성공")
+//    }
     
     //Location UPDATE
     func updateLocation(
@@ -175,7 +175,58 @@ final class UploadService {
     }
 }
 
+//gemini GET
+func getGemini(scanId: scanIdDTO) async throws -> DetailResponse {
+    // URL 생성
+    let baseURL = baseURL.base.rawValue
+    guard let url = URL(string: "\(baseURL)/gemini/{scanId}") else {
+        print("❌ URL 생성 실패")
+        throw URLError(.badURL)
+    }
+    
+    // URLRequest 설정
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    request.setValue("application/json", forHTTPHeaderField: "Accept")
+    
+    logRequest(request)
+    
+    // 네트워크 요청
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    // 응답 검증
+    guard let httpResponse = response as? HTTPURLResponse else {
+        print("❌ HTTPResponse 캐스팅 실패")
+        throw URLError(.badServerResponse)
+    }
+    print("📥 StatusCode:", httpResponse.statusCode)
 
+    if !(200...299).contains(httpResponse.statusCode) {
+        if let errorBody = String(data: data, encoding: .utf8) {
+            print("❌ Server Error Body:", errorBody)
+        }
+        throw URLError(.badServerResponse)
+    }
+
+    do {
+        let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
+        print("✅ get Gemini info 성공")
+        return decoded
+    } catch {
+        print("❌ Decoding Error:", error)
+        if let body = String(data: data, encoding: .utf8) {
+            print("📦 Raw JSON:", body)
+        }
+        throw error
+    }
+//    if let body = String(data: data, encoding: .utf8) {
+//        print("📦 Response Body:", body)
+//    }
+//
+//    let decoded = try JSONDecoder().decode(DetailResponse.self, from: data)
+//    print("✅ get Gemini info 성공")
+//    return decoded
+}
 
 //디버깅용 로그함수
 private func logRequest(_ request: URLRequest) {

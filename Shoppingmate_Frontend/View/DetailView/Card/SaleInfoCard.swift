@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct SaleInfoCard: View {
+    
+    let detail: DetailResponse
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
 
-            // 🔹 상단 타이틀
+            // 상단 타이틀
             HStack(spacing: 8) {
                 Image(systemName: "clock")
                     .font(.system(size: 18, weight: .semibold))
@@ -26,7 +29,7 @@ struct SaleInfoCard: View {
             }
             .padding(.top, -5)
 
-            // 🔹 내용
+            // 내용
             VStack(spacing: 10) {
                 HStack {
                     Text("행사 때 사면")
@@ -41,7 +44,7 @@ struct SaleInfoCard: View {
                     Text("온라인 최저가보다")
                         .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
                     Spacer()
-                    Text("900원 더 이득")
+                    Text("\(detail.naverPrice-detail.scanPrice)원 더 이득")
                         .fontWeight(.bold)
                         .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
                 }

@@ -9,10 +9,10 @@ import SwiftUI
 struct DetailView: View {
     
     @Environment(\.dismiss) private var dismiss
-    let product: RecognizedProduct
-    private var detail: DetailData {
-        MockDetailStore.detail(for: product)
-    }
+    
+    let scanId: Int
+    
+    @State private var detail: DetailResponse
     
     var body: some View {
         ZStack{
@@ -38,61 +38,110 @@ struct DetailView: View {
                                 Font.custom("Pretendard-Bold", size: 20)
                             )
                         Spacer()
+                        
+                        NavigationLink {
+                            CameraOCRView(cameFromMap: true)
+                        } label: {
+                            Image("cameraBack")
+                                .resizable()
+                                .frame(width: 35, height: 35)
+                                .padding(.trailing, 10)
+                        }
+                     
                     }
                 }
                 Divider()
                 
-                List{
-                    Section{
-                        Image("jh")
-                            .resizable()
-                            . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
-                            .frame(width: 362, height: 360)
-                            .listRowBackground(Color.clear)
-                            .clipShape(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                if let deatail = detail {
+                    List{
+                        Section{
+                            Image(detail.naverImage)
+                                .resizable()
+                                . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
+                                .frame(width: 362, height: 360)
+                                .listRowBackground(Color.clear)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                )
+                        }
+                        .listSectionSpacing(13) // 이거 해야 총 18
+                        if let unwrappedDetail = detail {
+                            List {
+                                Section {
+                                    Maincard(detail: unwrappedDetail)
+                                        .listRowInsets(EdgeInsets())
+                                    SaleInfoCard()
+                                        .listRowSeparator(.hidden)
+                                }
+                                // 다른 카드들도 동일하게 unwrappedDetail 사용
+                            }
+                        } else {
+                            ProgressView()
+                        }
+//                        Section {
+//                            Maincard(detail: detail)
+//                                .listRowInsets(EdgeInsets())
+//                            SaleInfoCard()
+//                                .listRowSeparator(.hidden)
+//                        }
+                        //구매 추천 or 비추천
+                        Section {
+                            PurchaseHoldCard()
+                        }
+                        //품질 및 가격 요약
+                        Section {
+                            SummaryCard()
+                        }
+                        //5대 지표 심층 분석
+                        Section {
+                            AnalysisCard(
+                                category: "위생",
+                                indexes: AnalysisIndex.modeling
                             )
+                        }
                     }
-                    .listSectionSpacing(13) // 이거 해야 총 18
-                    
-                    Section {
-                        Maincard(product: product)
-                            .listRowInsets(EdgeInsets())
-                        SaleInfoCard()
-                            .listRowSeparator(.hidden)
-                    }
-                    //구매 추천 or 비추천
-                    Section {
-                        PurchaseHoldCard()
-                    }
-                    //품질 및 가격 요약
-                    Section {
-                        SummaryCard()
-                    }
-                    //5대 지표 심층 분석
-                    Section {
-                        AnalysisCard()
-                    }
+                    .listSectionSpacing(18)
+                } else {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
                 }
-                .listSectionSpacing(18)
                 
             } //vstack
         } // zstack all
         .navigationBarHidden(true)
-    } // 바바디썸뷰
+        //비동기 호출
+        .task {
+            await loadDetail()
+        }
+    }
+    private func loadDetail() async {
+        do {
+            let dto = scanIdDTO(scanId: scanId)
+            detail = try await getGemini(scanId: dto)
+        } catch {
+            print("❌ detail 로딩 실패:", error)
+        }
+    }
 }
-#Preview {
-    let mockProduct = RecognizedProduct(
-        image: UIImage(systemName: "photo"),
-        badge: "Best 가성비",
-        brand: "피죤",
-        name: "피죤 실내건조 섬유유연제 라벤더향",
-        amount: "2.5L",
-        price: "8,800원",
-        onlinePrice: "12,800원",
-        perUse: "한번 사용 283원꼴"
-    )
 
-    return DetailView(product: mockProduct)
+
+#Preview {
+    DetailView(
+        detail: DetailResponse(
+        naverImage: "https://example.com/image.jpg",
+        scanName: "아리엘 액체세제 2L",
+        pickScore: 4.5,
+        scanPrice: 9800,
+        naverPrice: 12800,
+        priceDiff: -3000,
+        isCheaper: true,
+        conclusion: "구매 추천",
+        qualitySummary: "세정력이 뛰어나요",
+        priceSummary: "온라인보다 저렴해요",
+        category: "생활용품",
+        indexes: []
+        )
+    )
 }
 
