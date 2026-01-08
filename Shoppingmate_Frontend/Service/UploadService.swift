@@ -53,16 +53,16 @@ final class UploadService {
     
     //UUID POST
     func uploadUUID(
-        uuid: UUIDDTO?
-    ) async throws {
+        uuid: UUIDDTO
+    ) async throws -> UserIdResponse {
         // URL 생성
         let baseURL = baseURL.base.rawValue
-        guard let url = URL(string: "\(baseURL)/users/login") else {
+        guard let url = URL(string: "\(baseURL)/user/login") else {
             print("❌ URL 생성 실패")
             throw URLError(.badURL)
         }
         
-        // UUIDDTO → JSON
+        // UUIDDTO → JSONㄱ
         let jsonData = try JSONEncoder().encode(uuid)
         
         // URLRequest 설정
@@ -71,26 +71,26 @@ final class UploadService {
         request.httpBody = jsonData
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        logRequest(request)
-        
+        //logRequest(request)
         // 네트워크 요청
         let (data, response) = try await URLSession.shared.data(for: request)
         
+        if let body = String(data: data, encoding: .utf8) {
+            print("📦 UUID POST Response Body:", body)
+        }
+        
         // 응답 검증
-        guard let httpResponse = response as? HTTPURLResponse else {
+        guard let httpResponse = response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
             print("❌ HTTPResponse 캐스팅 실패")
             throw URLError(.badServerResponse)
         }
         print("📥 StatusCode:", httpResponse.statusCode)
 
-        if !(200...299).contains(httpResponse.statusCode) {
-            if let errorBody = String(data: data, encoding: .utf8) {
-                print("❌ Server Error Body:", errorBody)
-            }
-            throw URLError(.badServerResponse)
-        }
-
+        let decoded = try JSONDecoder().decode(UserIdResponse.self, from: data)
+        //UserDefaults.standard.set(decoded.id, forKey: "userId")
         print("✅ uploadUUID 성공")
+        return decoded
     }
 
     //UUID GET
@@ -139,7 +139,7 @@ final class UploadService {
     ) async throws {
         // URL 생성
         let baseURL = baseURL.base.rawValue
-        guard let url = URL(string: "\(baseURL)/users/location/update") else {
+        guard let url = URL(string: "\(baseURL)/user/update-location") else {
             print("❌ URL 생성 실패")
             throw URLError(.badURL)
         }
@@ -149,7 +149,7 @@ final class UploadService {
         
         // URLRequest 설정
         var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
+        request.httpMethod = "PATCH"
         request.httpBody = jsonData
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
@@ -174,6 +174,8 @@ final class UploadService {
         print("✅ updatedLocation 성공")
     }
 }
+
+
 
 //디버깅용 로그함수
 private func logRequest(_ request: URLRequest) {

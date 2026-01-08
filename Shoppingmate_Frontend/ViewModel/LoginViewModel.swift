@@ -10,7 +10,13 @@ import CoreLocation
 import Combine
 
 final class LoginViewModel: ObservableObject {
+    @Published var isUserReady: Bool = false
+    //@EnvironmentObject var serverViewModel: ServerViewModel
+    
     let locationService = LocationService()
+    let uploadService = UploadService()
+    
+    init() {}
     
     enum UserDefaultKey {
         static let isNormalUser = "isNormalUser"
@@ -34,9 +40,6 @@ final class LoginViewModel: ObservableObject {
         //위치 요청
         locationService.requestOneTimeLocation()
         
-        // 유저 타입 저장 (첫 페이지 재노출 방지)
-        UserDefaults.standard.set(true, forKey: UserDefaultKey.isNormalUser)
-        
         // UUID 생성
         let uuid = getOrCreateUUID()
         print("🆔 UUID:", uuid)
@@ -47,14 +50,19 @@ final class LoginViewModel: ObservableObject {
         //Task에서 서버통신
         Task {
             do {
-                //UUID 로그인 POST
-                let uploadService = UploadService()
-                try await uploadService.uploadUUID(uuid: uuidDTO)
-                print("✅ UUID 로그인 성공")
+                // 유저 타입 저장 (첫 페이지 재노출 방지)
+                let response = try await uploadService.uploadUUID(uuid: uuidDTO)
                 
-                //위치 들어온 뒤 확인 후 처리
-                let serverViewModel = ServerViewModel()
-                serverViewModel.handleLocationAfterLogin()
+                UserDefaults.standard.set(response.userId, forKey: "userId")
+                //UUID 로그인 POST
+                UserDefaults.standard.set(true, forKey: UserDefaultKey.isNormalUser)
+                
+                DispatchQueue.main.async {
+                    self.isUserReady = true
+                }
+                //try await uploadService.uploadUUID(uuid: uuidDTO)
+                print("✅ UUID 로그인 성공")
+
             } catch {
                 print("🚨 guestLogin 실패:", error)
             }

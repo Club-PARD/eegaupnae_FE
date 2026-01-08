@@ -12,7 +12,8 @@ struct OnboardingView: View {
     @State private var isFinished = false
     @State private var hasUUID = false
     @State private var didUploadUUID = false
-    
+    @EnvironmentObject var loginViewModel: LoginViewModel
+    @EnvironmentObject var serverViewModel: ServerViewModel
     private let uploadService = UploadService()
     
     var body: some View {
@@ -61,7 +62,6 @@ struct OnboardingView: View {
                     try await uploadService.uploadUUID(uuid: uuidDTO)
                     print("✅ 기존 UUID 서버 전송 완료")
 
-                    let serverViewModel = ServerViewModel()
                     serverViewModel.handleLocationAfterLogin()
                 } catch {
                     print("🚨 기존 UUID 서버 전송 실패:", error)

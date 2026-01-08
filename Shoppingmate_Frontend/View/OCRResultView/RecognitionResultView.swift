@@ -83,11 +83,6 @@ struct RecognitionResultView: View {
                               .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
                               .lineLimit(1)
                               .padding(.leading, -8)
-//                            Button(action: onClose) { {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
-//                            }
                 }//hstack
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
