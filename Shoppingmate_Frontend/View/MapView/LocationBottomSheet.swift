@@ -58,19 +58,18 @@ struct LocationBottomSheet: View {
             .padding(.horizontal, 20)
             .padding(.top, 16)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 0)
         .padding(.bottom, 40)
         .frame(maxWidth: .infinity)
         .background(Color.white)
-        .clipShape(
-            RoundedRectangle(cornerRadius: 70, style: .continuous)
-        )
+        .clipShape(TopRoundedRect(radius: 24))
+        .ignoresSafeArea(edges: .bottom)
     }
 }
 
 //#Preview {
 //    LocationBottomSheet(
-//        address,
+//        viewModel: address,
 //        onCurrentLocationTap: {
 //            print("현재 위치")
 //        },
@@ -79,3 +78,20 @@ struct LocationBottomSheet: View {
 //        }
 //    )
 //}
+#Preview {
+    let service = LocationService()
+    let vm = LocationSelectViewModel(locationService: service)
+
+    // 주소를 미리 보이게 하고 싶으면 (address가 set 가능할 때)
+    vm.address = "경북 포항시 북구 흥해읍 한동로 558"
+
+    return LocationBottomSheet(
+        viewModel: vm,
+        onCurrentLocationTap: {
+            print("현재 위치")
+        },
+        onConfirmTap: {
+            print("확정")
+        }
+    )
+}

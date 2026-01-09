@@ -76,7 +76,6 @@ final class LocationSelectViewModel: ObservableObject {
         shouldMoveToCurrentLocation = true
         
         locationService.requestCurrentLocation()
-        serverViewModel.handleLocationUpdateAfterButton()
     }
 
     // 지도 이동 감지
