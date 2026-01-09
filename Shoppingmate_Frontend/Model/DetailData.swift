@@ -38,6 +38,20 @@ struct DetailResponse: Codable {
     let conclusion: String
 }
 
+struct GeminiDetailResponse: Codable {
+    let pickScore: Double
+    let reliabilityScore: Double
+
+    let aiUnitPrice: String?
+    let indexes: [AnalysisIndex]
+
+    let qualityState: Bool
+    let qualitySummary: String
+    let priceState: Bool
+    let priceSummary: String
+    let conclusion: String
+}
+
 
 //extension AnalysisIndex {
 //    static let modeling: [AnalysisIndex] = [

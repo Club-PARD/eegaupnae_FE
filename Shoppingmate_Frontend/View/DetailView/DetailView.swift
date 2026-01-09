@@ -60,59 +60,31 @@ struct DetailView: View {
                 
                 if let unwrappedDetail = detail {
                     List{
-                        if let imageUrl = unwrappedDetail.naverImage {
-                            Section {
+                        Section {
+                            if let imageUrl = unwrappedDetail.naverImage,
+                               imageUrl.hasPrefix("http") {
+
                                 ImageCard(imageUrl: imageUrl)
                                     .listRowInsets(
-                                        EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16)
+                                        EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16)
                                     )
-                                    .listRowBackground(Color.clear)
+
+                            } else {
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 200)
+                                        .foregroundColor(.gray.opacity(0.4))
+                                    Spacer()
+                                }
+                                .listRowInsets(
+                                    EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16)
+                                )
                             }
-                            .listSectionSpacing(13)
                         }
-//                        Section{
-//                            if let imageUrlString = unwrappedDetail.naverImage,
-//                               let url = URL(string: imageUrlString) {
-//
-//                                AsyncImage(url: url) { phase in
-//                                    switch phase {
-//                                    case .empty:
-//                                        ProgressView()
-//                                            .frame(height: 360)
-//
-//                                    case .success(let image):
-//                                        image
-//                                            .resizable()
-//                                            .scaledToFill()
-//                                            .frame(height: 360)
-//                                            .frame(maxWidth: .infinity)
-//                                            .clipped()
-//                                            .clipShape(
-//                                                RoundedRectangle(
-//                                                    cornerRadius: 12,
-//                                                    style: .continuous
-//                                                )
-//                                            )
-//
-//                                    case .failure:
-//                                        Image(systemName: "photo")
-//                                            .frame(height: 360)
-//
-//                                    @unknown default:
-//                                        EmptyView()
-//                                    }
-//                                }
-//                            }
-//                            AsyncImage(unwrappedDetail.naverImage)
-//                                .resizable()
-//                                . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
-//                                .frame(width: 362, height: 360)
-//                                .listRowBackground(Color.clear)
-//                                .clipShape(
-//                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-//                                )
-//                        }//section
-//                        .listSectionSpacing(13) // 이거 해야 총 18
+                        .listSectionSpacing(20)
                         
                         Section {
                             Maincard(detail: unwrappedDetail)
@@ -134,6 +106,7 @@ struct DetailView: View {
                         }
                     }
                     .listSectionSpacing(18)
+                    //.listStyle(.plain)
                 } else {
                     Spacer()
                     ProgressView()
@@ -158,14 +131,12 @@ struct DetailView: View {
 }
 
 
-//
-//#Preview {
-//    NavigationStack {
-//        DetailView(
-//            scanId: 1,
-//            previewDetail: .mock
-//        )
-//    }
-//}
+
+
+#Preview {
+    NavigationStack {
+        DetailView(scanId: 1)
+    }
+}
 
 

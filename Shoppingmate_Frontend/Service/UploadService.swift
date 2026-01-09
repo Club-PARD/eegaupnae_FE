@@ -204,18 +204,6 @@ func getGemini(scanId: Int) async throws -> DetailResponse {
         print("❌ Server Error:", String(data: data, encoding: .utf8) ?? "")
         throw URLError(.badServerResponse)
     }
-    //    guard let httpResponse = response as? HTTPURLResponse else {
-    //        print("❌ HTTPResponse 캐스팅 실패")
-    //        throw URLError(.badServerResponse)
-    //    }
-    //    print("📥 StatusCode:", httpResponse.statusCode)
-    //
-    //    if !(200...299).contains(httpResponse.statusCode) {
-    //        if let errorBody = String(data: data, encoding: .utf8) {
-    //            print("❌ Server Error Body:", errorBody)
-    //        }
-    //        throw URLError(.badServerResponse)
-    //    }
     
     if let body = String(data: data, encoding: .utf8) {
         print("📦 Raw JSON:", body)
