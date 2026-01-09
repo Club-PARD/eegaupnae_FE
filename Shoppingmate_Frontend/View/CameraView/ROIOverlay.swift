@@ -13,6 +13,7 @@ struct ROIOverlay: View {
     @Binding var ParseFail: Bool                // 파싱 실패 문구
     @State private var t: CGFloat = 0           // 작은 박스 애니메이션 용 (1 = 원래 ROI)
     @State private var hideImage = false        // 이미지 페이드아웃 용
+    @State private var dimOpacity: CGFloat = 0  // 화면 어둡게 하는 오버레이
     
     var body: some View {
         GeometryReader { geo in // 레이아웃 화면 크기 인식
@@ -23,6 +24,12 @@ struct ROIOverlay: View {
             let imageScale: CGFloat = 0.73
             
             ZStack { // 스캔 지역 커스텀
+                
+                Color.black // 화면 어둡게 하는 효과
+                    .opacity(dimOpacity)
+                    .ignoresSafeArea()
+                    .animation(.easeOut(duration: 0.3), value: dimOpacity)
+
                 
                 Image("pricetag")
                     .resizable()
@@ -94,10 +101,12 @@ struct ROIOverlay: View {
                      .onAppear {
                          t = 0 //뷰가 나타날 때 작은 박스
                          hideImage = false
+                         dimOpacity = 0.6 // 최초 밝기
                          DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
                                  withAnimation(.easeOut(duration: 0.3)) {
                                  t = 1
                                      hideImage = true
+                                     dimOpacity = 0 // 밝기 정상
                              }
                          }
                      }
