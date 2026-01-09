@@ -15,30 +15,38 @@ struct SaleInfoCard: View {
         VStack(alignment: .leading, spacing: 14) {
 
             // 상단 타이틀
-            HStack(spacing: 8) {
-                Image(systemName: "clock")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
-                    .padding(8)
-                    .background(Color.white.opacity(0.9))
-                    .clipShape(Circle())
+            detail.scanName.contains("오뚜기 쌀")
+            ? AnyView(
+                HStack(spacing: 8) {
+                    Image(systemName: "clock")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                        .padding(8)
+                        .background(Color.white.opacity(0.9))
+                        .clipShape(Circle())
 
-                Text("3일 뒤에 할인 행사!")
-                    .font(Font.custom("Pretendard-Bold", size: 18))
-                    .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
-            }
-            .padding(.top, -5)
-
+                    Text("3일 뒤에 할인 행사!")
+                        .font(Font.custom("Pretendard-Bold", size: 18))
+                        .foregroundColor(Color(red: 0.25, green: 0.28, blue: 0.61))
+                }
+                .padding(.top, -5)
+            )
+            : AnyView(EmptyView())
+            
             // 내용
             VStack(spacing: 10) {
-                HStack {
-                    Text("행사 때 사면")
-                        .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
-                    Spacer()
-                    Text("3,300원 더 절약")
-                        .fontWeight(.bold)
-                        .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
-                }
+                detail.scanName.contains("오뚜기 쌀")
+                ? AnyView(
+                    HStack {
+                        Text("행사 때 사면")
+                            .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
+                        Spacer()
+                        Text("2,500원 더 절약")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                    }
+                )
+                : AnyView(EmptyView())
 
                 HStack {
                     Text(

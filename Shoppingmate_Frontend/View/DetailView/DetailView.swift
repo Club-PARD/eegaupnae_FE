@@ -132,11 +132,8 @@ struct DetailView: View {
 
 
 
-
 #Preview {
     NavigationStack {
         DetailView(scanId: 1)
     }
 }
-
-
