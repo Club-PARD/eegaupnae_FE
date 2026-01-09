@@ -80,7 +80,7 @@ struct Maincard: View {
                     .font(.custom("Pretendard-Regular", size: 16))
                   .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
-                Text("\(detail.scanPrice)")
+                Text("\(detail.scanPrice, specifier: "%.0f")원")
                     .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
@@ -92,7 +92,7 @@ struct Maincard: View {
                     .font(.custom("Pretendard-Regular", size: 16))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                 Spacer()
-                Text("\(detail.naverPrice)")
+                Text("\(detail.naverPrice, specifier: "%.0f")원")
                     .font(.custom("Pretendard-Bold", size: 24))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .padding(.leading, 5)
@@ -103,24 +103,4 @@ struct Maincard: View {
 
     }
 }
-
-
-//#Preview {
-//    Maincard(
-//        detail: DetailResponse(
-//            naverImage: "https://example.com/image.jpg",
-//            scanName: "아리엘 액체세제 2L",
-//            pickScore: 4.5,
-//            scanPrice: 9800,
-//            naverPrice: 12800,
-//            priceDiff: -3000,
-//            isCheaper: true,
-//            conclusion: "구매 추천",
-//            qualitySummary: "세정력이 뛰어나요",
-//            priceSummary: "온라인보다 저렴해요",
-//            category: "생활용품",
-//            indexes: []
-//        )
-//    )
-//}
 

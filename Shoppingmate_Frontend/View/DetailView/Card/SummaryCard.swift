@@ -27,11 +27,15 @@ struct SummaryCard: View {
                 Image("qualityIcon")
                     .resizable()
                     .frame(width: 18, height: 18)
-                Text(detail.qualitySummary)
+                Text(
+                    detail.qualityState
+                    ? "품질은 우수해요"
+                    : "품질은 아쉬워요"
+                )
                     .font(.custom("Pretendard-Bold", size: 15))
                     .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
             }
-            Text("품질 상세 설명~~~~~~")
+            Text(detail.qualitySummary.removingDoubleAsterisks)
                 .font(.custom("Pretendard-Regular", size: 14))
                 .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
                 .padding(.leading, 25)
@@ -43,12 +47,16 @@ struct SummaryCard: View {
                 Image("priceIcon")
                     .resizable()
                     .frame(width: 18, height: 18)
-                Text(detail.priceSummary)
+                Text(
+                    detail.priceState
+                    ? "가격은 우수해요"
+                    : "가격은 아쉬워요"
+                )
                     .font(.custom("Pretendard-Bold", size: 15))
                     .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
             }
             .padding(.top, 10)
-            Text("가격 상세 설명~~~~~~")
+            Text(detail.priceSummary.removingDoubleAsterisks)
                 .font(.custom("Pretendard-Regular", size: 14))
                 .foregroundColor(Color(red: 0.1, green: 0.12, blue: 0.16))
                 .padding(.leading, 25)

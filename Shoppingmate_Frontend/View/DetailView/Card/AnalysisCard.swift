@@ -42,7 +42,7 @@ struct AnalysisCard: View {
                             .font(.subheadline)
                             .fontWeight(.semibold)
 
-                        Text(item.reason)
+                        Text(item.reason.removingDoubleAsterisks)
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
