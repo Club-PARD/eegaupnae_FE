@@ -38,6 +38,7 @@ struct CameraOCRView: View {
     @State private var uploadErrorMessage = ""
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -264,7 +265,10 @@ struct CameraOCRView: View {
         }
 
         .navigationDestination(isPresented: $goResult) {
-            RecognitionResultView(products: products)
+            RecognitionResultView(
+                products: products,
+                userId: userIdResponse?.userId
+            )
         }
         .navigationDestination(isPresented: $goToMap) {
             if let userIdResponse {
@@ -276,6 +280,11 @@ struct CameraOCRView: View {
             camera.startSession()
             roiOverlayID = UUID() // 카메라 페이지 들어올 때마다 애니메이션 다시
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .background else { return }   // 앱 나갔을 때만
+            Task { await hideAllScansWhenAppBackground() }
+        }
+
 
         //        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
     } // var body
@@ -337,9 +346,11 @@ struct CameraOCRView: View {
             let scanList = try await ScanService.shared.fetchScans(
                 userId: userId
             )
+            
+            let visible = scanList.filter { $0.isShown }
 
             // 3) 서버 데이터를 RecognizedProduct로 변환
-            self.products = scanList.map { scan in
+            self.products = visible.map { scan in
                 RecognizedProduct(
                     image: nil, // 서버 URL로 그릴 거라 nil
                     badge: "",  // 필요하면 Best 가성비 같은거 서버가 주는 날 넣자
@@ -364,5 +375,22 @@ struct CameraOCRView: View {
             showUploadError = true
         }
     }
+    
+    @MainActor
+    private func hideAllScansWhenAppBackground() async {
+        guard let userId = userIdResponse?.userId else {
+            print("❌ [SCAN HIDE] userIdResponse 없음")
+            return
+        }
+
+        do {
+            print("📤 [SCAN HIDE] 앱 백그라운드 → PATCH 시작")
+            try await ScanService.shared.hideScans(userId: userId)
+            print("✅ [SCAN HIDE] PATCH 완료")
+        } catch {
+            print("❌ [SCAN HIDE] PATCH 실패:", error.localizedDescription)
+        }
+    }
+
 
 } // struct View

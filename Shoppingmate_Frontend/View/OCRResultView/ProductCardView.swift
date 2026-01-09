@@ -40,6 +40,7 @@ struct ProductCardView: View {
                                         RoundedRectangle(cornerRadius: 9) 
                                             .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
                                     )
+                                    .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
 
                             case .failure:
                                 RoundedRectangle(cornerRadius: 9)

@@ -59,6 +59,11 @@ struct DetailView: View {
                 Divider()
                 
                 if let unwrappedDetail = detail {
+//                    if let imageUrl = unwrappedDetail.naverImage {
+//                            ImageCard(imageUrl: imageUrl)
+//                                .padding(.horizontal,17)
+//                                .padding(.top,20)
+//                    }
                     List{
                         Section {
                             if let imageUrl = unwrappedDetail.naverImage,
