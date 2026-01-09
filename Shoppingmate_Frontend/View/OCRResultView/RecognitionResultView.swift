@@ -89,9 +89,9 @@ struct RecognitionResultView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
                 .background(
-                            BottomRoundedRectangle(radius: 20)
+                            BottomRoundedRectangle(radius: 9)
                                 .fill(Color(red: 0.89, green: 0.9, blue: 1))
-                                .frame(width: 361, height: 61)
+                                .frame(width: 349, height: 61)
                         )
                 .padding(.horizontal, 16)
                 .padding(.top, -17)
