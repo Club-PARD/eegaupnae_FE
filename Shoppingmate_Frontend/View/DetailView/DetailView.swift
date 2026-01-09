@@ -60,37 +60,49 @@ struct DetailView: View {
                 
                 if let unwrappedDetail = detail {
                     List{
-                        Section{
-                            if let imageUrlString = unwrappedDetail.naverImage,
-                               let url = URL(string: imageUrlString) {
-
-                                AsyncImage(url: url) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                            .frame(height: 360)
-
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 362, height: 360)
-                                            .clipShape(
-                                                RoundedRectangle(
-                                                    cornerRadius: 12,
-                                                    style: .continuous
-                                                )
-                                            )
-
-                                    case .failure:
-                                        Image(systemName: "photo")
-                                            .frame(height: 360)
-
-                                    @unknown default:
-                                        EmptyView()
-                                    }
-                                }
+                        if let imageUrl = unwrappedDetail.naverImage {
+                            Section {
+                                ImageCard(imageUrl: imageUrl)
+                                    .listRowInsets(
+                                        EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16)
+                                    )
+                                    .listRowBackground(Color.clear)
                             }
+                            .listSectionSpacing(13)
+                        }
+//                        Section{
+//                            if let imageUrlString = unwrappedDetail.naverImage,
+//                               let url = URL(string: imageUrlString) {
+//
+//                                AsyncImage(url: url) { phase in
+//                                    switch phase {
+//                                    case .empty:
+//                                        ProgressView()
+//                                            .frame(height: 360)
+//
+//                                    case .success(let image):
+//                                        image
+//                                            .resizable()
+//                                            .scaledToFill()
+//                                            .frame(height: 360)
+//                                            .frame(maxWidth: .infinity)
+//                                            .clipped()
+//                                            .clipShape(
+//                                                RoundedRectangle(
+//                                                    cornerRadius: 12,
+//                                                    style: .continuous
+//                                                )
+//                                            )
+//
+//                                    case .failure:
+//                                        Image(systemName: "photo")
+//                                            .frame(height: 360)
+//
+//                                    @unknown default:
+//                                        EmptyView()
+//                                    }
+//                                }
+//                            }
 //                            AsyncImage(unwrappedDetail.naverImage)
 //                                .resizable()
 //                                . listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
@@ -99,8 +111,8 @@ struct DetailView: View {
 //                                .clipShape(
 //                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
 //                                )
-                        }
-                        .listSectionSpacing(13) // 이거 해야 총 18
+//                        }//section
+//                        .listSectionSpacing(13) // 이거 해야 총 18
                         
                         Section {
                             Maincard(detail: unwrappedDetail)
@@ -145,59 +157,15 @@ struct DetailView: View {
     }
 }
 
-extension DetailResponse {
-    static let mock = DetailResponse(
-        naverImage: "https://via.placeholder.com/360x360.png",
-        naverBrand: "피죤",
-        scanName: "피죤 실내건조 섬유유연제 라벤더향",
-        category: "세탁/청소",
 
-        pickScore: 4.3,
-        reliabilityScore: 4.1,
-
-        scanPrice: 12800,
-        naverPrice: 15000,
-        priceDiff: -2200,
-        isCheaper: true,
-
-        aiUnitPrice: "1회 사용 약 283원",
-
-        indexes: [
-            AnalysisIndex(
-                name: "가성비",
-                reason: "온라인 평균가 대비 약 2,200원 저렴하여 가격 경쟁력이 높습니다."
-            ),
-            AnalysisIndex(
-                name: "향 지속력",
-                reason: "실내건조 환경에서도 향이 오래 유지된다는 평가가 많습니다."
-            ),
-            AnalysisIndex(
-                name: "성분 안정성",
-                reason: "대체로 무난하지만 민감한 피부에는 주의가 필요합니다."
-            ),
-            AnalysisIndex(
-                name: "사용 편의성",
-                reason: "계량이 쉽고 사용 방법이 직관적입니다."
-            ),
-            AnalysisIndex(
-                name: "재구매 의사",
-                reason: "다수의 사용자들이 재구매 의사를 보였습니다."
-            )
-        ],
-
-        qualitySummary: "향 지속력과 사용 편의성에서 높은 점수를 받았으나, 성분에 민감한 소비자는 주의가 필요합니다.",
-        priceSummary: "현재 오프라인 가격이 온라인 평균가보다 약 2,200원 저렴합니다.",
-        conclusion: "가격 대비 성능이 우수해 일상용 섬유유연제로 구매를 추천합니다."
-    )
-}
-
-#Preview {
-    NavigationStack {
-        DetailView(
-            scanId: 1,
-            previewDetail: .mock
-        )
-    }
-}
+//
+//#Preview {
+//    NavigationStack {
+//        DetailView(
+//            scanId: 1,
+//            previewDetail: .mock
+//        )
+//    }
+//}
 
 
