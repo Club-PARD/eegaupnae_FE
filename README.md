@@ -54,11 +54,46 @@
 
 ## 📸 스크린샷
 
-| 온보딩 | 게스트 로그인 | 위치 설정 | OCR 기능 실행 | OCR 결과 화면 | 가성비 세부정보 화면 |
-|------|------|------|------|------|------|
-| ![](이미지경로) | ![](이미지경로) | ![](이미지경로) | ![](이미지경로) | ![](이미지경로) | ![](이미지경로) |
 
+### 1) 온보딩
+앱에 들어가는 첫 화면입니다.
 
+![Onboarding](Assets/README/onboarding.png)
+
+---
+
+### 2) 게스트 로그인
+UUID를 통해 게스트 로그인을 할 수 있습니다.
+
+![User Select](Assets/README/select_user.png)
+
+---
+
+### 3) 위치 설정
+현재 위치를 기반으로 주변 마트를 보여줍니다.
+
+![Location Select](Assets/README/location_select.png)
+
+---
+
+### 4) OCR 기능 실행
+가격표를 촬영하여 상품 정보를 자동으로 인식합니다.
+
+![Receipt OCR](Assets/README/receipt_ocr.png)
+
+---
+
+### 5) OCR 결과 화면
+온·오프라인 가격을 비교하고, 1회 사용 당 가격 정보를 제공합니다.
+
+![Product Detail](Assets/README/product_detail.png)
+
+---
+
+### 6) 가성비 세부정보 화면
+AI를 통해 가성비 점수를 산출하고, 구매 추천 및 품질과 가격 요약, 해당 제품의 상세 정보를 제공합니다.
+
+![Product Detail](Assets/README/product_detail.png)
 
 ---
 
