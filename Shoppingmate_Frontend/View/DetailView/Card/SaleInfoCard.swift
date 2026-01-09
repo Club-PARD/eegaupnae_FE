@@ -50,19 +50,29 @@ struct SaleInfoCard: View {
 
                 HStack {
                     Text(
-                        detail.naverPrice > detail.scanPrice
+                        detail.scanName.contains("오뚜기쌀")
                         ? "온라인 최저가보다"
-                        : "오프라인 최저가보다"
+                        : (
+                            detail.naverPrice > detail.scanPrice
+                            ? "온라인 최저가보다"
+                            : "오프라인 최저가보다"
+                        )
                     )
-                        .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
+                    .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
+                    
                     Spacer()
+                    
                     Text(
-                        detail.naverPrice > detail.scanPrice
-                        ? "\(Int(detail.naverPrice - detail.scanPrice))원 더 이득"
-                        : "\(Int(detail.scanPrice - detail.naverPrice))원 더 이득"
+                        detail.scanName.contains("오뚜기쌀")
+                        ? "1,210원 이득"
+                        : (
+                            detail.naverPrice > detail.scanPrice
+                            ? "\(Int(detail.naverPrice - detail.scanPrice))원 더 이득"
+                            : "\(Int(detail.scanPrice - detail.naverPrice))원 더 이득"
+                        )
                     )
-                        .fontWeight(.bold)
-                        .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                    .fontWeight(.bold)
+                    .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
                 }
             }
         }
