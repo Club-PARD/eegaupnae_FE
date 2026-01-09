@@ -50,14 +50,14 @@ struct SaleInfoCard: View {
 
                 HStack {
                     Text(
-                        detail.isCheaper
+                        detail.naverPrice > detail.scanPrice
                         ? "온라인 최저가보다"
                         : "오프라인 최저가보다"
                     )
                         .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
                     Spacer()
                     Text(
-                        detail.isCheaper
+                        detail.naverPrice > detail.scanPrice
                         ? "\(Int(detail.naverPrice - detail.scanPrice))원 더 이득"
                         : "\(Int(detail.scanPrice - detail.naverPrice))원 더 이득"
                     )
