@@ -41,15 +41,13 @@ struct RecognitionResultView: View {
                                 .padding(.leading, 20)
                         }
                         Text("픽단가")
-                            .font(
-                                Font.custom("Arial", size: 20)
-                                    .weight(.bold)
-                            )
+                            .foregroundColor(Color.black)
+                            .font(.custom("Pretendard-Bold", size: 20))
                         Spacer()
                     }
                 }
                 Divider()
-                    .padding(.top, -10)
+                    .padding(.top, -12)
                 HStack(spacing: 12) {
                             Image("sparkles")
                                 .resizable()
@@ -88,14 +86,14 @@ struct RecognitionResultView: View {
                 .padding(.vertical, 14)
                 .background(
                             BottomRoundedRectangle(radius: 20)
-                                .fill(Color(red: 0.95, green: 0.95, blue: 1.0))
+                                .fill(Color(red: 0.89, green: 0.9, blue: 1))
                                 .frame(width: 361, height: 61)
                         )
                 .padding(.horizontal, 16)
-                .padding(.top, -14)
+                .padding(.top, -17)
                 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 20.29) {
+                    LazyVGrid(columns: columns, spacing: 20) {
                         ForEach(products) { product in
                             NavigationLink {
                                 DetailView(scanId: product.scanId)
@@ -106,7 +104,7 @@ struct RecognitionResultView: View {
                         }
                     }
                     .padding(.horizontal, 21)
-                    .padding(.top, 76)
+                    .padding(.top, 30)
                 } //ScrollView
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarBackButtonHidden(true)

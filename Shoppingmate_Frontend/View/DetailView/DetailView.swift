@@ -14,6 +14,11 @@ struct DetailView: View {
     
     @State private var detail: DetailResponse?
     
+    init(scanId: Int, previewDetail: DetailResponse? = nil) {
+        self.scanId = scanId
+        self._detail = State(initialValue: previewDetail)
+    }
+    
     var body: some View {
         ZStack{
             Color(red: 0.95, green: 0.95, blue: 0.95)
@@ -34,19 +39,20 @@ struct DetailView: View {
                                 .padding(.leading, 20)
                         }
                         Text("픽스코어")
+                            .foregroundColor(Color.black)
                             .font(
                                 Font.custom("Pretendard-Bold", size: 20)
                             )
                         Spacer()
                         
-//                        NavigationLink {
-//                            CameraOCRView(cameFromMap: true)
-//                        } label: {
-//                            Image("cameraBack")
-//                                .resizable()
-//                                .frame(width: 35, height: 35)
-//                                .padding(.trailing, 10)
-//                        }
+                        NavigationLink {
+                            CameraOCRView(cameFromMap: true)
+                        } label: {
+                            Image("cameraBack")
+                                .resizable()
+                                .frame(width: 35, height: 35)
+                                .padding(.trailing, 10)
+                        }
                      
                     }
                 }
@@ -95,25 +101,13 @@ struct DetailView: View {
 //                                )
                         }
                         .listSectionSpacing(13) // 이거 해야 총 18
-                        if let unwrappedDetail = detail {
-                            List {
-                                Section {
-                                    Maincard(detail: unwrappedDetail)
-                                        .listRowInsets(EdgeInsets())
-                                    SaleInfoCard(detail: unwrappedDetail)
-                                        .listRowSeparator(.hidden)
-                                }
-                                // 다른 카드들도 동일하게 unwrappedDetail 사용
-                            }
-                        } else {
-                            ProgressView()
+                        
+                        Section {
+                            Maincard(detail: unwrappedDetail)
+                                .listRowInsets(EdgeInsets())
+                            SaleInfoCard(detail: unwrappedDetail)
+                                .listRowSeparator(.hidden)
                         }
-//                        Section {
-//                            Maincard(detail: detail)
-//                                .listRowInsets(EdgeInsets())
-//                            SaleInfoCard()
-//                                .listRowSeparator(.hidden)
-//                        }
                         //구매 추천 or 비추천
                         Section {
                             PurchaseHoldCard(detail: unwrappedDetail)
@@ -151,23 +145,59 @@ struct DetailView: View {
     }
 }
 
+extension DetailResponse {
+    static let mock = DetailResponse(
+        naverImage: "https://via.placeholder.com/360x360.png",
+        naverBrand: "피죤",
+        scanName: "피죤 실내건조 섬유유연제 라벤더향",
+        category: "세탁/청소",
 
-//#Preview {
-//    DetailView(
-//        detail: DetailResponse(
-//        naverImage: "https://example.com/image.jpg",
-//        scanName: "아리엘 액체세제 2L",
-//        pickScore: 4.5,
-//        scanPrice: 9800,
-//        naverPrice: 12800,
-//        priceDiff: -3000,
-//        isCheaper: true,
-//        conclusion: "구매 추천",
-//        qualitySummary: "세정력이 뛰어나요",
-//        priceSummary: "온라인보다 저렴해요",
-//        category: "생활용품",
-//        indexes: []
-//        )
-//    )
-//}
+        pickScore: 4.3,
+        reliabilityScore: 4.1,
+
+        scanPrice: 12800,
+        naverPrice: 15000,
+        priceDiff: -2200,
+        isCheaper: true,
+
+        aiUnitPrice: "1회 사용 약 283원",
+
+        indexes: [
+            AnalysisIndex(
+                name: "가성비",
+                reason: "온라인 평균가 대비 약 2,200원 저렴하여 가격 경쟁력이 높습니다."
+            ),
+            AnalysisIndex(
+                name: "향 지속력",
+                reason: "실내건조 환경에서도 향이 오래 유지된다는 평가가 많습니다."
+            ),
+            AnalysisIndex(
+                name: "성분 안정성",
+                reason: "대체로 무난하지만 민감한 피부에는 주의가 필요합니다."
+            ),
+            AnalysisIndex(
+                name: "사용 편의성",
+                reason: "계량이 쉽고 사용 방법이 직관적입니다."
+            ),
+            AnalysisIndex(
+                name: "재구매 의사",
+                reason: "다수의 사용자들이 재구매 의사를 보였습니다."
+            )
+        ],
+
+        qualitySummary: "향 지속력과 사용 편의성에서 높은 점수를 받았으나, 성분에 민감한 소비자는 주의가 필요합니다.",
+        priceSummary: "현재 오프라인 가격이 온라인 평균가보다 약 2,200원 저렴합니다.",
+        conclusion: "가격 대비 성능이 우수해 일상용 섬유유연제로 구매를 추천합니다."
+    )
+}
+
+#Preview {
+    NavigationStack {
+        DetailView(
+            scanId: 1,
+            previewDetail: .mock
+        )
+    }
+}
+
 

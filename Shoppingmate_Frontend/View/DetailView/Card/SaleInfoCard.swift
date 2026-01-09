@@ -41,12 +41,21 @@ struct SaleInfoCard: View {
                 }
 
                 HStack {
-                    Text("온라인 최저가보다")
-                        .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
-                    Spacer()
-                    Text("\(detail.naverPrice-detail.scanPrice)원 더 이득")
-                        .fontWeight(.bold)
-                        .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                    if detail.naverPrice - detail.scanPrice > 0 {
+                        Text("온라인 최저가보다")
+                            .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
+                        Spacer()
+                        Text("\(Int(detail.naverPrice - detail.scanPrice))원 더 이득")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                    } else {
+                        Text("오프라인 최저가보다")
+                            .foregroundColor(Color(red: 0.35, green: 0.40, blue: 0.75))
+                        Spacer()
+                        Text("\(Int(detail.scanPrice - detail.naverPrice))원 더 이득")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color(red: 0.30, green: 0.35, blue: 0.75))
+                    }
                 }
             }
         }

@@ -11,8 +11,15 @@ struct CameraOCRView: View {
     @StateObject private var camera = CameraManager()
     
     let cameFromMap: Bool
-    let userIdResponse: UserIdResponse // userID 업로드
+    let userIdResponse: UserIdResponse? // userID 업로드
     
+    init(
+        cameFromMap: Bool,
+        userIdResponse: UserIdResponse? = nil
+    ) {
+        self.cameFromMap = cameFromMap
+        self.userIdResponse = userIdResponse
+    }
     
     @State private var ParseFail = false // 파싱 실패 시 출력 문구
     @State private var ocrBeforeCount: Int = 0 // OCR 촬영 저장 확인용 (문구)
@@ -260,7 +267,9 @@ struct CameraOCRView: View {
             RecognitionResultView(products: products)
         }
         .navigationDestination(isPresented: $goToMap) {
-            LocationSelectView(userIdResponse: userIdResponse)
+            if let userIdResponse {
+                LocationSelectView(userIdResponse: userIdResponse)
+            }
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
@@ -310,18 +319,24 @@ struct CameraOCRView: View {
         }
     
         do {
+            guard let userId = userIdResponse?.userId else {
+                print("❌ userIdResponse 없음")
+                return
+            }
             print("📤 [SCAN] 서버 업로드 시작")
 
             // 1) POST /scan
+            print("📤 [SCAN] POST 시작")
             try await ScanService.shared.uploadScans(
-                userId: userIdResponse.userId,
+                userId: userId,
                 items: items
             )
 
-            print("✅ 서버 업로드 성공 → 이제 GET /scan로 products 구성")
-
-            // 2) GET /scan?userId=...
-            let scanList = try await ScanService.shared.fetchScans(userId: userIdResponse.userId)
+            // 2️⃣ GET /scan
+            print("📥 [SCAN] GET 시작")
+            let scanList = try await ScanService.shared.fetchScans(
+                userId: userId
+            )
 
             // 3) 서버 데이터를 RecognizedProduct로 변환
             self.products = scanList.map { scan in

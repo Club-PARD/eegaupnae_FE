@@ -61,23 +61,6 @@ struct ProductCardView: View {
                     }
                 }
                 .aspectRatio(1, contentMode: .fit) // 정사각형 유지
-           
-//                GeometryReader { geo in
-//                    if let image = product.image {
-//                        Image(uiImage: image)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(
-//                                width: geo.size.width, //사진 박스 크기
-//                                height: geo.size.width
-//                            )
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 9)
-//                                    .fill(Color(red: 0.91, green: 0.91, blue: 0.91))
-//                            )
-//                    }
-//                }
-                .aspectRatio(1, contentMode: .fit) // 정사각형 박스 유지
        
                 Text(product.perUse)
                     .font(
@@ -125,39 +108,40 @@ struct ProductCardView: View {
                 Text(product.brand)
                     .font(.custom("Pretendard-Regular", size: 11))
                     .foregroundColor(Color(red: 0.59, green: 0.59, blue: 0.59))
-                    .padding(.leading, 5)
-                
                 
                 Text(product.name)
                     .font(.custom("Pretendard-Regular", size: 12))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     .frame(width: 165, alignment: .topLeading)
-                    .padding(.leading, 5)
+                
                 Divider()
-//                HStack(alignment: .center, spacing: 1) {
+                
                 HStack {
                     Text("마트 판매가")
                       .font(.custom("Pretendard-Bold", size: 10))
                       .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     Spacer()
-                    Text(product.price)
-                        .font(.custom("Pretendard-Bold", size: 18))
-                        .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
-                        .padding(.leading, 5)
-                        .padding(.bottom, 2)
+                    if let price = Int(product.price) {
+                        Text("\(price.formatted(.number))원")
+                            .font(.custom("Pretendard-Bold", size: 18))
+                            .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                            .padding(.leading, 5)
+                            .padding(.bottom, 2)
+                    }
                 }
                 HStack {
                     Text("온라인 최저가")
                         .font(.custom("Pretendard-Bold", size: 10))
                         .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
                     Spacer()
-                    Text(product.onlinePrice)
-                        .font(.custom("Pretendard-Bold", size: 18))
-                        .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
-                        .padding(.leading, 5)
-                        .padding(.bottom, 2)
+                    if let price = Int(product.onlinePrice) {
+                        Text("\(price.formatted(.number))원")
+                            .font(.custom("Pretendard-Bold", size: 18))
+                            .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
+                            .padding(.leading, 5)
+                            .padding(.bottom, 2)
+                    }
                 }
-//                }
             } // VStack text
         } // VStack all
     }
