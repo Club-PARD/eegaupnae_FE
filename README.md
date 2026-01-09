@@ -58,42 +58,54 @@
 ### 1) 온보딩
 앱에 들어가는 첫 화면입니다.
 
-![Onboarding](Assets/README/onboarding.png)
+<img width="300" alt="Onboarding" src="https://github.com/user-attachments/assets/77971298-d550-45d9-8858-533872d21494" />
+
 
 ---
 
 ### 2) 게스트 로그인
 UUID를 통해 게스트 로그인을 할 수 있습니다.
 
-![User Select](Assets/README/select_user.png)
+<img width="300" alt="IMG_9013" src="https://github.com/user-attachments/assets/84ed3812-d23f-4a24-bc2a-a2b8d13edf22" />
+
 
 ---
 
 ### 3) 위치 설정
 현재 위치를 기반으로 주변 마트를 보여줍니다.
 
-![Location Select](Assets/README/location_select.png)
+<img width="300" alt="Map" src="https://github.com/user-attachments/assets/1f466ebf-afd6-4d3c-8ce8-08da4361a9c0" />
+
 
 ---
 
 ### 4) OCR 기능 실행
 가격표를 촬영하여 상품 정보를 자동으로 인식합니다.
 
-![Receipt OCR](Assets/README/receipt_ocr.png)
+1) OCR 화면 실행 직후
+<img width="300" alt="OCRScan1" src="https://github.com/user-attachments/assets/a5f0a50c-328f-41d3-a1cf-490bd2bcbf1e" />
+
+2) OCR 스캔 화면
+<img width="300" alt="OCRScan2" src="https://github.com/user-attachments/assets/5fde809b-d660-4fe6-8b91-6aca8d4442bd" />
 
 ---
 
 ### 5) OCR 결과 화면
 온·오프라인 가격을 비교하고, 1회 사용 당 가격 정보를 제공합니다.
 
-![Product Detail](Assets/README/product_detail.png)
+<img width="300" alt="OCRResult" src="https://github.com/user-attachments/assets/583c81be-d87b-4f85-91c4-e597e351bd2d" />
+
 
 ---
 
 ### 6) 가성비 세부정보 화면
 AI를 통해 가성비 점수를 산출하고, 구매 추천 및 품질과 가격 요약, 해당 제품의 상세 정보를 제공합니다.
 
-![Product Detail](Assets/README/product_detail.png)
+<img width="300" alt="DetailTop" src="https://github.com/user-attachments/assets/a1cc0f73-44ab-4699-b61f-f21a9352f425" />
+
+<img width="300" alt="DetailMiddle" src="https://github.com/user-attachments/assets/47a58ba3-bb53-44a3-ba87-b153b759c482" />
+
+<img width="300" alt="DetailBottom" src="https://github.com/user-attachments/assets/d337c06a-07b7-40bb-86ca-310d970e543e" />
 
 ---
 
