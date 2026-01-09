@@ -47,7 +47,7 @@ struct Maincard: View {
                             endPoint: .bottomTrailing
                         )
                    )
-                Text("Ai 픽스코어")
+                Text("AI 픽스코어")
                   .font(.custom("Pretendard-Bold", size: 17))
                   .foregroundStyle(
                           LinearGradient(
@@ -103,4 +103,3 @@ struct Maincard: View {
 
     }
 }
-

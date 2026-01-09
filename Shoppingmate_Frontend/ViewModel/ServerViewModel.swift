@@ -20,20 +20,7 @@ final class ServerViewModel: NSObject, ObservableObject {
     init(loginViewModel: LoginViewModel) {
         self.loginViewModel = loginViewModel
     }
-    
-//    func sendToServer(imageData: Data) {
-//        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
-//        
-//        let locationDTO = capturedLocation?.toDTO(userId: userId)
-//        
-//        Task {
-//            try await uploadService.uploadLocation(
-//                //                imageData: imageData,
-//                //                recognizedText: recognizedText,
-//                location: locationDTO
-//            )
-//        }
-//    }
+
     
     func debugPrintLocation() {
         if let location = capturedLocation {
@@ -56,50 +43,6 @@ final class ServerViewModel: NSObject, ObservableObject {
         print(" - longitude:", dto.longitude)
     }
     
-//    func sendLocationToServer() {
-//        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
-//        
-//        guard let locationDTO = capturedLocation?.toDTO(userId: userId) else {
-//            print("❌ locationDTO is nil")
-//            return
-//        }
-//        
-//        Task {
-//            do {
-//                try await uploadService.uploadLocation(location: locationDTO)
-//                print("✅ location upload success")
-//            } catch {
-//                print("🚨 location upload failed:", error)
-//            }
-//        }
-//    }
-    
-//    func handleLocationAfterLogin() {
-//        Task {
-//            // 위치가 아직 없으면 잠깐 대기 (최대 1초 정도)
-//            for _ in 0..<10 {
-//                if locationService.currentLocation != nil {
-//                    break
-//                }
-//                try await Task.sleep(nanoseconds: 100_000_000) // 0.1초
-//            }
-//
-//            // 위치 가져오기
-//            guard let location = locationService.currentLocation else {
-//                print("❌ 위치를 가져오지 못함")
-//                return
-//            }
-//
-//            self.capturedLocation = location
-//
-//            // 디버그 로그
-//            self.debugPrintLocation()
-//            self.debugPrintLocationDTO()
-//
-//            // 서버 전송
-//            //self.sendLocationToServer()
-//        }
-//    }
     
     func handleLocationAfterLogin() {
         Task {
@@ -190,9 +133,3 @@ final class ServerViewModel: NSObject, ObservableObject {
     }
 }
 
-
-
-//self.capturedLocation = self.locationService.currentLocation
-//self.debugPrintLocation()
-//self.debugPrintLocationDTO()
-//self.sendLocationToServer()
