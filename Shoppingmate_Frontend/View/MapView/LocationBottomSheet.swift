@@ -22,7 +22,7 @@ struct LocationBottomSheet: View {
                 Text("현재 위치")
                     .font(.custom("Pretendard-Regular", size: 14))
                     .foregroundColor(Color(red: 0.42, green: 0.45, blue: 0.51))
-                Text("(현재마트 받아오기)")
+                Text("픽픽 마트")
                     .font(
                         Font.custom("Pretendard-Bold", size: 22)
                     )

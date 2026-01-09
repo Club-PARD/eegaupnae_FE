@@ -141,4 +141,56 @@ final class ScanService {
         }
 
     
+    // PATCH /scan/hide?userId=1
+        func hideScans(userId: Int) async throws {
+            let baseURL = baseURL.base.rawValue
+
+            guard var components = URLComponents(string: "\(baseURL)/scan/hide") else {
+                print("❌ [SCAN HIDE] URLComponents 생성 실패")
+                throw APIError.invalidURL
+            }
+
+            components.queryItems = [
+                URLQueryItem(name: "userId", value: String(userId))
+            ]
+
+            guard let url = components.url else {
+                print("❌ [SCAN HIDE] URL 생성 실패")
+                throw APIError.invalidURL
+            }
+
+            // 🔎 요청 로그
+            print("❗️ [SCAN HIDE REQUEST]")
+            print("URL:", url.absoluteString)
+            print("Method: PATCH")
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "PATCH"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.timeoutInterval = 60
+
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+
+                let bodyText = String(data: data, encoding: .utf8) ?? ""
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("❌ [SCAN HIDE] HTTPResponse 캐스팅 실패")
+                    throw URLError(.badServerResponse)
+                }
+
+                // 🔎 응답 로그
+                print("📥 [SCAN HIDE RESPONSE]")
+                print("StatusCode:", httpResponse.statusCode)
+                print("Body:", bodyText)
+
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    throw APIError.httpStatus(httpResponse.statusCode, bodyText)
+                }
+
+                print("✅ hideScans 성공 (isShown=false 처리됨)")
+            } catch {
+                throw APIError.transport(error)
+            }
+        }
+    
 }
