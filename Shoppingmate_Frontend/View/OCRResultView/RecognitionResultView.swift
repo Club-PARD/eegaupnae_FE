@@ -6,17 +6,45 @@
 //
 
 import SwiftUI
+import UIKit
 
 // 픽단가 페이지
 struct RecognitionResultView: View {
     
     @Environment(\.dismiss) private var dismiss // 커스텀 뒤로가기
+    @Environment(\.scenePhase) private var scenePhase
     let products: [RecognizedProduct]
+    let userId: Int?
+    @State private var didSendHide = false
     
     private let columns = [ //2행 정렬
         GridItem(.flexible(), spacing: 14),
         GridItem(.flexible(), spacing: 14)
     ]
+    
+    private func triggerHideIfNeeded(source: String) {
+        guard !didSendHide else { return }
+        didSendHide = true
+        
+        guard let userId else {
+            print("❌ [SCAN HIDE] userId 없음 (\(source))")
+            return
+        }
+        
+        Task {
+            // 백그라운드에서 네트워크가 끊기는 것 방지(성공률↑)
+            let bgID = UIApplication.shared.beginBackgroundTask(withName: "scanHide")
+            defer { UIApplication.shared.endBackgroundTask(bgID) }
+            
+            do {
+                print("📤 [SCAN HIDE] \(source) → PATCH 시작 (userId=\(userId))")
+                try await ScanService.shared.hideScans(userId: userId)
+                print("✅ [SCAN HIDE] PATCH 완료")
+            } catch {
+                print("❌ [SCAN HIDE] PATCH 실패:", error.localizedDescription)
+            }
+        }
+    }
 
     private var productCountText: String {
         "\(products.count)개 상품"
@@ -110,24 +138,32 @@ struct RecognitionResultView: View {
                 .navigationBarBackButtonHidden(true)
             }
         } //zstack
+        .onChange(of: scenePhase) { _, newPhase in
+              guard newPhase == .background else { return }
+              triggerHideIfNeeded(source: "scenePhase.background")
+          }
+          // ✅ 백그라운드 감지 더 확실하게(선택이지만 추천)
+          .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+              triggerHideIfNeeded(source: "didEnterBackgroundNotification")
+          }
     }
 }
 
-#Preview {
-    let mockProducts: [RecognizedProduct] = [
-            RecognizedProduct(
-                image: UIImage(systemName: "photo"),
-                badge: "Best 가성비",
-                brand: "피죤",
-                name: "피죤 실내건조 섬유유연제 라벤더향",
-                amount: "2.5L",
-                price: "8,800원",
-                onlinePrice: "12,800원",
-                perUse: "한번 사용 283원꼴",
-                scanId: 12345
-            )
-    ]
-    NavigationStack {
-        RecognitionResultView(products: mockProducts)
-    }
-}
+//#Preview {
+//    let mockProducts: [RecognizedProduct] = [
+//            RecognizedProduct(
+//                image: UIImage(systemName: "photo"),
+//                badge: "Best 가성비",
+//                brand: "피죤",
+//                name: "피죤 실내건조 섬유유연제 라벤더향",
+//                amount: "2.5L",
+//                price: "8,800원",
+//                onlinePrice: "12,800원",
+//                perUse: "한번 사용 283원꼴",
+//                scanId: 12345
+//            )
+//    ]
+//    NavigationStack {
+//        RecognitionResultView(products: mockProducts)
+//    }
+//}

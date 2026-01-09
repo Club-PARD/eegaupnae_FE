@@ -45,6 +45,7 @@ struct ScanItemResponse: Codable, Identifiable { //scan get
     let naverMaker: String?
     let naverImage: String?
     let aiUnitPrice: String?
+    let isShown: Bool
 
     var id: Int { scanId }
 }
