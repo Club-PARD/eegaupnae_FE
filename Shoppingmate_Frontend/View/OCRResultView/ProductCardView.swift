@@ -116,9 +116,9 @@ struct ProductCardView: View {
                 Text(product.name)
                     .font(.custom("Pretendard-Regular", size: 12))
                     .foregroundColor(Color(red: 0.06, green: 0.09, blue: 0.16))
-                    .frame(width: 165, alignment: .topLeading)
+                    .frame(width: 165, height:31, alignment: .topLeading)
                 
-                Divider()
+//                Divider()
                 
                 HStack {
                     Text("마트 판매가")
@@ -148,6 +148,7 @@ struct ProductCardView: View {
 //                    }
                 }
             } // VStack text
+            Spacer() // 제목 2줄
         } // VStack all
     }
 }

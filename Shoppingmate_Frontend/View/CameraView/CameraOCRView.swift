@@ -37,6 +37,12 @@ struct CameraOCRView: View {
     @State private var showUploadError = false
     @State private var uploadErrorMessage = ""
     
+    //촬영 결과 보여주기
+    @State private var showToast = false
+    @State private var toastText = ""
+    @State private var toastWorkItem: DispatchWorkItem?
+    @State private var lastFilterCount = 0   // append일 때만 토스트 띄우기 용
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
 
@@ -229,28 +235,44 @@ struct CameraOCRView: View {
 //                }
 //            }
             
-            // 결과 표시 (OCR Filter 적용)
-            if !camera.OCRFilters.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("📦 Captured Items")
-                        .font(.headline)
-
-                    ForEach(camera.OCRFilters) { item in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("상품명: \(item.name)")
-                                .font(.subheadline)
-
-                            Text("가격: \(String(item.price))원")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(8)
+//            // 결과 표시 (OCR Filter 적용)
+//            if !camera.OCRFilters.isEmpty {
+//                VStack(alignment: .leading, spacing: 8) {
+//                    Text("📦 Captured Items")
+//                        .font(.headline)
+//
+//                    ForEach(camera.OCRFilters) { item in
+//                        VStack(alignment: .leading, spacing: 4) {
+//                            Text("상품명: \(item.name)")
+//                                .font(.subheadline)
+//
+//                            Text("가격: \(String(item.price))원")
+//                                .font(.caption)
+//                                .foregroundColor(.secondary)
+//                        }
+//                        .padding(8)
+//                        .background(.ultraThinMaterial)
+//                        .cornerRadius(8)
+//                    }
+//                }
+//                .padding()
+//            }
+            
+            // 촬영 결과 미리 보기
+            if showToast {
+                VStack {
+                    Text(toastText)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
                         .background(.ultraThinMaterial)
-                        .cornerRadius(8)
-                    }
+                        .cornerRadius(12)
+                        .padding(.top,80)
                 }
-                .padding()
+                .transition(.opacity)
             }
+
             
             
         } //ZStack all
@@ -263,6 +285,29 @@ struct CameraOCRView: View {
                 handleParseFail()
             }
         }
+        .onChange(of: camera.OCRFilters.count) { _, newCount in
+            // 추가(append)일 때만 토스트
+            guard newCount > lastFilterCount else {
+                lastFilterCount = newCount
+                return
+            }
+            lastFilterCount = newCount
+
+            guard let last = camera.OCRFilters.last else { return }
+
+            toastText = "상품명: \(last.name)\n가격: \(last.price)원"
+
+            toastWorkItem?.cancel()
+            withAnimation(.easeOut(duration: 0.2)) { showToast = true }
+
+            let work = DispatchWorkItem {
+                withAnimation(.easeOut(duration: 0.5)) { showToast = false }
+                toastText = ""
+            }
+            toastWorkItem = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+        }
+
 
         .navigationDestination(isPresented: $goResult) {
             RecognitionResultView(
@@ -366,6 +411,8 @@ struct CameraOCRView: View {
             }
 
             print("✅ products 세팅 완료: \(self.products.count)개 → goResult 이동")
+            
+            camera.resetBatch()     // 이동 확정된 시점에만 OCRView 상태 비우기
             goResult = true
             print("➡️ goResult 현재값:", goResult)
 

@@ -114,6 +114,14 @@ final class CameraManager: NSObject, ObservableObject {
             OCRFilters.remove(at: index)
         }
     }
+    
+    @MainActor
+    func resetBatch() {
+        capturedROIImages.removeAll()
+        OCRFilters.removeAll()
+        recognizedText = ""
+    }
+
 
     
 } //final class

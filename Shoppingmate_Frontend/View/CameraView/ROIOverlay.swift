@@ -85,7 +85,7 @@ struct ROIOverlay: View {
                     .offset(x: 12, y: -12)
                 
                 if ParseFail {
-                    Text("가격표를 눌러주세요")
+                    Text("가격표를 찍어주세요")
                         .font(
                             Font.custom("Pretendard-Bold", size: 22)
                         )
