@@ -43,6 +43,8 @@ struct CameraOCRView: View {
     @State private var toastWorkItem: DispatchWorkItem?
     @State private var lastFilterCount = 0   // append일 때만 토스트 띄우기 용
     
+    @State private var didSendHide = false // hide전용
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
 
@@ -70,7 +72,7 @@ struct CameraOCRView: View {
                     }
                     .padding(.leading, 5)
                     .padding(.top, 5)
-
+                    
                     Spacer()
                 }
                 Spacer()
@@ -326,9 +328,16 @@ struct CameraOCRView: View {
             roiOverlayID = UUID() // 카메라 페이지 들어올 때마다 애니메이션 다시
         }
         .onChange(of: scenePhase) { _, newPhase in
-            guard newPhase == .background else { return }   // 앱 나갔을 때만
-            Task { await hideAllScansWhenAppBackground() }
+            if newPhase == .active {
+                   didSendHide = false   // 다음번 테스트/재진입 때 다시 보내기
+               }
+
+               // ✅ background는 너무 늦어서 응답 로그가 안 찍힐 수 있음 → inactive에서 먼저 보냄
+               guard newPhase == .inactive else { return }
+               triggerHideIfNeeded(source: "scenePhase.inactive", verify: true)
+        
         }
+
 
 
         //        .onDisappear { camera.stopSession() } //뒤로 갈 때 카메라 깜빡임 있어서 일단 꺼둠
@@ -423,19 +432,67 @@ struct CameraOCRView: View {
         }
     }
     
+//    @MainActor
+//    private func hideAllScansWhenAppBackground() async {
+//        guard let userId = userIdResponse?.userId else {
+//            print("❌ [SCAN HIDE] userIdResponse 없음")
+//            return
+//        }
+//
+//        do {
+//            print("📤 [SCAN HIDE] 앱 백그라운드 → PATCH 시작")
+//            try await ScanService.shared.hideScans(userId: userId)
+//            print("✅ [SCAN HIDE] PATCH 완료")
+//            
+//            // ✅ 여기! PATCH가 실제로 적용됐는지 GET으로 확인
+//            do {
+//                let scanList = try await ScanService.shared.fetchScans(userId: userId)
+//                let shownCount = scanList.filter { $0.isShown }.count
+//                let totalCount = scanList.count
+//                print("🔎 [SCAN HIDE VERIFY] total:", totalCount, "shown:", shownCount)
+//            } catch {
+//                print("⚠️ [SCAN HIDE VERIFY] GET 실패:", error.localizedDescription)
+//            }
+//        } catch {
+//            print("❌ [SCAN HIDE] PATCH 실패:", error.localizedDescription)
+//        }
+//    }
+
     @MainActor
-    private func hideAllScansWhenAppBackground() async {
+    private func triggerHideIfNeeded(source: String, verify: Bool = true) {
+        guard !didSendHide else { return }
+        didSendHide = true
+
         guard let userId = userIdResponse?.userId else {
-            print("❌ [SCAN HIDE] userIdResponse 없음")
+            print("❌ [SCAN HIDE] userIdResponse 없음 (\(source))")
             return
         }
 
-        do {
-            print("📤 [SCAN HIDE] 앱 백그라운드 → PATCH 시작")
-            try await ScanService.shared.hideScans(userId: userId)
-            print("✅ [SCAN HIDE] PATCH 완료")
-        } catch {
-            print("❌ [SCAN HIDE] PATCH 실패:", error.localizedDescription)
+        Task {
+            // ✅ 백그라운드에서 네트워크 마무리 시간 확보
+            let bgID = UIApplication.shared.beginBackgroundTask(withName: "scanHide") {
+                print("⏰ [SCAN HIDE] background time expired")
+            }
+            defer { UIApplication.shared.endBackgroundTask(bgID) }
+
+            do {
+                print("📤 [SCAN HIDE] \(source) → PATCH 시작 (userId=\(userId))")
+                try await ScanService.shared.hideScans(userId: userId)
+                print("✅ [SCAN HIDE] PATCH 완료")
+
+                // ✅ PATCH 적용 여부 확인 (원할 때만)
+                if verify {
+                    do {
+                        let scanList = try await ScanService.shared.fetchScans(userId: userId)
+                        let shownCount = scanList.filter { $0.isShown }.count
+                        print("🔎 [SCAN HIDE VERIFY] total:", scanList.count, "shown:", shownCount)
+                    } catch {
+                        print("⚠️ [SCAN HIDE VERIFY] GET 실패:", error.localizedDescription)
+                    }
+                }
+            } catch {
+                print("❌ [SCAN HIDE] PATCH 실패:", error.localizedDescription)
+            }
         }
     }
 

@@ -188,6 +188,8 @@ final class ScanService {
                 }
 
                 print("✅ hideScans 성공 (isShown=false 처리됨)")
+            } catch let apiError as APIError {
+                throw apiError                 // ✅ statusCode 보존
             } catch {
                 throw APIError.transport(error)
             }
