@@ -28,6 +28,14 @@ enum APIError: Error, LocalizedError {
 final class ScanService {
     static let shared = ScanService()
     
+    private let session: URLSession = {
+         let config = URLSessionConfiguration.default
+         config.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+         config.urlCache = nil
+         return URLSession(configuration: config)
+     }()
+
+    
     func uploadScans(
         userId: Int,
         items: [ScanUploadItem]
@@ -95,7 +103,8 @@ final class ScanService {
             }
 
             components.queryItems = [
-                URLQueryItem(name: "userId", value: String(userId))
+                URLQueryItem(name: "userId", value: String(userId)),
+                URLQueryItem(name: "_ts", value: String(Int(Date().timeIntervalSince1970)))
             ]
 
             guard let url = components.url else {
@@ -112,9 +121,14 @@ final class ScanService {
             request.httpMethod = "GET"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.timeoutInterval = 60
+            
+            request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+               request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+               request.setValue("no-cache", forHTTPHeaderField: "Pragma")
 
             do {
-                let (data, response) = try await URLSession.shared.data(for: request)
+                let (data, response) = try await session.data(for: request)
+//                let (data, response) = try await URLSession.shared.data(for: request)
 
                 let bodyText = String(data: data, encoding: .utf8) ?? ""
                 guard let httpResponse = response as? HTTPURLResponse else {

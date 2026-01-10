@@ -46,7 +46,6 @@ struct CameraOCRView: View {
     @State private var didSendHide = false // hide전용
     
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -297,7 +296,7 @@ struct CameraOCRView: View {
 
             guard let last = camera.OCRFilters.last else { return }
 
-            toastText = "상품명: \(last.name)\n가격: \(last.price)원"
+            toastText = "상품명: \(last.name)\n가격: \(formatWon(last.price))원"
 
             toastWorkItem?.cancel()
             withAnimation(.easeOut(duration: 0.2)) { showToast = true }
@@ -326,16 +325,6 @@ struct CameraOCRView: View {
         .onAppear {
             camera.startSession()
             roiOverlayID = UUID() // 카메라 페이지 들어올 때마다 애니메이션 다시
-        }
-        .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .active {
-                   didSendHide = false   // 다음번 테스트/재진입 때 다시 보내기
-               }
-
-               // ✅ background는 너무 늦어서 응답 로그가 안 찍힐 수 있음 → inactive에서 먼저 보냄
-               guard newPhase == .inactive else { return }
-               triggerHideIfNeeded(source: "scenePhase.inactive", verify: true)
-        
         }
 
 
@@ -368,6 +357,13 @@ struct CameraOCRView: View {
             }
         }
     }
+    
+    private func formatWon(_ value: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+
     
     @MainActor
     private func uploadAndGoResult() async { // 서버 업로드 함수

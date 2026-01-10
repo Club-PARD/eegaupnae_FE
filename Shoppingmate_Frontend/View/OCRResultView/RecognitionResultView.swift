@@ -12,9 +12,16 @@ import UIKit
 struct RecognitionResultView: View {
     
     @Environment(\.dismiss) private var dismiss // 커스텀 뒤로가기
+    @Environment(\.scenePhase) private var scenePhase
 
-    let products: [RecognizedProduct]
+//    let products: [RecognizedProduct]
     let userId: Int?
+    @State private var products: [RecognizedProduct]
+    
+    init(products: [RecognizedProduct], userId: Int?) {
+          self.userId = userId
+          _products = State(initialValue: products)
+      }
     
     private let columns = [ //2행 정렬
         GridItem(.flexible(), spacing: 14),
@@ -114,9 +121,61 @@ struct RecognitionResultView: View {
                 .navigationBarBackButtonHidden(true)
             }
         } //zstack
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .inactive || phase == .background {
+                  // ✅ 나가기 직전에 화면 데이터 즉시 제거 (중요)
+                  products.removeAll()
+                  return
+              }
+            
+                  guard phase == .active else { return }
+            Task {
+                   try? await Task.sleep(nanoseconds: 300_000_000) // 0.3s
+                   await refreshFromServerAndCloseIfEmpty()
+               }
+              }
+        .task {
+            await refreshFromServerAndCloseIfEmpty()
+        }
 
     }
-}
+    @MainActor
+       private func refreshFromServerAndCloseIfEmpty() async {
+           guard let userId else { return }
+
+           do {
+               let scanList = try await ScanService.shared.fetchScans(userId: userId)
+               let visible = scanList.filter { $0.isShown }
+               
+               print("🔎 [RESULT REFRESH] total:", scanList.count, "visible:", visible.count)
+
+
+               let mapped: [RecognizedProduct] = visible.map { scan in
+                   RecognizedProduct(
+                       image: nil,
+                       badge: "",
+                       brand: scan.naverBrand ?? "",
+                       name: scan.scanName,
+                       amount: "",
+                       price: "\(scan.scanPrice)원",
+                       onlinePrice: scan.naverPrice.map { "\($0)원" } ?? "-",
+                       perUse: scan.aiUnitPrice ?? "분석 중...",
+                       imageURL: scan.naverImage,
+                       scanId: scan.scanId
+                   )
+               }
+
+               self.products = mapped
+
+               // ✅ 숨김 처리되어 남은 게 없으면 결과 화면 닫기
+               if mapped.isEmpty {
+                   dismiss()
+               }
+           } catch {
+               print("❌ [RESULT REFRESH] 실패:", error.localizedDescription)
+           }
+       }
+   }
 
 //#Preview {
 //    let mockProducts: [RecognizedProduct] = [
